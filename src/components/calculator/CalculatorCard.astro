@@ -1,0 +1,112 @@
+---
+export interface Props {
+  name: string;
+  href: string;
+  icon: string;
+  desc: string;
+  badge?: string;
+}
+const { name, href, icon, desc, badge } = Astro.props;
+---
+
+<a href={href} class="calc-card card card-hover" aria-label={`Open ${name}`}>
+  <div class="calc-card-inner">
+    <div class="calc-card-top">
+      <div class="calc-icon-wrap" aria-hidden="true">
+        <span class="calc-icon">{icon}</span>
+      </div>
+      {badge && <span class="badge badge-popular">{badge}</span>}
+    </div>
+    <h3 class="calc-name">{name}</h3>
+    <p class="calc-desc">{desc}</p>
+    <div class="calc-footer">
+      <span class="calc-cta">Calculate now</span>
+      <svg class="calc-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M3 7h8M7 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+</a>
+
+<style>
+  .calc-card {
+    display: block;
+    text-decoration: none;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .calc-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 112, 243, 0.03) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .calc-card:hover::before { opacity: 1; }
+  
+  .calc-card-inner { display: flex; flex-direction: column; height: 100%; }
+  .calc-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+  
+  .calc-icon-wrap {
+    width: 48px;
+    height: 48px;
+    background: var(--color-canvas-soft-2);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-hairline);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+  .calc-card:hover .calc-icon-wrap {
+    transform: scale(1.05);
+    border-color: var(--color-hairline-strong);
+  }
+  .calc-icon { font-size: 22px; line-height: 1; }
+
+  .badge-popular {
+    background: linear-gradient(135deg, rgba(0, 112, 243, 0.1), rgba(121, 40, 202, 0.1));
+    color: var(--color-link);
+    border-color: rgba(0, 112, 243, 0.2);
+    font-weight: 600;
+  }
+  
+  .calc-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-ink);
+    line-height: 22px;
+    letter-spacing: -0.4px;
+    margin-bottom: 8px;
+  }
+  .calc-desc {
+    font-size: 13.5px;
+    color: var(--color-body);
+    line-height: 21px;
+    flex: 1;
+    margin-bottom: 20px;
+  }
+  .calc-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+  }
+  .calc-cta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition: color 0.15s ease;
+  }
+  .calc-arrow {
+    color: var(--color-muted);
+    transition: color 0.15s ease, transform 0.2s ease;
+  }
+  .calc-card:hover .calc-cta { color: var(--color-link); }
+  .calc-card:hover .calc-arrow {
+    color: var(--color-link);
+    transform: translateX(4px);
+  }
+</style>

@@ -1,17 +1,124 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import Hero from '../components/home/Hero.astro';
+import CalculatorGrid from '../components/home/CalculatorGrid.astro';
+import Categories from '../components/home/Categories.astro';
+import Benefits from '../components/home/Benefits.astro';
+import Testimonials from '../components/home/Testimonials.astro';
+import FAQ from '../components/home/FAQ.astro';
+import Newsletter from '../components/home/Newsletter.astro';
+import { generateOrganization, generateWebSite, generateFAQ } from '../utils/seo';
 
+const schemas = [
+  generateOrganization(),
+  generateWebSite(),
+  generateFAQ([
+    { q: 'Are all calculators on CalcQuick free to use?', a: 'Yes, every calculator on CalcQuick is completely free. No account required, no subscriptions, no hidden fees.' },
+    { q: 'How accurate are the calculations?', a: 'We use industry-standard formulas — Mifflin-St Jeor for calories, WHO BMI formula, and precise date arithmetic for age.' },
+    { q: 'Does CalcQuick work on mobile devices?', a: 'Yes! CalcQuick is designed mobile-first and works perfectly on smartphones, tablets, and desktops.' },
+    { q: 'Do I need to create an account?', a: 'No. All calculators work instantly without any account or personal information.' },
+  ]),
+];
+
+const trustLinks = [
+  { label: 'About Us', href: '/about', icon: '🏢', desc: 'Learn about our mission and how we build accurate calculators.' },
+  { label: 'Privacy Policy', href: '/privacy-policy', icon: '🔒', desc: 'We never store your data. See exactly how we handle privacy.' },
+  { label: 'Terms of Use', href: '/terms', icon: '📄', desc: 'Clear, plain-English terms for using our free tools.' },
+  { label: 'Contact Us', href: '/contact', icon: '✉️', desc: 'Have a question, bug report, or suggestion? Get in touch.' },
+];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  title="CalcQuick — Fast, Free Online Calculators"
+  description="Calculate anything instantly with CalcQuick. Free online calculators for age, BMI, calories, tips, and more. Fast, accurate & mobile-friendly."
+  canonical="/"
+  schema={schemas}
+  keywords="age calculator, bmi calculator, calorie calculator, tip calculator, free online calculators"
+>
+  <Header />
+  <main id="main-content">
+    <Hero />
+    <CalculatorGrid />
+    <Categories />
+    <Benefits />
+    <Testimonials />
+    <FAQ />
+    <Newsletter />
+
+    <!-- Trust & Info Section -->
+    <section class="trust-section" aria-labelledby="trust-heading">
+      <div class="container-site">
+        <div class="trust-header fade-up">
+          <h2 class="text-display-sm" id="trust-heading" style="color: var(--color-ink); margin-bottom: 8px;">
+            Transparent, trustworthy, and free.
+          </h2>
+          <p class="text-body-md" style="color: var(--color-body); max-width: 480px;">
+            CalcQuick is built with privacy, accuracy, and accessibility as core values. Learn more about who we are and how we work.
+          </p>
+        </div>
+        <div class="trust-grid">
+          {trustLinks.map((link, i) => (
+            <a href={link.href} class={`trust-card fade-up stagger-${i + 1}`} aria-label={link.label}>
+              <span class="trust-icon" aria-hidden="true">{link.icon}</span>
+              <div>
+                <div class="trust-label">{link.label}</div>
+                <div class="trust-desc">{link.desc}</div>
+              </div>
+              <svg class="trust-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 8h8M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .trust-section {
+    padding: 80px 0 96px;
+    border-top: 1px solid var(--color-hairline);
+    background: var(--color-canvas-soft);
+  }
+  .trust-header { margin-bottom: 48px; }
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .trust-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+  }
+  .trust-card:hover {
+    border-color: var(--color-link);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+  .trust-icon { font-size: 28px; }
+  .trust-label { font-size: 15px; font-weight: 600; color: var(--color-ink); margin-bottom: 6px; letter-spacing: -0.3px; }
+  .trust-desc { font-size: 13px; color: var(--color-muted); line-height: 20px; }
+  .trust-arrow {
+    position: absolute;
+    top: 24px;
+    right: 20px;
+    color: var(--color-muted);
+    transition: color 0.15s, transform 0.15s;
+  }
+  .trust-card:hover .trust-arrow { color: var(--color-link); transform: translateX(3px); }
+  @media (max-width: 1023px) { .trust-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 599px) { .trust-grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/global/Header.astro';
+import Footer from '../../components/global/Footer.astro';
+import Breadcrumb from '../../components/global/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => {
+  return data.isDraft !== true;
+});
+
+// Sort by date desc
+posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const breadcrumbs = [
+  { name: 'Home', url: '/' },
+  { name: 'Blog', url: '/blog' },
+];
+---
+
+<BaseLayout
+  title="Blog — Health, Fitness & Calculator Guides | CalcQuick"
+  description="Read articles, guides, and tips on body health metrics, nutrition planning, financial management, and tipping custom guides."
+  canonical="/blog"
+>
+  <Header />
+  <main id="main-content">
+    <div class="blog-hero">
+      <div class="container-site">
+        <Breadcrumb items={breadcrumbs} />
+        <div style="margin-top: 24px;">
+          <span class="eyebrow">Guides & Articles</span>
+          <h1 class="text-display-lg" style="color: var(--color-ink); margin-top: 8px; margin-bottom: 16px;">CalcQuick Blog</h1>
+          <p class="text-body-lg" style="color: var(--color-body); max-width: 560px;">
+            Deep dives into calculators, health formulas, physical fitness planning, and helpful mathematical guides.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-site" style="padding: 64px 0 96px;">
+      {posts.length === 0 ? (
+        <div class="empty-blog">
+          <p class="text-body-lg" style="color: var(--color-muted);">No blog posts published yet. Check back soon!</p>
+        </div>
+      ) : (
+        <div class="blog-grid">
+          {posts.map((post) => (
+            <article class="post-card card card-hover">
+              <a href={`/blog/${post.id}`} class="post-link" aria-label={`Read ${post.data.title}`}>
+                <div class="post-meta">
+                  <span class="badge" style="background: var(--color-link-bg); color: var(--color-link); border-color: transparent;">{post.data.category}</span>
+                  <time datetime={post.data.pubDate.toISOString()} class="post-date">
+                    {post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </time>
+                </div>
+                <h2 class="text-display-sm post-title">{post.data.title}</h2>
+                <p class="post-description">{post.data.description}</p>
+                <div class="post-readmore">
+                  <span>Read article</span>
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                    <path d="M2.5 6h7M6 2.5L9.5 6 6 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .blog-hero { padding: 48px 0; background: var(--color-canvas); border-bottom: 1px solid var(--color-hairline); }
+  .empty-blog { text-align: center; padding: 64px 0; }
+  .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .post-card { display: flex; flex-direction: column; }
+  .post-link { display: flex; flex-direction: column; height: 100%; padding: 28px; text-decoration: none; color: inherit; }
+  .post-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .post-date { font-size: 13px; color: var(--color-muted); }
+  .post-title { color: var(--color-ink); margin-bottom: 8px; line-height: 26px; }
+  .post-description { font-size: 14px; color: var(--color-body); line-height: 22px; flex: 1; margin-bottom: 24px; }
+  .post-readmore { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--color-link); transition: color 0.15s ease; }
+  .post-card:hover .post-readmore { color: var(--color-link-deep); }
+  @media (max-width: 1023px) { .blog-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 599px) { .blog-grid { grid-template-columns: 1fr; } }
+</style>

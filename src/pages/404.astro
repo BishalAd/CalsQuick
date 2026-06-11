@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+
+const tools = [
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+  { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Check your body mass index' },
+  { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🔥', desc: 'Find your daily calorie needs' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Split bills perfectly' },
+];
+---
+
+<BaseLayout
+  title="404 — Page Not Found | CalcQuick"
+  description="Sorry, this page doesn't exist. Head back to CalcQuick for free online calculators."
+  canonical="/404"
+  noIndex={true}
+>
+  <Header />
+  <main id="main-content" class="error-page">
+    <div class="container-site">
+      <div class="error-content fade-up">
+        <div class="error-badge" aria-hidden="true">404</div>
+        <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 16px;">
+          Page not found
+        </h1>
+        <p class="text-body-lg" style="color: var(--color-body); max-width: 480px; margin: 0 auto 48px; line-height: 28px;">
+          The page you're looking for doesn't exist or has been moved. Try one of our free calculators below.
+        </p>
+        <a href="/" class="btn-primary" style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 64px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M6 12L2 8l4-4M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Home
+        </a>
+      </div>
+
+      <div class="tools-section fade-up">
+        <p class="text-caption-mono" style="color: var(--color-muted); margin-bottom: 24px; text-align: center;">Popular Calculators</p>
+        <div class="tools-grid">
+          {tools.map((tool) => (
+            <a href={tool.href} class="tool-card">
+              <span class="tool-icon" aria-hidden="true">{tool.icon}</span>
+              <div>
+                <div class="tool-name">{tool.name}</div>
+                <div class="tool-desc">{tool.desc}</div>
+              </div>
+              <svg class="tool-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 8h8M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .error-page {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    padding: 80px 0;
+  }
+  .error-content {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .error-badge {
+    font-size: clamp(80px, 15vw, 140px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--color-ink) 0%, var(--color-muted) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    user-select: none;
+  }
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .tool-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .tool-card:hover {
+    border-color: var(--color-link);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .tool-icon { font-size: 22px; flex-shrink: 0; }
+  .tool-name { font-size: 14px; font-weight: 600; color: var(--color-ink); margin-bottom: 2px; }
+  .tool-desc { font-size: 12px; color: var(--color-muted); }
+  .tool-arrow { margin-left: auto; flex-shrink: 0; color: var(--color-muted); }
+  .tool-card:hover .tool-arrow { color: var(--color-link); }
+  @media (max-width: 599px) {
+    .tools-grid { grid-template-columns: 1fr; }
+  }
+</style>

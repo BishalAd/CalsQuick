@@ -1,0 +1,85 @@
+---
+const categories = [
+  {
+    title: 'Health Calculators',
+    icon: '🏥',
+    desc: 'BMI, Calorie needs, Age — tools to understand and track your health.',
+    calcs: ['BMI Calculator', 'Calorie Calculator', 'Age Calculator'],
+    color: '#d3e5ff',
+  },
+  {
+    title: 'Financial Calculators',
+    icon: '💹',
+    desc: 'Tip splitting, loan estimates, and everyday money math made simple.',
+    calcs: ['Tip Calculator', 'Coming: Loan Calculator', 'Coming: EMI Calculator'],
+    color: '#d1fae5',
+  },
+  {
+    title: 'Lifestyle Calculators',
+    icon: '🌟',
+    desc: 'Date differences, time zones, GPA — tools for everyday decisions.',
+    calcs: ['Coming: Date Calculator', 'Coming: GPA Calculator', 'Coming: Time Calculator'],
+    color: '#ede9fe',
+  },
+];
+---
+
+<section class="section-categories" aria-labelledby="categories-heading">
+  <div class="container-site">
+    <div class="categories-header fade-up">
+      <span class="eyebrow">Categories</span>
+      <h2 class="text-display-lg" id="categories-heading" style="margin-top: 8px; color: var(--color-ink);">
+        Find the right calculator.
+      </h2>
+      <p class="text-body-lg" style="color: var(--color-body); margin-top: 12px;">
+        Organized by category, with more being added regularly.
+      </p>
+    </div>
+
+    <div class="categories-grid">
+      {categories.map((cat, i) => (
+        <div class={`category-card fade-up stagger-${i + 1}`}>
+          <div class="category-icon-wrap" style={`background: ${cat.color};`} aria-hidden="true">
+            {cat.icon}
+          </div>
+          <h3 class="category-title">{cat.title}</h3>
+          <p class="category-desc">{cat.desc}</p>
+          <ul class="category-list" aria-label={`${cat.title} list`}>
+            {cat.calcs.map((c) => (
+              <li class="category-list-item">
+                <span class="category-dot" aria-hidden="true">•</span>
+                {c}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-categories { padding: 96px 0; background: var(--color-canvas-soft); border-top: 1px solid var(--color-hairline); }
+  .categories-header { margin-bottom: 48px; }
+  .categories-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .category-card {
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-card);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .category-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card-lg); }
+  .category-icon-wrap {
+    width: 48px; height: 48px; border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 16px;
+  }
+  .category-title { font-size: 18px; font-weight: 600; color: var(--color-ink); margin-bottom: 8px; letter-spacing: -0.4px; }
+  .category-desc { font-size: 14px; color: var(--color-body); line-height: 22px; margin-bottom: 20px; }
+  .category-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .category-list-item { font-size: 13px; color: var(--color-muted); display: flex; align-items: center; gap: 6px; }
+  .category-dot { color: var(--color-hairline-strong); }
+  @media (max-width: 767px) { .categories-grid { grid-template-columns: 1fr; } }
+  @media (min-width: 600px) and (max-width: 767px) { .categories-grid { grid-template-columns: 1fr 1fr; } }
+</style>

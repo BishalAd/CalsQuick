@@ -1,0 +1,68 @@
+---
+const benefits = [
+  {
+    icon: '⚡',
+    title: 'Instant results.',
+    desc: 'Get accurate calculations the moment you type. No waiting, no loading screens.',
+  },
+  {
+    icon: '🎯',
+    title: 'Always accurate.',
+    desc: 'Built with proven formulas — Mifflin-St Jeor, standard BMI, and more.',
+  },
+  {
+    icon: '🆓',
+    title: 'Completely free.',
+    desc: 'No signup required. No ads cluttering the page. Just the calculator you need.',
+  },
+  {
+    icon: '📱',
+    title: 'Works everywhere.',
+    desc: 'Optimized for any device — desktop, tablet, or phone. Always fast.',
+  },
+];
+---
+
+<section class="section-benefits" aria-labelledby="benefits-heading">
+  <div class="container-site">
+    <div class="benefits-inner">
+      <div class="benefits-copy fade-up">
+        <span class="eyebrow">Why CalcQuick</span>
+        <h2 class="text-display-lg" id="benefits-heading" style="margin-top: 8px; color: var(--color-ink);">
+          Built for speed and simplicity.
+        </h2>
+        <p class="text-body-lg" style="color: var(--color-body); margin-top: 12px; max-width: 420px; line-height: 28px;">
+          We believe calculators should be fast, clean, and just work — no friction, no fluff.
+        </p>
+        <a href="/about" class="btn-secondary" style="margin-top: 28px; border-radius: 6px; display: inline-flex;">
+          Learn more
+        </a>
+      </div>
+
+      <div class="benefits-grid">
+        {benefits.map((b, i) => (
+          <div class={`benefit-item fade-up stagger-${i + 1}`}>
+            <div class="benefit-icon" aria-hidden="true">{b.icon}</div>
+            <h3 class="benefit-title">{b.title}</h3>
+            <p class="benefit-desc">{b.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-benefits { padding: 96px 0; background: var(--color-canvas); border-top: 1px solid var(--color-hairline); border-bottom: 1px solid var(--color-hairline); }
+  .benefits-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .benefit-item { display: flex; flex-direction: column; gap: 8px; }
+  .benefit-icon { font-size: 24px; margin-bottom: 4px; }
+  .benefit-title { font-size: 16px; font-weight: 600; color: var(--color-ink); letter-spacing: -0.3px; }
+  .benefit-desc { font-size: 14px; color: var(--color-body); line-height: 22px; }
+  @media (max-width: 767px) {
+    .benefits-inner { grid-template-columns: 1fr; gap: 48px; }
+    .benefits-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  }
+  @media (max-width: 480px) { .benefits-grid { grid-template-columns: 1fr; } }
+</style>

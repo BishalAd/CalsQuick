@@ -1,0 +1,55 @@
+---
+export interface Props {
+  items: Array<{ name: string; url: string }>;
+}
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+    {items.map((item, i) => (
+      <li
+        itemprop="itemListElement"
+        itemscope
+        itemtype="https://schema.org/ListItem"
+        class="breadcrumb-item"
+      >
+        {i < items.length - 1 ? (
+          <a href={item.url} itemprop="item" class="breadcrumb-link">
+            <span itemprop="name">{item.name}</span>
+          </a>
+        ) : (
+          <span itemprop="name" aria-current="page" class="breadcrumb-current">
+            {item.name}
+          </span>
+        )}
+        <meta itemprop="position" content={String(i + 1)} />
+        {i < items.length - 1 && (
+          <span class="breadcrumb-sep" aria-hidden="true">/</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb ol {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .breadcrumb-item { display: flex; align-items: center; gap: 4px; }
+  .breadcrumb-link {
+    font-size: 13px;
+    color: var(--color-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .breadcrumb-link:hover { color: var(--color-ink); }
+  .breadcrumb-current { font-size: 13px; color: var(--color-ink); font-weight: 500; }
+  .breadcrumb-sep { font-size: 13px; color: var(--color-hairline-strong); }
+</style>

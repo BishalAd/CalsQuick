@@ -1,0 +1,65 @@
+---
+import CalculatorCard from '../calculator/CalculatorCard.astro';
+
+const calculators = [
+  {
+    name: 'Age Calculator',
+    href: '/age-calculator',
+    icon: '🎂',
+    desc: 'Find your exact age in years, months, and days instantly.',
+    badge: 'Popular',
+  },
+  {
+    name: 'BMI Calculator',
+    href: '/bmi-calculator',
+    icon: '⚖️',
+    desc: 'Calculate your Body Mass Index and healthy weight range.',
+  },
+  {
+    name: 'Calorie Calculator',
+    href: '/calorie-calculator',
+    icon: '🔥',
+    desc: 'Find daily calorie needs based on your activity and goals.',
+  },
+  {
+    name: 'Tip Calculator',
+    href: '/tip-calculator',
+    icon: '💰',
+    desc: 'Calculate the perfect tip and split bills with ease.',
+  },
+];
+---
+
+<section class="section-calcs" aria-labelledby="calcs-heading">
+  <div class="container-site">
+    <div class="section-header fade-up">
+      <span class="eyebrow">Calculators</span>
+      <h2 class="text-display-lg" id="calcs-heading" style="margin-top: 8px; color: var(--color-ink);">
+        Everything you need to calculate.
+      </h2>
+      <p class="text-body-lg" style="color: var(--color-body); margin-top: 12px; max-width: 520px;">
+        From health metrics to financial planning — fast, free, and accurate.
+      </p>
+    </div>
+
+    <div class="calcs-grid">
+      {calculators.map((calc, i) => (
+        <div class={`fade-up stagger-${i + 1}`}>
+          <CalculatorCard {...calc} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-calcs { padding: 96px 0; background: var(--color-canvas-soft); }
+  .section-header { margin-bottom: 48px; }
+  .calcs-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 1023px) { .calcs-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 599px) { .calcs-grid { grid-template-columns: 1fr; } }
+</style>

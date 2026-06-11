@@ -1,0 +1,78 @@
+---
+// Newsletter section - static for now (no backend)
+---
+
+<section class="section-newsletter" aria-labelledby="newsletter-heading">
+  <div class="container-site">
+    <div class="newsletter-card fade-up">
+      <div class="newsletter-inner">
+        <div class="newsletter-copy">
+          <h2 class="text-display-md" id="newsletter-heading" style="color: var(--color-ink);">
+            Stay updated.
+          </h2>
+          <p class="text-body-md" style="color: var(--color-body); margin-top: 8px;">
+            Get notified when we add new calculators and guides.
+          </p>
+        </div>
+        <form class="newsletter-form" action="#" method="post" aria-label="Newsletter signup">
+          <div class="newsletter-input-wrap">
+            <label for="newsletter-email" class="sr-only">Email address</label>
+            <input
+              type="email"
+              id="newsletter-email"
+              name="email"
+              placeholder="Enter your email"
+              class="input-base input-lg newsletter-input"
+              autocomplete="email"
+              required
+            />
+            <button type="submit" class="btn-primary newsletter-btn" aria-label="Subscribe to newsletter">
+              Subscribe
+            </button>
+          </div>
+          <p class="newsletter-note">No spam. Unsubscribe anytime.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-newsletter { padding: 96px 0; background: var(--color-canvas); border-top: 1px solid var(--color-hairline); }
+  .newsletter-card {
+    background: var(--color-ink);
+    border-radius: var(--radius-xl);
+    padding: 56px 64px;
+  }
+  .newsletter-inner { display: flex; align-items: center; justify-content: space-between; gap: 48px; }
+  .newsletter-copy h2 { color: var(--color-on-ink) !important; }
+  .newsletter-copy p { color: rgba(255,255,255,0.7) !important; }
+  .newsletter-input-wrap { display: flex; gap: 8px; }
+  .newsletter-input { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: white; width: 280px; }
+  .newsletter-input::placeholder { color: rgba(255,255,255,0.5); }
+  .newsletter-input:focus { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 0 3px rgba(255,255,255,0.15); }
+  .newsletter-btn { background: white; color: var(--color-ink); border-radius: var(--radius-pill); }
+  .newsletter-btn:hover { opacity: 0.9; }
+  .newsletter-note { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 10px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  @media (max-width: 767px) {
+    .newsletter-inner { flex-direction: column; gap: 32px; }
+    .newsletter-card { padding: 40px 24px; }
+    .newsletter-input-wrap { flex-direction: column; }
+    .newsletter-input { width: 100%; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('.newsletter-form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      if (btn) {
+        btn.textContent = '✓ Subscribed!';
+        btn.disabled = true;
+      }
+    });
+  }
+</script>

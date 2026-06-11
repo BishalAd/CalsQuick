@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Do not index error pages
+Disallow: /404
+
+# Allow Google AdSense crawler
+User-agent: Mediapartners-Google
+Allow: /
+
+# Allow Google AdsBot
+User-agent: AdsBot-Google
+Allow: /
+
+# Sitemap location
+Sitemap: https://calcquick.online/sitemap-index.xml

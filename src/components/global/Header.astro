@@ -1,0 +1,262 @@
+---
+const navLinks = [
+  { href: '/age-calculator', label: 'Age' },
+  { href: '/bmi-calculator', label: 'BMI' },
+  { href: '/calorie-calculator', label: 'Calorie' },
+  { href: '/tip-calculator', label: 'Tip' },
+  { href: '/blog', label: 'Blog' },
+];
+const currentPath = Astro.url.pathname;
+---
+
+<header class="site-header" role="banner">
+  <div class="container-site">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <!-- Logo -->
+      <a href="/" class="nav-logo" aria-label="CalcQuick - Home">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <rect width="20" height="20" rx="5" fill="var(--color-ink)"/>
+          <rect x="5" y="5" width="4" height="4" rx="1" fill="var(--color-canvas)"/>
+          <rect x="11" y="5" width="4" height="4" rx="1" fill="var(--color-canvas)"/>
+          <rect x="5" y="11" width="4" height="4" rx="1" fill="var(--color-canvas)"/>
+          <rect x="11" y="11" width="4" height="2" rx="1" fill="var(--color-canvas)"/>
+          <rect x="11" y="14" width="4" height="1" rx="0.5" fill="var(--color-canvas)"/>
+        </svg>
+        <span class="nav-logo-text">CalcQuick</span>
+      </a>
+
+      <!-- Desktop Links -->
+      <ul class="nav-links" role="list">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class={`nav-link ${currentPath === link.href || currentPath.startsWith(link.href + '/') ? 'nav-link--active' : ''}`}
+              aria-current={currentPath === link.href ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- CTA + Theme Toggler -->
+      <div class="nav-cta">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" type="button">
+          <!-- Sun Icon -->
+          <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <!-- Moon Icon -->
+          <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+        <a href="/about" class="btn-secondary btn-sm" style="border-radius: 6px;">
+          About
+        </a>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button
+        class="nav-hamburger"
+        id="mobile-menu-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Toggle navigation menu"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-modal="true">
+    <ul role="list">
+      {navLinks.map((link) => (
+        <li>
+          <a href={link.href} class={`mobile-nav-link ${currentPath === link.href ? 'mobile-nav-link--active' : ''}`}>
+            {link.label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a href="/about" class="mobile-nav-link">About</a>
+      </li>
+      <li style="padding: 12px 8px; display: flex; align-items: center; justify-content: space-between;">
+        <span class="text-body-sm-strong" style="color: var(--color-body);">Theme</span>
+        <button id="theme-toggle-mobile" class="theme-toggle-btn" aria-label="Toggle dark mode" type="button">
+          <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
+        </button>
+      </li>
+    </ul>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    height: 64px;
+    background: color-mix(in srgb, var(--color-canvas) 85%, transparent);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--color-hairline);
+    display: flex;
+    align-items: center;
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .nav-logo-text {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.3px;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+  }
+  .nav-link {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-body);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    transition: color 0.15s ease, background-color 0.15s ease;
+    letter-spacing: -0.28px;
+  }
+  .nav-link:hover { color: var(--color-ink); background: var(--color-canvas-soft-2); }
+  .nav-link--active { color: var(--color-ink); font-weight: 500; }
+  .nav-cta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-hairline);
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .theme-toggle-btn:hover {
+    border-color: var(--color-hairline-strong);
+    background: var(--color-canvas-soft-2);
+  }
+  
+  /* Show/hide icons based on html data-theme attribute */
+  :global(html[data-theme="dark"]) .sun-icon { display: block; }
+  :global(html[data-theme="dark"]) .moon-icon { display: none; }
+  :global(html[data-theme="light"]) .sun-icon { display: none; }
+  :global(html[data-theme="light"]) .moon-icon { display: block; }
+  
+  /* Fallbacks */
+  .sun-icon { display: none; }
+  .moon-icon { display: block; }
+
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .hamburger-line {
+    display: block;
+    width: 20px;
+    height: 1.5px;
+    background: var(--color-ink);
+    border-radius: 2px;
+    transition: all 0.2s ease;
+  }
+  .mobile-menu {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    right: 0;
+    background: var(--color-canvas);
+    border-bottom: 1px solid var(--color-hairline);
+    padding: 8px 16px 16px;
+    box-shadow: var(--shadow-card-md);
+  }
+  .mobile-menu[aria-hidden="false"] { display: block; }
+  .mobile-nav-link {
+    display: block;
+    padding: 12px 8px;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--color-body);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .mobile-nav-link:last-of-type { border-bottom: none; }
+  .mobile-nav-link--active { color: var(--color-ink); font-weight: 500; }
+
+  @media (max-width: 767px) {
+    .nav-links, .nav-cta { display: none; }
+    .nav-hamburger { display: flex; }
+    .site-header { position: sticky; }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  const toggle = document.getElementById('mobile-menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  if (toggle && menu) {
+    toggle.addEventListener('click', () => {
+      const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isOpen));
+      menu.setAttribute('aria-hidden', String(isOpen));
+    });
+  }
+
+  // Theme Toggler Logic
+  const toggleBtn = document.getElementById('theme-toggle');
+  const toggleBtnMobile = document.getElementById('theme-toggle-mobile');
+
+  function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  }
+
+  toggleBtn?.addEventListener('click', toggleTheme);
+  toggleBtnMobile?.addEventListener('click', toggleTheme);
+</script>

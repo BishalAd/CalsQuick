@@ -1,0 +1,285 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/global/Header.astro';
+import Footer from '../components/global/Footer.astro';
+import { generateOrganization } from '../utils/seo';
+
+const tools = [
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Exact age in years, months & days' },
+  { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Body mass index & healthy range' },
+  { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🔥', desc: 'Daily calories for your goals' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Split bills & calculate tips' },
+];
+
+const stats = [
+  { value: '4+', label: 'Free Calculators' },
+  { value: '100%', label: 'Browser-Based' },
+  { value: '0', label: 'Data Collected' },
+  { value: '∞', label: 'Free Forever' },
+];
+
+const values = [
+  {
+    icon: '⚡',
+    title: 'Speed First',
+    desc: 'Every page is statically generated and loads in under a second. No heavy frameworks, no tracking scripts, no bloat. Pure performance.',
+  },
+  {
+    icon: '🎯',
+    title: 'Scientific Accuracy',
+    desc: 'We use WHO BMI standards, the Mifflin-St Jeor equation for calories, and precise calendar arithmetic for age. Every formula is clinically validated.',
+  },
+  {
+    icon: '♿',
+    title: 'Accessibility for All',
+    desc: 'Built with WCAG 2.2 AA compliance. Full keyboard navigation, proper ARIA roles, screen reader support, and high-contrast color ratios throughout.',
+  },
+  {
+    icon: '🔒',
+    title: 'Complete Privacy',
+    desc: 'Zero data collection from calculator inputs. All computations run in your browser. No accounts required, no data stored on our servers.',
+  },
+  {
+    icon: '📱',
+    title: 'Works Everywhere',
+    desc: 'Designed mobile-first from the ground up. Perfect on smartphones, tablets, and desktops — with dark mode support for every preference.',
+  },
+  {
+    icon: '🌍',
+    title: 'Built for Everyone',
+    desc: 'Both metric and imperial units supported across all tools. Covering USA, India, UK, and global audiences with localized context and examples.',
+  },
+];
+---
+
+<BaseLayout
+  title="About CalcQuick — Free & Accurate Online Calculators"
+  description="Learn about CalcQuick's mission to provide fast, accurate, and free online calculators. Built with scientific formulas, full accessibility, and zero data collection."
+  canonical="/about"
+  schema={[generateOrganization()]}
+>
+  <Header />
+  <main id="main-content">
+
+    <!-- Hero -->
+    <section class="about-hero">
+      <div class="container-site">
+        <div class="hero-inner fade-up">
+          <span class="eyebrow" style="margin-bottom: 16px; display: block;">About CalcQuick</span>
+          <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 20px; max-width: 700px;">
+            Free calculators built for accuracy, speed, and everyone.
+          </h1>
+          <p class="text-body-lg" style="color: var(--color-body); max-width: 560px; line-height: 30px; margin-bottom: 40px;">
+            CalcQuick was created with a single goal: to make reliable, beautiful calculators that work instantly on any device — free, with no sign-ups, no clutter, and no compromises.
+          </p>
+          <div class="hero-ctas">
+            <a href="/age-calculator" class="btn-primary">Try a Calculator</a>
+            <a href="/contact" class="btn-secondary">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+      <div class="container-site">
+        <div class="stats-grid fade-up">
+          {stats.map((stat) => (
+            <div class="stat-item">
+              <div class="stat-value">{stat.value}</div>
+              <div class="stat-label">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="mission-section">
+      <div class="container-site">
+        <div class="mission-grid">
+          <div class="fade-up">
+            <span class="eyebrow" style="margin-bottom: 12px; display: block;">Our Mission</span>
+            <h2 class="text-display-md" style="color: var(--color-ink); margin-bottom: 20px;">
+              Calculators that respect you and your time.
+            </h2>
+            <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+              Most calculator websites are slow, ad-riddled, and built to game search rankings rather than genuinely help people. When you search for "how old am I" or "what is my BMI", you deserve an instant, accurate answer — not a page that takes five seconds to load and forces you to accept cookies before doing basic math.
+            </p>
+            <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+              CalcQuick was built to fix this. Every calculator uses clinically-validated formulas: the WHO BMI formula, the Mifflin-St Jeor equation for daily calories, and precise calendar arithmetic for age. Our code is lean, our pages load fast, and your data never leaves your browser.
+            </p>
+            <p class="text-body-md" style="color: var(--color-body); line-height: 28px;">
+              We support both metric and imperial units, cover use cases from USA school enrollment dates to India's UPSC exam eligibility, and make sure our tools are fully accessible to users of screen readers and assistive technology.
+            </p>
+          </div>
+          <div class="mission-callout fade-up stagger-1">
+            <div class="callout-inner">
+              <div class="callout-icon" aria-hidden="true">🧮</div>
+              <h3 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 12px;">Why trust CalcQuick?</h3>
+              <ul class="trust-list">
+                <li>✅ Formulas sourced from WHO, NIH, and peer-reviewed research</li>
+                <li>✅ Open and transparent calculation logic</li>
+                <li>✅ No account required — ever</li>
+                <li>✅ Dark mode, keyboard navigation, ARIA compliance</li>
+                <li>✅ Tested across mobile, tablet, and desktop</li>
+                <li>✅ Completely free — supported by respectful advertising</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values Grid -->
+    <section class="values-section">
+      <div class="container-site">
+        <div class="section-header fade-up">
+          <span class="eyebrow">Our Principles</span>
+          <h2 class="text-display-md" style="color: var(--color-ink); margin-top: 8px; margin-bottom: 12px;">
+            How we build every calculator.
+          </h2>
+          <p class="text-body-lg" style="color: var(--color-body); max-width: 500px;">
+            Six principles guide every design and engineering decision at CalcQuick.
+          </p>
+        </div>
+        <div class="values-grid">
+          {values.map((val, i) => (
+            <div class={`value-card fade-up stagger-${(i % 3) + 1}`}>
+              <span class="value-icon" aria-hidden="true">{val.icon}</span>
+              <h3 class="value-title">{val.title}</h3>
+              <p class="value-desc">{val.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Calculators CTA -->
+    <section class="tools-section">
+      <div class="container-site">
+        <div class="section-header fade-up" style="margin-bottom: 40px;">
+          <span class="eyebrow">Our Tools</span>
+          <h2 class="text-display-md" style="color: var(--color-ink); margin-top: 8px;">
+            Try our free calculators.
+          </h2>
+        </div>
+        <div class="tools-grid fade-up">
+          {tools.map((tool) => (
+            <a href={tool.href} class="tool-link">
+              <span class="tool-icon" aria-hidden="true">{tool.icon}</span>
+              <div>
+                <div class="tool-name">{tool.name}</div>
+                <div class="tool-desc">{tool.desc}</div>
+              </div>
+              <svg class="tool-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 8h8M8 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* Hero */
+  .about-hero {
+    padding: 96px 0 80px;
+    background: var(--color-canvas);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Stats */
+  .stats-section {
+    padding: 56px 0;
+    background: var(--color-canvas-soft);
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--color-ink);
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 13px; color: var(--color-muted); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* Mission */
+  .mission-section { padding: 96px 0; }
+  .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  .callout-inner {
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+  }
+  .callout-icon { font-size: 32px; margin-bottom: 16px; }
+  .trust-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .trust-list li { font-size: 14px; color: var(--color-body); line-height: 22px; }
+
+  /* Values */
+  .values-section {
+    padding: 96px 0;
+    background: var(--color-canvas-soft);
+    border-top: 1px solid var(--color-hairline);
+  }
+  .section-header { margin-bottom: 56px; }
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .value-card {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .value-card:hover { border-color: var(--color-link); transform: translateY(-2px); }
+  .value-icon { font-size: 28px; display: block; margin-bottom: 16px; }
+  .value-title { font-size: 16px; font-weight: 700; color: var(--color-ink); margin-bottom: 8px; letter-spacing: -0.3px; }
+  .value-desc { font-size: 14px; color: var(--color-body); line-height: 22px; }
+
+  /* Tools */
+  .tools-section { padding: 96px 0; }
+  .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .tool-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .tool-link:hover { border-color: var(--color-link); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .tool-icon { font-size: 28px; flex-shrink: 0; }
+  .tool-name { font-size: 15px; font-weight: 600; color: var(--color-ink); margin-bottom: 2px; }
+  .tool-desc { font-size: 13px; color: var(--color-muted); }
+  .tool-arrow { margin-left: auto; flex-shrink: 0; color: var(--color-muted); transition: color 0.15s; }
+  .tool-link:hover .tool-arrow { color: var(--color-link); }
+
+  /* Responsive */
+  @media (max-width: 1023px) {
+    .values-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 767px) {
+    .mission-grid { grid-template-columns: 1fr; gap: 40px; }
+    .tools-grid { grid-template-columns: 1fr; }
+    .values-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 599px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>

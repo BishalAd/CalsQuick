@@ -1,0 +1,85 @@
+---
+const faqs = [
+  {
+    q: 'Are all calculators on CalcQuick free to use?',
+    a: 'Yes, every calculator on CalcQuick is completely free. No account required, no subscriptions, no hidden fees.',
+  },
+  {
+    q: 'How accurate are the calculations?',
+    a: 'We use industry-standard formulas — the Mifflin-St Jeor equation for calories, the standard WHO BMI formula, and precise date arithmetic for age calculations. All results are accurate to clinical standards.',
+  },
+  {
+    q: 'Does CalcQuick work on mobile devices?',
+    a: 'Absolutely. CalcQuick is designed mobile-first and works perfectly on all screen sizes — smartphones, tablets, and desktops.',
+  },
+  {
+    q: 'Do I need to create an account?',
+    a: 'No. All calculators work instantly without any account or personal information. Just open the page and start calculating.',
+  },
+  {
+    q: 'How often are the calculators updated?',
+    a: 'We regularly review and update our calculators to ensure they reflect the latest medical and scientific guidelines.',
+  },
+];
+---
+
+<section class="section-faq" aria-labelledby="faq-heading">
+  <div class="container-site">
+    <div class="faq-inner">
+      <div class="faq-header fade-up">
+        <span class="eyebrow">FAQ</span>
+        <h2 class="text-display-lg" id="faq-heading" style="margin-top: 8px; color: var(--color-ink);">
+          Frequently asked questions.
+        </h2>
+      </div>
+
+      <div class="faq-list fade-up stagger-1" role="list">
+        {faqs.map((faq, i) => (
+          <div class="faq-item" role="listitem">
+            <button
+              class="faq-question"
+              aria-expanded="false"
+              aria-controls={`faq-answer-${i}`}
+              id={`faq-btn-${i}`}
+            >
+              <span>{faq.q}</span>
+              <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <div
+              class="faq-answer"
+              id={`faq-answer-${i}`}
+              role="region"
+              aria-labelledby={`faq-btn-${i}`}
+            >
+              {faq.a}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-faq { padding: 96px 0; background: var(--color-canvas-soft); }
+  .faq-inner { max-width: 720px; margin: 0 auto; }
+  .faq-header { margin-bottom: 40px; }
+  .faq-list { border-top: 1px solid var(--color-hairline); }
+</style>
+
+<script>
+  document.querySelectorAll('.faq-question').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      const answerId = btn.getAttribute('aria-controls');
+      const answer = answerId ? document.getElementById(answerId) : null;
+      const icon = btn.querySelector('.faq-icon');
+
+      btn.setAttribute('aria-expanded', String(!expanded));
+      if (answer) answer.classList.toggle('open', !expanded);
+      if (icon) icon.classList.toggle('open', !expanded);
+    });
+  });
+</script>
