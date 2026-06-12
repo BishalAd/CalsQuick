@@ -40,7 +40,78 @@ const quickTips = [10, 15, 18, 20, 25];
     </p>
   </div>
 
-  <div class="calc-panel fade-up stagger-1" id="tip-calculator">
+  <!-- Section 1: Tip Calculator (ctype=1) -->
+  <div style="margin-bottom: 24px;" class="fade-up stagger-1">
+    <h2 class="text-display-xs" style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">Tip Calculator</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">
+      Get a quick list of standard tip percentages and total amounts for your bill.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="basic-tip-calculator" style="margin-bottom: 40px;">
+    <div class="calc-form">
+      <div>
+        <label for="service-price" class="label">Service Price / Bill Amount</label>
+        <div class="input-currency-wrap">
+          <span class="currency-symbol" aria-hidden="true">$</span>
+          <input
+            type="number"
+            id="service-price"
+            class="input-base input-lg input-currency"
+            placeholder="0.00"
+            min="0"
+            step="0.01"
+            aria-label="Service price in dollars"
+          />
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 8px;">
+        <button id="calc-basic-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate tip list">
+          Calculate
+        </button>
+        <button id="clear-basic-btn" class="btn-secondary" aria-label="Clear inputs">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="basic-tip-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="basic-tip-error-msg"></span>
+    </div>
+
+    <!-- Results Table -->
+    <div id="basic-tip-results" hidden aria-live="polite" style="margin-top: 24px;">
+      <div class="results-divider" style="margin: 20px 0;"></div>
+      <h3 style="font-size: 15px; font-weight: 600; color: var(--color-ink); margin-bottom: 12px;">Tip &amp; Total Breakdown</h3>
+      <div style="overflow-x: auto; border: 1px solid var(--color-hairline); border-radius: var(--radius-md);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; color: var(--color-body);">
+          <thead>
+            <tr style="background: var(--color-canvas-soft-2); border-bottom: 1px solid var(--color-hairline); font-weight: 600; color: var(--color-ink);">
+              <th style="padding: 12px 16px;">Tip %</th>
+              <th style="padding: 12px 16px;">Tip Amount</th>
+              <th style="padding: 12px 16px;">Total</th>
+            </tr>
+          </thead>
+          <tbody id="basic-tip-table-body">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Share Tip Calculator (ctype=2) -->
+  <div style="margin-bottom: 24px;" class="fade-up stagger-1" id="sharebill">
+    <h2 class="text-display-xs" style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">Share Tip Calculator</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">
+      Calculate tips and split the total cost among multiple people.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="tip-calculator" style="margin-bottom: 40px;">
     <div class="calc-form">
       <!-- Bill Amount -->
       <div>
@@ -101,16 +172,21 @@ const quickTips = [10, 15, 18, 20, 25];
             value="1"
             min="1"
             max="100"
-            style="width: 80px; text-align: center;"
+            style="width: 80px; text-align: center; padding-right: 12px; padding-left: 12px;"
             aria-label="Number of people splitting the bill"
           />
           <button id="people-plus" class="people-btn" aria-label="Increase number of people" type="button">+</button>
         </div>
       </div>
 
-      <button id="calc-tip-btn" class="btn-primary" style="margin-top: 8px;" aria-label="Calculate tip">
-        Calculate Tip
-      </button>
+      <div style="display: flex; gap: 12px; margin-top: 8px;">
+        <button id="calc-tip-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate tip">
+          Calculate Tip
+        </button>
+        <button id="clear-share-btn" class="btn-secondary" aria-label="Clear inputs">
+          Clear
+        </button>
+      </div>
     </div>
 
     <!-- Error -->
@@ -355,9 +431,129 @@ const quickTips = [10, 15, 18, 20, 25];
 </style>
 
 <script>
-  let currentTipPct = 15;
-  const tipInput = document.getElementById('tip-pct') as HTMLInputElement;
+  // Elements for Basic Tip Calculator (ctype=1)
+  const servicePriceInput = document.getElementById('service-price') as HTMLInputElement;
+  const calcBasicBtn = document.getElementById('calc-basic-btn') as HTMLButtonElement;
+  const clearBasicBtn = document.getElementById('clear-basic-btn') as HTMLButtonElement;
+  const basicResultsEl = document.getElementById('basic-tip-results') as HTMLElement;
+  const basicTableBody = document.getElementById('basic-tip-table-body') as HTMLElement;
+  const basicErrorEl = document.getElementById('basic-tip-error') as HTMLElement;
+  const basicErrorMsg = document.getElementById('basic-tip-error-msg') as HTMLElement;
 
+  // Elements for Share Tip Calculator (ctype=2)
+  const billInput = document.getElementById('bill-amount') as HTMLInputElement;
+  const tipInput = document.getElementById('tip-pct') as HTMLInputElement;
+  const peopleInput = document.getElementById('num-people') as HTMLInputElement;
+  const calcShareBtn = document.getElementById('calc-tip-btn') as HTMLButtonElement;
+  const clearShareBtn = document.getElementById('clear-share-btn') as HTMLButtonElement;
+  const shareResultsEl = document.getElementById('tip-results') as HTMLElement;
+  const shareErrorEl = document.getElementById('tip-error') as HTMLElement;
+  const shareErrorMsg = document.getElementById('tip-error-msg') as HTMLElement;
+
+  let currentTipPct = 15;
+
+  // Formatting helpers
+  const fmt = (n: number) => '$' + n.toFixed(2);
+
+  // URL state synchronization helper
+  function updateUrl(params: Record<string, string>, hash: string = '') {
+    const url = new URL(window.location.href);
+    url.search = '';
+    for (const [k, v] of Object.entries(params)) {
+      url.searchParams.set(k, v);
+    }
+    url.hash = hash;
+    window.history.pushState({}, '', url.toString());
+  }
+
+  function clearUrl() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.hash = '';
+    window.history.pushState({}, '', url.toString());
+  }
+
+  // ─── BASIC TIP CALCULATOR LOGIC ───
+  function showBasicError(msg: string) {
+    basicErrorMsg.textContent = msg;
+    basicErrorEl.hidden = false;
+    basicResultsEl.hidden = true;
+  }
+  function hideBasicError() {
+    basicErrorEl.hidden = true;
+  }
+
+  function calculateBasic(shouldUpdateUrl = true) {
+    hideBasicError();
+    const servicePrice = parseFloat(servicePriceInput.value);
+
+    if (isNaN(servicePrice) || servicePrice <= 0) {
+      showBasicError('Please enter a valid service price amount.');
+      return;
+    }
+
+    const pcts = [5, 10, 15, 20, 25, 30, 35, 40, 50];
+    basicTableBody.innerHTML = '';
+
+    pcts.forEach((pct) => {
+      const tipAmount = servicePrice * (pct / 100);
+      const totalAmount = servicePrice + tipAmount;
+
+      const row = document.createElement('tr');
+      row.style.borderBottom = '1px solid var(--color-hairline)';
+      
+      const pctCell = document.createElement('td');
+      pctCell.style.padding = '12px 16px';
+      pctCell.style.fontWeight = '600';
+      pctCell.textContent = `${pct}%`;
+
+      const tipCell = document.createElement('td');
+      tipCell.style.padding = '12px 16px';
+      tipCell.textContent = fmt(tipAmount);
+
+      const totalCell = document.createElement('td');
+      totalCell.style.padding = '12px 16px';
+      totalCell.style.fontWeight = '600';
+      totalCell.style.color = 'var(--color-link)';
+      totalCell.textContent = fmt(totalAmount);
+
+      row.appendChild(pctCell);
+      row.appendChild(tipCell);
+      row.appendChild(totalCell);
+      basicTableBody.appendChild(row);
+    });
+
+    basicResultsEl.hidden = false;
+
+    if (shouldUpdateUrl) {
+      updateUrl({
+        serviceprice: String(servicePrice),
+        ctype: '1',
+        x: 'Calculate'
+      });
+    }
+  }
+
+  calcBasicBtn.addEventListener('click', () => calculateBasic(true));
+  
+  clearBasicBtn.addEventListener('click', () => {
+    servicePriceInput.value = '';
+    basicResultsEl.hidden = true;
+    hideBasicError();
+    clearUrl();
+  });
+
+  // ─── SHARE TIP CALCULATOR LOGIC ───
+  function showShareError(msg: string) {
+    shareErrorMsg.textContent = msg;
+    shareErrorEl.hidden = false;
+    shareResultsEl.hidden = true;
+  }
+  function hideShareError() {
+    shareErrorEl.hidden = true;
+  }
+
+  // Quick select buttons
   document.querySelectorAll('.tip-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       const pct = parseInt((btn as HTMLElement).dataset.tip || '15');
@@ -372,8 +568,7 @@ const quickTips = [10, 15, 18, 20, 25];
     document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
   });
 
-  // People counter
-  const peopleInput = document.getElementById('num-people') as HTMLInputElement;
+  // People counter controls
   document.getElementById('people-minus')?.addEventListener('click', () => {
     const v = parseInt(peopleInput.value);
     if (v > 1) peopleInput.value = String(v - 1);
@@ -383,30 +578,35 @@ const quickTips = [10, 15, 18, 20, 25];
     peopleInput.value = String(v + 1);
   });
 
-  // Calculate
-  document.getElementById('calc-tip-btn')?.addEventListener('click', () => {
-    const bill = parseFloat((document.getElementById('bill-amount') as HTMLInputElement).value);
+  function calculateShare(shouldUpdateUrl = true) {
+    hideShareError();
+    const bill = parseFloat(billInput.value);
     const tipPct = parseFloat(tipInput?.value || '15');
     const people = parseInt(peopleInput.value);
-    const errEl = document.getElementById('tip-error') as HTMLElement;
-    const errMsg = document.getElementById('tip-error-msg') as HTMLElement;
 
-    if (!bill || bill <= 0) { errMsg.textContent = 'Please enter a valid bill amount.'; errEl.hidden = false; return; }
-    if (isNaN(tipPct) || tipPct < 0) { errMsg.textContent = 'Please enter a valid tip percentage.'; errEl.hidden = false; return; }
-    errEl.hidden = true;
+    if (!bill || bill <= 0) {
+      showShareError('Please enter a valid bill amount.');
+      return;
+    }
+    if (isNaN(tipPct) || tipPct < 0) {
+      showShareError('Please enter a valid tip percentage.');
+      return;
+    }
+    if (isNaN(people) || people < 1) {
+      showShareError('Please enter a valid number of people.');
+      return;
+    }
 
     const tipAmt = bill * (tipPct / 100);
     const total = bill + tipAmt;
-    const tipPP = people > 0 ? tipAmt / people : tipAmt;
-    const totalPP = people > 0 ? total / people : total;
+    const tipPP = tipAmt / people;
+    const totalPP = total / people;
 
-    const fmt = (n: number) => '$' + n.toFixed(2);
     (document.getElementById('res-bill') as HTMLElement).textContent = fmt(bill);
     (document.getElementById('res-tip') as HTMLElement).textContent = fmt(tipAmt);
     (document.getElementById('res-total') as HTMLElement).textContent = fmt(total);
     (document.getElementById('res-people') as HTMLElement).textContent = `${people} person${people > 1 ? 's' : ''}`;
     
-    // Split Section vs Single Person Section
     const ppSection = document.getElementById('per-person-section') as HTMLElement;
     const spSection = document.getElementById('single-person-section') as HTMLElement;
     const splitRow = document.getElementById('split-row') as HTMLElement;
@@ -425,16 +625,82 @@ const quickTips = [10, 15, 18, 20, 25];
       (document.getElementById('single-tip') as HTMLElement).textContent = `Tip: ${fmt(tipAmt)}`;
     }
 
-    const results = document.getElementById('tip-results') as HTMLElement;
-    results.hidden = false;
-    results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    shareResultsEl.hidden = false;
+
+    if (shouldUpdateUrl) {
+      updateUrl({
+        billamount: String(bill),
+        tippct: String(tipPct),
+        numberofpeople: String(people),
+        ctype: '2',
+        x: 'Calculate'
+      }, 'sharebill');
+    }
+  }
+
+  calcShareBtn?.addEventListener('click', () => calculateShare(true));
+
+  clearShareBtn?.addEventListener('click', () => {
+    billInput.value = '';
+    tipInput.value = '15';
+    peopleInput.value = '1';
+    currentTipPct = 15;
+    document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.tip-btn[data-tip="15"]')?.classList.add('active');
+    shareResultsEl.hidden = true;
+    hideShareError();
+    clearUrl();
   });
 
-  // Set default tip btn active
-  document.querySelector('.tip-btn[data-tip="15"]')?.classList.add('active');
-  if (tipInput) tipInput.value = '15';
+  // ─── QUERY PARAMETERS SYNCHRONIZATION ON LOAD ───
+  function initFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const ctype = params.get('ctype');
 
-  // FAQ
+    if (ctype === '1') {
+      const servicePrice = params.get('serviceprice');
+      if (servicePrice) {
+        servicePriceInput.value = servicePrice;
+        calculateBasic(false);
+        setTimeout(() => {
+          document.getElementById('basic-tip-calculator')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+    } else if (ctype === '2') {
+      const billAmount = params.get('billamount');
+      const tipPct = params.get('tippct');
+      const numberofpeople = params.get('numberofpeople');
+
+      if (billAmount) {
+        billInput.value = billAmount;
+        if (tipPct) {
+          tipInput.value = tipPct;
+          currentTipPct = parseFloat(tipPct);
+          document.querySelectorAll('.tip-btn').forEach(b => b.classList.remove('active'));
+          const matchingBtn = document.querySelector(`.tip-btn[data-tip="${Math.round(currentTipPct)}"]`);
+          if (matchingBtn) {
+            matchingBtn.classList.add('active');
+          }
+        }
+        if (numberofpeople) {
+          peopleInput.value = numberofpeople;
+        }
+        calculateShare(false);
+        setTimeout(() => {
+          document.getElementById('sharebill')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
+      }
+    } else {
+      // Set default tip button state when no query params
+      document.querySelector('.tip-btn[data-tip="15"]')?.classList.add('active');
+      if (tipInput) tipInput.value = '15';
+    }
+  }
+
+  // Run initial loading check
+  initFromUrl();
+
+  // FAQ Toggle Logic
   document.querySelectorAll('.faq-question').forEach((btn) => {
     btn.addEventListener('click', () => {
       const exp = btn.getAttribute('aria-expanded') === 'true';

@@ -45,16 +45,33 @@ const relatedCalcs = [
 
   <div class="calc-panel fade-up stagger-1" id="bmi-calculator">
     <!-- Unit toggle -->
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
       <span class="text-body-sm-strong" style="color: var(--color-ink);">Units:</span>
-      <div class="toggle-group" role="group" aria-label="Unit system">
+      <div class="toggle-group" role="group" aria-label="Unit system" style="display: flex; flex-wrap: wrap; gap: 4px;">
         <button class="toggle-option active" id="btn-metric" aria-pressed="true">Metric (cm, kg)</button>
         <button class="toggle-option" id="btn-imperial" aria-pressed="false">Imperial (ft/in, lbs)</button>
+        <button class="toggle-option" id="btn-other" aria-pressed="false">Other Units</button>
       </div>
     </div>
 
     <div class="calc-form">
-      <!-- Height -->
+      <!-- Age and Gender -->
+      <div class="form-row">
+        <div class="form-field">
+          <label for="bmi-age" class="label">Age <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(Optional)</span></label>
+          <input type="number" id="bmi-age" class="input-base input-lg" placeholder="e.g. 25" min="2" max="120" aria-label="Age in years" />
+        </div>
+        <div class="form-field">
+          <label for="bmi-gender" class="label">Gender <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(Optional)</span></label>
+          <select id="bmi-gender" class="input-base input-lg" aria-label="Gender">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Height (Metric) -->
       <div id="height-metric">
         <label for="height-cm" class="label">Height</label>
         <div style="position: relative; display: flex; align-items: center;">
@@ -62,6 +79,8 @@ const relatedCalcs = [
           <span class="unit-badge">cm</span>
         </div>
       </div>
+
+      <!-- Height (Imperial) -->
       <div id="height-imperial" hidden>
         <label class="label">Height</label>
         <div style="display: flex; gap: 12px;">
@@ -76,7 +95,7 @@ const relatedCalcs = [
         </div>
       </div>
 
-      <!-- Weight -->
+      <!-- Weight (Metric) -->
       <div id="weight-metric">
         <label for="weight-kg" class="label">Weight</label>
         <div style="position: relative; display: flex; align-items: center;">
@@ -84,6 +103,8 @@ const relatedCalcs = [
           <span class="unit-badge">kg</span>
         </div>
       </div>
+
+      <!-- Weight (Imperial) -->
       <div id="weight-imperial" hidden>
         <label for="weight-lbs" class="label">Weight</label>
         <div style="position: relative; display: flex; align-items: center;">
@@ -92,7 +113,40 @@ const relatedCalcs = [
         </div>
       </div>
 
-      <button id="calc-bmi-btn" class="btn-primary" style="margin-top: 8px;" aria-label="Calculate BMI">Calculate BMI</button>
+      <!-- Height & Weight (Other Units) -->
+      <div id="inputs-other" hidden>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="height-other-val" class="label">Height</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="height-other-val" class="input-base input-lg" style="flex: 2;" placeholder="1.70" min="0.1" max="1000" step="any" aria-label="Height value" />
+              <select id="height-other-unit" class="input-base input-lg" style="flex: 1.2; min-width: 80px; padding-right: 12px;" aria-label="Height unit">
+                <option value="m">m (Meter)</option>
+                <option value="cm">cm</option>
+                <option value="in">in</option>
+                <option value="ft">ft</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="weight-other-val" class="label">Weight</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="weight-other-val" class="input-base input-lg" style="flex: 2;" placeholder="70" min="0.1" max="10000" step="any" aria-label="Weight value" />
+              <select id="weight-other-unit" class="input-base input-lg" style="flex: 1.2; min-width: 80px; padding-right: 12px;" aria-label="Weight unit">
+                <option value="kg">kg</option>
+                <option value="lbs">lbs</option>
+                <option value="g">g (Gram)</option>
+                <option value="st">st (Stone)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 12px;">
+        <button id="calc-bmi-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate BMI">Calculate BMI</button>
+        <button id="clear-bmi-btn" class="btn-secondary" aria-label="Clear inputs">Clear</button>
+      </div>
     </div>
 
     <!-- Error -->
@@ -126,6 +180,25 @@ const relatedCalcs = [
           <span style="color: #f5a623;">Over</span>
           <span style="color: #f97316;">Obese</span>
         </div>
+      </div>
+
+      <!-- Converted units card (only shown for Other Units) -->
+      <div id="bmi-conversion-card" class="result-panel" style="margin-top: 24px;" hidden>
+        <h4 style="font-size: 11px; font-weight: 600; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 12px;">Unit Conversions</h4>
+        <div class="result-row">
+          <span class="result-row-label">📏 Height Equivalents</span>
+          <span class="result-row-value" id="conv-height">--</span>
+        </div>
+        <div class="result-row" style="border-bottom: none;">
+          <span class="result-row-label">⚖️ Weight Equivalents</span>
+          <span class="result-row-value" id="conv-weight">--</span>
+        </div>
+      </div>
+
+      <!-- Age and gender health assessments -->
+      <div id="bmi-assessment-card" class="result-panel" style="margin-top: 24px;" hidden>
+        <h4 style="font-size: 11px; font-weight: 600; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 12px;">Health Assessment</h4>
+        <p style="font-size: 13.5px; line-height: 1.6; color: var(--color-body); margin: 0; white-space: pre-line;" id="bmi-assessment-text">--</p>
       </div>
 
       <!-- Healthy range -->
@@ -351,29 +424,151 @@ const relatedCalcs = [
 </style>
 
 <script>
-  let isMetric = true;
+  let activeSystem = 'metric'; // 'metric' | 'imperial' | 'other'
 
   const metricBtn = document.getElementById('btn-metric') as HTMLButtonElement;
   const imperialBtn = document.getElementById('btn-imperial') as HTMLButtonElement;
+  const otherBtn = document.getElementById('btn-other') as HTMLButtonElement;
+
   const heightMetric = document.getElementById('height-metric') as HTMLElement;
   const heightImperial = document.getElementById('height-imperial') as HTMLElement;
   const weightMetric = document.getElementById('weight-metric') as HTMLElement;
   const weightImperial = document.getElementById('weight-imperial') as HTMLElement;
+  const inputsOther = document.getElementById('inputs-other') as HTMLElement;
 
-  function switchUnit(metric: boolean) {
-    isMetric = metric;
-    metricBtn.setAttribute('aria-pressed', String(metric));
-    imperialBtn.setAttribute('aria-pressed', String(!metric));
-    metricBtn.classList.toggle('active', metric);
-    imperialBtn.classList.toggle('active', !metric);
-    heightMetric.hidden = !metric;
-    heightImperial.hidden = metric;
-    weightMetric.hidden = !metric;
-    weightImperial.hidden = metric;
+  function switchUnit(sys: 'metric' | 'imperial' | 'other') {
+    activeSystem = sys;
+    metricBtn.setAttribute('aria-pressed', String(sys === 'metric'));
+    imperialBtn.setAttribute('aria-pressed', String(sys === 'imperial'));
+    otherBtn.setAttribute('aria-pressed', String(sys === 'other'));
+    
+    metricBtn.classList.toggle('active', sys === 'metric');
+    imperialBtn.classList.toggle('active', sys === 'imperial');
+    otherBtn.classList.toggle('active', sys === 'other');
+    
+    heightMetric.hidden = (sys !== 'metric');
+    weightMetric.hidden = (sys !== 'metric');
+    
+    heightImperial.hidden = (sys !== 'imperial');
+    weightImperial.hidden = (sys !== 'imperial');
+    
+    inputsOther.hidden = (sys !== 'other');
+    
+    updateLiveConversions();
   }
 
-  metricBtn?.addEventListener('click', () => switchUnit(true));
-  imperialBtn?.addEventListener('click', () => switchUnit(false));
+  metricBtn?.addEventListener('click', () => switchUnit('metric'));
+  imperialBtn?.addEventListener('click', () => switchUnit('imperial'));
+  otherBtn?.addEventListener('click', () => switchUnit('other'));
+
+  function getStandardHeightCm(val: number, unit: string): number {
+    if (unit === 'm') return val * 100;
+    if (unit === 'cm') return val;
+    if (unit === 'in') return val * 2.54;
+    if (unit === 'ft') return val * 30.48;
+    return 0;
+  }
+
+  function getStandardWeightKg(val: number, unit: string): number {
+    if (unit === 'kg') return val;
+    if (unit === 'g') return val / 1000;
+    if (unit === 'lbs') return val / 2.20462262;
+    if (unit === 'st') return val * 6.35029318;
+    return 0;
+  }
+
+  function formatHeightEquivalents(cm: number): string {
+    const m = (cm / 100).toFixed(2);
+    const inchTotal = cm / 2.54;
+    const ft = Math.floor(inchTotal / 12);
+    const remainsIn = Math.round(inchTotal % 12);
+    return `${m} m / ${Math.round(cm)} cm / ${ft} ft ${remainsIn} in`;
+  }
+
+  function formatWeightEquivalents(kg: number): string {
+    const lbs = (kg * 2.20462262).toFixed(1);
+    const g = Math.round(kg * 1000);
+    const stonesTotal = kg / 6.35029318;
+    const st = Math.floor(stonesTotal);
+    const remainsLbs = Math.round((stonesTotal - st) * 14);
+    return `${kg.toFixed(1)} kg / ${lbs} lbs / ${st} st ${remainsLbs} lbs`;
+  }
+
+  function updateLiveConversions() {
+    const hVal = parseFloat((document.getElementById('height-other-val') as HTMLInputElement).value) || 0;
+    const hUnit = (document.getElementById('height-other-unit') as HTMLSelectElement).value;
+    const wVal = parseFloat((document.getElementById('weight-other-val') as HTMLInputElement).value) || 0;
+    const wUnit = (document.getElementById('weight-other-unit') as HTMLSelectElement).value;
+
+    const convCard = document.getElementById('bmi-conversion-card') as HTMLElement;
+    
+    if (activeSystem === 'other' && (hVal > 0 || wVal > 0)) {
+      const cm = getStandardHeightCm(hVal, hUnit);
+      const kg = getStandardWeightKg(wVal, wUnit);
+      
+      if (cm > 0) {
+        document.getElementById('conv-height')!.textContent = formatHeightEquivalents(cm);
+      } else {
+        document.getElementById('conv-height')!.textContent = '--';
+      }
+      
+      if (kg > 0) {
+        document.getElementById('conv-weight')!.textContent = formatWeightEquivalents(kg);
+      } else {
+        document.getElementById('conv-weight')!.textContent = '--';
+      }
+      
+      convCard.hidden = false;
+    } else {
+      convCard.hidden = true;
+    }
+  }
+
+  ['height-other-val', 'height-other-unit', 'weight-other-val', 'weight-other-unit'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', updateLiveConversions);
+    document.getElementById(id)?.addEventListener('change', updateLiveConversions);
+  });
+
+  function generateAssessmentText(bmi: number, age: number | null, gender: string | null): string {
+    let text = '';
+    
+    // 1. Pediatric Assessment (ages 2-19)
+    if (age !== null && age >= 2 && age <= 19) {
+      text += `👶 **Pediatric & Teen Assessment (Ages 2-19):**\n`;
+      text += `For children and teenagers, BMI interpretation relies on age-and-gender-specific growth percentiles rather than adult thresholds.\n`;
+      text += `• Your calculated raw BMI is **${bmi.toFixed(1)}**.\n`;
+      text += `• CDC Growth Chart Percentile categories:\n`;
+      text += `  - Underweight: Less than 5th percentile\n`;
+      text += `  - Healthy Weight: 5th to less than 85th percentile\n`;
+      text += `  - Overweight: 85th to less than 95th percentile\n`;
+      text += `  - Obese: 95th percentile or higher\n\n`;
+      text += `We suggest consulting a pediatrician to plot this calculation onto growth charts to verify healthy growth trajectories.`;
+      return text;
+    }
+
+    // 2. Adult Assessment
+    text += `📋 **Clinical Considerations:**\n`;
+    
+    if (age !== null && age >= 65) {
+      text += `• **Seniors (Ages 65+):** Scientific studies suggest that for older adults, a higher BMI range of **23.0 – 28.0** is protective. It offers cushioning during health disruptions, indicates higher bone mineral density, and helps prevent muscle loss.\n`;
+    }
+    
+    if (gender === 'male') {
+      text += `• **Male Body Composition:** Men tend to have higher bone density and muscle mass. Since muscle is denser than body fat, a healthy male athletic body can have an elevated BMI. A typical healthy body fat ratio for adult males is **8% to 19%**.\n`;
+    } else if (gender === 'female') {
+      text += `• **Female Body Composition:** Women naturally carry higher essential fat levels for vital health, hormone regulation, and biological functions. A typical healthy body fat ratio for adult females is **21% to 32%**.\n`;
+    }
+
+    if (age !== null && age >= 20 && age < 65) {
+      text += `• **Adult Metabolism:** Keeping active and tracking waist circumference are excellent health indicators to review alongside BMI.\n`;
+    }
+
+    if (age === null && !gender) {
+      text += `• Add your Age or Gender above to check senior safety thresholds, pediatric growth guidelines, and male/female body composition factors.`;
+    }
+    
+    return text;
+  }
 
   function showError(msg: string) {
     const err = document.getElementById('bmi-error') as HTMLElement;
@@ -382,6 +577,8 @@ const relatedCalcs = [
     if (err) err.hidden = false;
     const res = document.getElementById('bmi-results') as HTMLElement;
     if (res) res.hidden = true;
+    document.getElementById('bmi-conversion-card')!.hidden = true;
+    document.getElementById('bmi-assessment-card')!.hidden = true;
   }
 
   function animateValue(obj: HTMLElement, start: number, end: number, duration: number) {
@@ -402,20 +599,32 @@ const relatedCalcs = [
     document.getElementById('bmi-error')!.hidden = true;
     let heightCm = 0, weightKg = 0;
 
-    if (isMetric) {
+    const ageVal = (document.getElementById('bmi-age') as HTMLInputElement).value;
+    const age = ageVal ? parseInt(ageVal, 10) : null;
+    const gender = (document.getElementById('bmi-gender') as HTMLSelectElement).value || null;
+
+    if (activeSystem === 'metric') {
       heightCm = parseFloat((document.getElementById('height-cm') as HTMLInputElement).value);
       weightKg = parseFloat((document.getElementById('weight-kg') as HTMLInputElement).value);
-    } else {
+    } else if (activeSystem === 'imperial') {
       const ft = parseFloat((document.getElementById('height-ft') as HTMLInputElement).value) || 0;
       const inch = parseFloat((document.getElementById('height-in') as HTMLInputElement).value) || 0;
       heightCm = (ft * 12 + inch) * 2.54;
       const lbs = parseFloat((document.getElementById('weight-lbs') as HTMLInputElement).value);
-      weightKg = lbs / 2.20462;
+      weightKg = lbs / 2.20462262;
+    } else {
+      const hVal = parseFloat((document.getElementById('height-other-val') as HTMLInputElement).value) || 0;
+      const hUnit = (document.getElementById('height-other-unit') as HTMLSelectElement).value;
+      const wVal = parseFloat((document.getElementById('weight-other-val') as HTMLInputElement).value) || 0;
+      const wUnit = (document.getElementById('weight-other-unit') as HTMLSelectElement).value;
+      
+      heightCm = getStandardHeightCm(hVal, hUnit);
+      weightKg = getStandardWeightKg(wVal, wUnit);
     }
 
     if (!heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) { showError('Please enter valid height and weight.'); return; }
-    if (heightCm < 50 || heightCm > 300) { showError('Height must be between 50 and 300 cm.'); return; }
-    if (weightKg < 10 || weightKg > 500) { showError('Weight must be between 10 and 500 kg.'); return; }
+    if (heightCm < 50 || heightCm > 300) { showError('Height must be between 50 and 300 cm (or equivalent).'); return; }
+    if (weightKg < 10 || weightKg > 500) { showError('Weight must be between 10 and 500 kg (or equivalent).'); return; }
 
     const bmi = weightKg / ((heightCm / 100) ** 2);
     const bmiRounded = Math.round(bmi * 10) / 10;
@@ -430,37 +639,157 @@ const relatedCalcs = [
     const scalePercent = Math.min(100, Math.max(0, ((bmi - 15) / 25) * 100));
     const hMin = (18.5 * (heightCm / 100) ** 2).toFixed(1);
     const hMax = (24.9 * (heightCm / 100) ** 2).toFixed(1);
-    const hMinLbs = (parseFloat(hMin) * 2.20462).toFixed(1);
-    const hMaxLbs = (parseFloat(hMax) * 2.20462).toFixed(1);
+    const hMinLbs = (parseFloat(hMin) * 2.20462262).toFixed(1);
+    const hMaxLbs = (parseFloat(hMax) * 2.20462262).toFixed(1);
 
     const badge = document.getElementById('bmi-category') as HTMLElement;
     badge.textContent = cat; badge.style.color = color; badge.style.borderColor = color + '40'; badge.style.background = color + '15';
     
-    // Set indicator initially to 0% then animate
     const indicator = document.getElementById('bmi-indicator') as HTMLElement;
     indicator.style.left = '0%';
 
     (document.getElementById('bmi-val-row') as HTMLElement).textContent = String(bmiRounded);
     (document.getElementById('bmi-cat-row') as HTMLElement).textContent = cat;
-    (document.getElementById('bmi-range') as HTMLElement).textContent = isMetric
+    (document.getElementById('bmi-range') as HTMLElement).textContent = activeSystem === 'metric'
       ? `${hMin} – ${hMax} kg`
       : `${hMinLbs} – ${hMaxLbs} lbs`;
+
+    // Converted card display & text updates
+    const convCard = document.getElementById('bmi-conversion-card') as HTMLElement;
+    if (activeSystem === 'other') {
+      document.getElementById('conv-height')!.textContent = formatHeightEquivalents(heightCm);
+      document.getElementById('conv-weight')!.textContent = formatWeightEquivalents(weightKg);
+      convCard.hidden = false;
+    } else {
+      convCard.hidden = true;
+    }
+
+    // Health Assessment update
+    const assessCard = document.getElementById('bmi-assessment-card') as HTMLElement;
+    const assessText = document.getElementById('bmi-assessment-text') as HTMLElement;
+    assessText.innerHTML = generateAssessmentText(bmiRounded, age, gender).replace(/\n/g, '<br>');
+    assessCard.hidden = false;
 
     const results = document.getElementById('bmi-results') as HTMLElement;
     results.hidden = false;
     
-    // Smoothly scroll and trigger animations
     results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     
-    // Trigger indicator slide
     setTimeout(() => {
       indicator.style.left = scalePercent + '%';
     }, 100);
 
-    // Roll up value animation
     const bmiValEl = document.getElementById('bmi-value') as HTMLElement;
     animateValue(bmiValEl, 0, bmiRounded, 800);
+
+    updateUrlParams();
   });
+
+  document.getElementById('clear-bmi-btn')?.addEventListener('click', () => {
+    (document.getElementById('bmi-age') as HTMLInputElement).value = '';
+    (document.getElementById('bmi-gender') as HTMLSelectElement).value = '';
+    (document.getElementById('height-cm') as HTMLInputElement).value = '';
+    (document.getElementById('weight-kg') as HTMLInputElement).value = '';
+    (document.getElementById('height-ft') as HTMLInputElement).value = '';
+    (document.getElementById('height-in') as HTMLInputElement).value = '';
+    (document.getElementById('weight-lbs') as HTMLInputElement).value = '';
+    (document.getElementById('height-other-val') as HTMLInputElement).value = '';
+    (document.getElementById('weight-other-val') as HTMLInputElement).value = '';
+    
+    document.getElementById('bmi-error')!.hidden = true;
+    document.getElementById('bmi-results')!.hidden = true;
+    document.getElementById('bmi-conversion-card')!.hidden = true;
+    document.getElementById('bmi-assessment-card')!.hidden = true;
+    
+    switchUnit('metric');
+
+    // Clean URL query parameters
+    window.history.replaceState({}, '', window.location.pathname);
+  });
+
+  function updateUrlParams() {
+    const params = new URLSearchParams();
+    params.set('system', activeSystem);
+    
+    const age = (document.getElementById('bmi-age') as HTMLInputElement).value;
+    const gender = (document.getElementById('bmi-gender') as HTMLSelectElement).value;
+    if (age) params.set('age', age);
+    if (gender) params.set('gender', gender);
+
+    if (activeSystem === 'metric') {
+      const cm = (document.getElementById('height-cm') as HTMLInputElement).value;
+      const kg = (document.getElementById('weight-kg') as HTMLInputElement).value;
+      if (cm) params.set('height', cm);
+      if (kg) params.set('weight', kg);
+    } else if (activeSystem === 'imperial') {
+      const ft = (document.getElementById('height-ft') as HTMLInputElement).value;
+      const inch = (document.getElementById('height-in') as HTMLInputElement).value;
+      const lbs = (document.getElementById('weight-lbs') as HTMLInputElement).value;
+      if (ft) params.set('hft', ft);
+      if (inch) params.set('hin', inch);
+      if (lbs) params.set('wlbs', lbs);
+    } else {
+      const hVal = (document.getElementById('height-other-val') as HTMLInputElement).value;
+      const hUnit = (document.getElementById('height-other-unit') as HTMLSelectElement).value;
+      const wVal = (document.getElementById('weight-other-val') as HTMLInputElement).value;
+      const wUnit = (document.getElementById('weight-other-unit') as HTMLSelectElement).value;
+      if (hVal) params.set('height', hVal);
+      if (hUnit) params.set('height_unit', hUnit);
+      if (wVal) params.set('weight', wVal);
+      if (wUnit) params.set('weight_unit', wUnit);
+    }
+    
+    params.set('x', 'Calculate');
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }
+
+  function initFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const systemParam = params.get('system');
+    const ageParam = params.get('age');
+    const genderParam = params.get('gender');
+    
+    if (ageParam) {
+      (document.getElementById('bmi-age') as HTMLInputElement).value = ageParam;
+    }
+    if (genderParam) {
+      (document.getElementById('bmi-gender') as HTMLSelectElement).value = genderParam;
+    }
+
+    if (systemParam === 'imperial') {
+      switchUnit('imperial');
+      const ft = params.get('hft');
+      const inch = params.get('hin');
+      const lbs = params.get('wlbs');
+      if (ft) (document.getElementById('height-ft') as HTMLInputElement).value = ft;
+      if (inch) (document.getElementById('height-in') as HTMLInputElement).value = inch;
+      if (lbs) (document.getElementById('weight-lbs') as HTMLInputElement).value = lbs;
+    } else if (systemParam === 'other') {
+      switchUnit('other');
+      const hVal = params.get('height');
+      const hUnit = params.get('height_unit');
+      const wVal = params.get('weight');
+      const wUnit = params.get('weight_unit');
+      if (hVal) (document.getElementById('height-other-val') as HTMLInputElement).value = hVal;
+      if (hUnit) (document.getElementById('height-other-unit') as HTMLSelectElement).value = hUnit;
+      if (wVal) (document.getElementById('weight-other-val') as HTMLInputElement).value = wVal;
+      if (wUnit) (document.getElementById('weight-other-unit') as HTMLSelectElement).value = wUnit;
+      updateLiveConversions();
+    } else {
+      switchUnit('metric');
+      const cm = params.get('height');
+      const kg = params.get('weight');
+      if (cm) (document.getElementById('height-cm') as HTMLInputElement).value = cm;
+      if (kg) (document.getElementById('weight-kg') as HTMLInputElement).value = kg;
+    }
+
+    if (params.get('x') === 'Calculate') {
+      document.getElementById('calc-bmi-btn')?.click();
+    }
+  }
+
+  // Run initialization on load
+  initFromUrl();
 
   document.querySelectorAll('.faq-question').forEach((btn) => {
     btn.addEventListener('click', () => {

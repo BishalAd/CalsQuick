@@ -66,31 +66,65 @@ const goalOptions = [
 
   <div class="calc-panel fade-up stagger-1" id="calorie-calculator">
     <!-- Unit switcher toggle -->
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
       <span class="text-body-sm-strong" style="color: var(--color-ink);">Units:</span>
-      <div class="toggle-group" role="group" aria-label="Unit system">
-        <button class="toggle-option active" id="btn-cal-metric" aria-pressed="true">Metric (cm, kg)</button>
-        <button class="toggle-option" id="btn-cal-imperial" aria-pressed="false">Imperial (ft/in, lbs)</button>
+      <div class="toggle-group" role="group" aria-label="Unit system" style="display: flex; flex-wrap: wrap; gap: 4px;">
+        <button class="toggle-option active" id="btn-cal-metric" aria-pressed="true">Metric Units (cm, kg)</button>
+        <button class="toggle-option" id="btn-cal-imperial" aria-pressed="false">US Units (ft/in, lbs)</button>
+        <button class="toggle-option" id="btn-cal-other" aria-pressed="false">Other Units</button>
+      </div>
+    </div>
+
+    <!-- Embedded Unit Converter (Visible only when Other Units is selected) -->
+    <div id="converter-widget" class="result-panel" style="margin-bottom: 24px; background: var(--color-canvas-soft-2); border-radius: var(--radius-lg); border: 1px solid var(--color-hairline);" hidden>
+      <h4 style="font-size: 11px; font-weight: 600; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 12px;">Unit Conversion Assistant</h4>
+      
+      <div class="toggle-group" role="group" aria-label="Converter Tab" style="display: flex; gap: 4px; margin-bottom: 16px;">
+        <button class="toggle-option active" id="btn-conv-length" style="padding: 6px 12px; font-size: 12px; flex: 1;">Length</button>
+        <button class="toggle-option" id="btn-conv-weight" style="padding: 6px 12px; font-size: 12px; flex: 1;">Weight</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+        <div>
+          <label for="conv-input" class="label" style="font-size: 12px;">From:</label>
+          <input type="number" id="conv-input" class="input-base input-lg" style="height: 38px; font-size: 14px;" placeholder="Value" />
+          <select id="conv-from-unit" class="input-base input-lg" style="height: 38px; font-size: 14px; margin-top: 6px; padding-right: 12px;">
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label for="conv-output" class="label" style="font-size: 12px;">To:</label>
+          <input type="text" id="conv-output" class="input-base input-lg" style="height: 38px; font-size: 14px;" readonly placeholder="Converted" />
+          <select id="conv-to-unit" class="input-base input-lg" style="height: 38px; font-size: 14px; margin-top: 6px; padding-right: 12px;">
+            <!-- Options populated dynamically -->
+          </select>
+        </div>
       </div>
     </div>
 
     <div class="calc-form">
       <!-- Age & Gender -->
-      <div class="form-row-2">
+      <div class="form-row">
         <div>
-          <label for="cal-age" class="label">Age</label>
-          <input type="number" id="cal-age" class="input-base input-lg" placeholder="25" min="15" max="120" aria-label="Age in years" />
+          <label for="cal-age" class="label">Age <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(ages 15 - 80)</span></label>
+          <input type="number" id="cal-age" class="input-base input-lg" placeholder="25" min="15" max="80" aria-label="Age in years" />
         </div>
         <div>
           <label class="label">Gender</label>
-          <div class="toggle-group" role="group" aria-label="Select gender" style="width: 100%;">
-            <button class="toggle-option active" id="btn-male" aria-pressed="true" style="flex: 1;">Male</button>
-            <button class="toggle-option" id="btn-female" aria-pressed="false" style="flex: 1;">Female</button>
+          <div style="display: flex; gap: 16px; margin-top: 10px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+              <input type="radio" name="cal-gender" value="male" checked style="accent-color: var(--color-ink);" />
+              Male
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+              <input type="radio" name="cal-gender" value="female" style="accent-color: var(--color-ink);" />
+              Female
+            </label>
           </div>
         </div>
       </div>
 
-      <!-- Height (Metric/Imperial) -->
+      <!-- Height (Metric) -->
       <div id="cal-height-metric-container">
         <label for="cal-height-cm" class="label">Height</label>
         <div style="position: relative; display: flex; align-items: center;">
@@ -98,6 +132,8 @@ const goalOptions = [
           <span class="unit-badge">cm</span>
         </div>
       </div>
+
+      <!-- Height (Imperial) -->
       <div id="cal-height-imperial-container" hidden>
         <label class="label">Height</label>
         <div style="display: flex; gap: 12px;">
@@ -112,7 +148,21 @@ const goalOptions = [
         </div>
       </div>
 
-      <!-- Weight (Metric/Imperial) -->
+      <!-- Height (Other) -->
+      <div id="cal-height-other-container" hidden>
+        <label for="cal-height-other-val" class="label">Height</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="number" id="cal-height-other-val" class="input-base input-lg" style="flex: 2;" placeholder="1.75" min="0.1" max="1000" step="any" aria-label="Height value" />
+          <select id="cal-height-other-unit" class="input-base input-lg" style="flex: 1.2; min-width: 80px; padding-right: 12px;" aria-label="Height unit">
+            <option value="m">m (Meter)</option>
+            <option value="cm">cm</option>
+            <option value="in">in</option>
+            <option value="ft">ft</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Weight (Metric) -->
       <div id="cal-weight-metric-container">
         <label for="cal-weight-kg" class="label">Weight</label>
         <div style="position: relative; display: flex; align-items: center;">
@@ -120,6 +170,8 @@ const goalOptions = [
           <span class="unit-badge">kg</span>
         </div>
       </div>
+
+      <!-- Weight (Imperial) -->
       <div id="cal-weight-imperial-container" hidden>
         <label for="cal-weight-lbs" class="label">Weight</label>
         <div style="position: relative; display: flex; align-items: center;">
@@ -128,12 +180,67 @@ const goalOptions = [
         </div>
       </div>
 
-      <!-- Activity -->
+      <!-- Weight (Other) -->
+      <div id="cal-weight-other-container" hidden>
+        <label for="cal-weight-other-val" class="label">Weight</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="number" id="cal-weight-other-val" class="input-base input-lg" style="flex: 2;" placeholder="70" min="0.1" max="10000" step="any" aria-label="Weight value" />
+          <select id="cal-weight-other-unit" class="input-base input-lg" style="flex: 1.2; min-width: 80px; padding-right: 12px;" aria-label="Weight unit">
+            <option value="kg">kg</option>
+            <option value="lbs">lbs</option>
+            <option value="g">g (Gram)</option>
+            <option value="st">st (Stone)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Activity Level list of radios -->
       <div>
-        <label for="cal-activity" class="label">Activity Level</label>
-        <select id="cal-activity" class="select-base" aria-label="Activity level">
-          {activityOptions.map(o => <option value={o.value}>{o.label}</option>)}
-        </select>
+        <label class="label" style="margin-bottom: 12px;">Activity Level</label>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; cursor: pointer; line-height: 1.4;">
+            <input type="radio" name="cal-activity-radio" value="sedentary" checked style="accent-color: var(--color-ink); margin-top: 3px;" />
+            <div>
+              <strong>Sedentary</strong>
+              <div style="font-size: 12px; color: var(--color-muted);">Little or no exercise</div>
+            </div>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; cursor: pointer; line-height: 1.4;">
+            <input type="radio" name="cal-activity-radio" value="light" style="accent-color: var(--color-ink); margin-top: 3px;" />
+            <div>
+              <strong>Lightly active</strong>
+              <div style="font-size: 12px; color: var(--color-muted);">Exercise 1–3 times/week</div>
+            </div>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; cursor: pointer; line-height: 1.4;">
+            <input type="radio" name="cal-activity-radio" value="moderate" style="accent-color: var(--color-ink); margin-top: 3px;" />
+            <div>
+              <strong>Moderately active</strong>
+              <div style="font-size: 12px; color: var(--color-muted);">Exercise 3–5 times/week</div>
+            </div>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; cursor: pointer; line-height: 1.4;">
+            <input type="radio" name="cal-activity-radio" value="active" style="accent-color: var(--color-ink); margin-top: 3px;" />
+            <div>
+              <strong>Very active</strong>
+              <div style="font-size: 12px; color: var(--color-muted);">Exercise 6–7 times/week</div>
+            </div>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; cursor: pointer; line-height: 1.4;">
+            <input type="radio" name="cal-activity-radio" value="very_active" style="accent-color: var(--color-ink); margin-top: 3px;" />
+            <div>
+              <strong>Extra active</strong>
+              <div style="font-size: 12px; color: var(--color-muted);">Very intense daily exercise or physical job</div>
+            </div>
+          </label>
+          <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 14px; cursor: pointer; line-height: 1.4;">
+            <input type="radio" name="cal-activity-radio" value="bmr" style="accent-color: var(--color-ink); margin-top: 3px;" />
+            <div>
+              <strong>Basal Metabolic Rate (BMR)</strong>
+              <div style="font-size: 12px; color: var(--color-muted);">Base metabolism only (no activity)</div>
+            </div>
+          </label>
+        </div>
       </div>
 
       <!-- Goal -->
@@ -144,9 +251,63 @@ const goalOptions = [
         </select>
       </div>
 
-      <button id="calc-cal-btn" class="btn-primary" style="margin-top: 8px;" aria-label="Calculate daily calorie needs">
-        Calculate Calories
-      </button>
+      <!-- Settings collapsible trigger -->
+      <div style="margin-top: 8px;">
+        <button type="button" id="settings-toggle-btn" style="background: none; border: none; color: var(--color-ink); font-weight: 600; font-size: 13.5px; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 4px 0;" aria-expanded="false">
+          <span id="settings-toggle-icon">＋</span> Settings
+        </button>
+        
+        <!-- Settings drawer content -->
+        <div id="settings-drawer" style="margin-top: 12px; padding: 16px; border: 1px dashed var(--color-hairline); border-radius: var(--radius-md); background: var(--color-canvas-soft); display: none;">
+          <!-- Results unit -->
+          <div style="margin-bottom: 16px;">
+            <label class="label" style="margin-bottom: 8px;">Results Unit</label>
+            <div style="display: flex; gap: 16px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+                <input type="radio" name="results-unit" value="calories" checked style="accent-color: var(--color-ink);" />
+                Calories
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+                <input type="radio" name="results-unit" value="kilojoules" style="accent-color: var(--color-ink);" />
+                Kilojoules
+              </label>
+            </div>
+          </div>
+          
+          <!-- BMR Formula -->
+          <div>
+            <label class="label" style="margin-bottom: 8px;">BMR Estimation Formula</label>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+                <input type="radio" name="bmr-formula" value="mifflin" checked style="accent-color: var(--color-ink);" />
+                Mifflin St Jeor
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+                <input type="radio" name="bmr-formula" value="harris" style="accent-color: var(--color-ink);" />
+                Revised Harris-Benedict
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer;">
+                <input type="radio" name="bmr-formula" value="katch" style="accent-color: var(--color-ink);" />
+                Katch-McArdle
+              </label>
+            </div>
+          </div>
+
+          <!-- Body fat % input (Only shown when Katch-McArdle is selected) -->
+          <div id="body-fat-container" style="margin-top: 12px;" hidden>
+            <label for="cal-bodyfat" class="label">Body Fat %</label>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input type="number" id="cal-bodyfat" class="input-base input-lg" placeholder="20" min="2" max="80" value="20" aria-label="Body fat percentage" />
+              <span class="unit-badge">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button id="calc-cal-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate daily calorie needs">Calculate Calories</button>
+        <button id="clear-cal-btn" class="btn-secondary" aria-label="Clear inputs">Clear</button>
+      </div>
     </div>
 
     <!-- Error -->
@@ -162,7 +323,7 @@ const goalOptions = [
       <!-- Main Result Card -->
       <div class="main-result-card">
         <div class="main-result-value" id="cal-target">--</div>
-        <div class="main-result-label">Calories / Day</div>
+        <div class="main-result-label" id="cal-target-label-text">Calories / Day</div>
         <div id="cal-goal-label" style="font-size: 14px; color: var(--color-muted); margin-top: 10px; font-weight: 500;"></div>
       </div>
 
@@ -170,21 +331,21 @@ const goalOptions = [
       <div class="result-panel">
         <div class="result-row">
           <div>
-            <div class="result-row-label">🔥 BMR (Basal Metabolic Rate)</div>
+            <div class="result-row-label" id="bmr-title-label">🔥 BMR (Basal Metabolic Rate)</div>
             <div style="font-size: 12px; color: var(--color-muted); margin-top: 2px;">Calories burned at complete rest</div>
           </div>
           <span class="result-row-value" id="cal-bmr">--</span>
         </div>
         <div class="result-row">
           <div>
-            <div class="result-row-label">⚡ TDEE (Total Daily Energy Expenditure)</div>
+            <div class="result-row-label" id="tdee-title-label">⚡ TDEE (Total Daily Energy Expenditure)</div>
             <div style="font-size: 12px; color: var(--color-muted); margin-top: 2px;">Calories burned with daily activity</div>
           </div>
           <span class="result-row-value" id="cal-tdee">--</span>
         </div>
         <div class="result-row" style="border-bottom: none;">
           <div>
-            <div class="result-row-label">🎯 Target Calories</div>
+            <div class="result-row-label">🎯 Target Energy</div>
             <div style="font-size: 12px; color: var(--color-muted); margin-top: 2px;">Calories to consume for selected goal</div>
           </div>
           <span class="result-row-value" id="cal-target-row" style="font-size: 16px; font-weight: 600;">--</span>
@@ -210,6 +371,47 @@ const goalOptions = [
             <div class="macro-label">Fat</div>
             <div class="macro-pct">30%</div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Food Energy Converter Section -->
+  <div style="margin-top: 48px;" class="prose-section fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 8px;">Food Energy Converter</h2>
+    <p class="text-body-md" style="color: var(--color-body); margin-bottom: 24px;">
+      Convert values between Calories and other common food energy units.
+    </p>
+    
+    <div class="calc-panel animate-fade-in" style="background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 24px;">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <input type="number" id="food-input-val" class="input-base input-lg" style="flex: 1; min-width: 120px;" placeholder="1" value="1" />
+          <select id="food-from-unit" class="input-base input-lg" style="flex: 2; min-width: 180px; padding-right: 12px;">
+            <option value="kcal">Calorie (Nutrition) [kcal]</option>
+            <option value="kj">Kilojoules [kJ]</option>
+            <option value="j">Joules [J]</option>
+            <option value="kcal_it">Kilocalories (IT) [kcal]</option>
+            <option value="wh">Watt-hour [Wh]</option>
+          </select>
+        </div>
+        
+        <div style="text-align: center; font-size: 20px; font-weight: 700; color: var(--color-ink);">=</div>
+        
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="food-output-val" class="input-base input-lg" style="flex: 1; min-width: 120px;" readonly placeholder="Result" />
+          <select id="food-to-unit" class="input-base input-lg" style="flex: 2; min-width: 180px; padding-right: 12px;">
+            <option value="kj">Kilojoules [kJ]</option>
+            <option value="kcal">Calorie (Nutrition) [kcal]</option>
+            <option value="j">Joules [J]</option>
+            <option value="kcal_it">Kilocalories (IT) [kcal]</option>
+            <option value="wh">Watt-hour [Wh]</option>
+          </select>
+        </div>
+        
+        <div style="display: flex; gap: 12px; margin-top: 8px;">
+          <button id="calc-food-btn" class="btn-primary" style="flex: 1;">Calculate</button>
+          <button id="clear-food-btn" class="btn-secondary">Clear</button>
         </div>
       </div>
     </div>
@@ -319,7 +521,7 @@ const goalOptions = [
 
 <style>
   .calc-form { display: flex; flex-direction: column; gap: 20px; }
-  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: end; }
   .unit-badge {
     position: absolute;
     right: 14px;
@@ -356,8 +558,9 @@ const goalOptions = [
   .calc-error { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--color-error-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); margin-top: 16px; font-size: 14px; color: var(--color-error); }
   .prose-section { padding: 32px; background: var(--color-canvas); border-radius: var(--radius-lg); border: 1px solid var(--color-hairline); }
   .formula-block { background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); padding: 16px; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  
   @media (max-width: 599px) {
-    .form-row-2 { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
     .macros-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 480px) {
@@ -371,47 +574,245 @@ const goalOptions = [
 </style>
 
 <script>
-  let gender = 'male';
-  let isMetric = true;
+  let activeSystem = 'metric'; // 'metric', 'imperial', 'other'
 
-  const ACTIVITY: Record<string, number> = { sedentary: 1.2, light: 1.375, moderate: 1.55, active: 1.725, very_active: 1.9 };
-  const GOAL: Record<string, number> = { lose_fast: -1000, lose: -500, maintain: 0, gain: 500, gain_fast: 1000 };
-  const GOAL_LABEL: Record<string, string> = { lose_fast: 'Goal: Lose 2 lbs/week', lose: 'Goal: Lose 1 lb/week', maintain: 'Goal: Maintain weight', gain: 'Goal: Gain 1 lb/week', gain_fast: 'Goal: Gain 2 lbs/week' };
+  const ACTIVITY: Record<string, number> = {
+    sedentary: 1.2,
+    light: 1.375,
+    moderate: 1.55,
+    active: 1.725,
+    very_active: 1.9,
+    bmr: 1.0
+  };
 
+  const GOAL: Record<string, number> = {
+    lose_fast: -1000,
+    lose: -500,
+    maintain: 0,
+    gain: 500,
+    gain_fast: 1000
+  };
+
+  const GOAL_LABEL: Record<string, string> = {
+    lose_fast: 'Goal: Lose 2 lbs/week',
+    lose: 'Goal: Lose 1 lb/week',
+    maintain: 'Goal: Maintain weight',
+    gain: 'Goal: Gain 1 lb/week',
+    gain_fast: 'Goal: Gain 2 lbs/week'
+  };
+
+  // Unit switcher tabs
   const metricBtn = document.getElementById('btn-cal-metric') as HTMLButtonElement;
   const imperialBtn = document.getElementById('btn-cal-imperial') as HTMLButtonElement;
+  const otherBtn = document.getElementById('btn-cal-other') as HTMLButtonElement;
+
   const heightMetricContainer = document.getElementById('cal-height-metric-container') as HTMLElement;
   const heightImperialContainer = document.getElementById('cal-height-imperial-container') as HTMLElement;
+  const heightOtherContainer = document.getElementById('cal-height-other-container') as HTMLElement;
+
   const weightMetricContainer = document.getElementById('cal-weight-metric-container') as HTMLElement;
   const weightImperialContainer = document.getElementById('cal-weight-imperial-container') as HTMLElement;
+  const weightOtherContainer = document.getElementById('cal-weight-other-container') as HTMLElement;
 
-  function switchUnit(metric: boolean) {
-    isMetric = metric;
-    metricBtn.setAttribute('aria-pressed', String(metric));
-    imperialBtn.setAttribute('aria-pressed', String(!metric));
-    metricBtn.classList.toggle('active', metric);
-    imperialBtn.classList.toggle('active', !metric);
-    heightMetricContainer.hidden = !metric;
-    heightImperialContainer.hidden = metric;
-    weightMetricContainer.hidden = !metric;
-    weightImperialContainer.hidden = metric;
+  const converterWidget = document.getElementById('converter-widget') as HTMLElement;
+
+  function switchSystem(system: string) {
+    activeSystem = system;
+    
+    // Toggle active classes on buttons
+    metricBtn.classList.toggle('active', system === 'metric');
+    metricBtn.setAttribute('aria-pressed', String(system === 'metric'));
+    
+    imperialBtn.classList.toggle('active', system === 'imperial');
+    imperialBtn.setAttribute('aria-pressed', String(system === 'imperial'));
+    
+    otherBtn.classList.toggle('active', system === 'other');
+    otherBtn.setAttribute('aria-pressed', String(system === 'other'));
+
+    // Toggle forms
+    heightMetricContainer.hidden = system !== 'metric';
+    heightImperialContainer.hidden = system !== 'imperial';
+    heightOtherContainer.hidden = system !== 'other';
+
+    weightMetricContainer.hidden = system !== 'metric';
+    weightImperialContainer.hidden = system !== 'imperial';
+    weightOtherContainer.hidden = system !== 'other';
+
+    // Show conversion widget only when Other Units is selected
+    converterWidget.hidden = system !== 'other';
+    
+    updateUrl();
   }
 
-  metricBtn?.addEventListener('click', () => switchUnit(true));
-  imperialBtn?.addEventListener('click', () => switchUnit(false));
+  metricBtn?.addEventListener('click', () => switchSystem('metric'));
+  imperialBtn?.addEventListener('click', () => switchSystem('imperial'));
+  otherBtn?.addEventListener('click', () => switchSystem('other'));
 
-  const maleBtn = document.getElementById('btn-male') as HTMLButtonElement;
-  const femaleBtn = document.getElementById('btn-female') as HTMLButtonElement;
-  maleBtn?.addEventListener('click', () => { gender = 'male'; maleBtn.classList.add('active'); femaleBtn.classList.remove('active'); maleBtn.setAttribute('aria-pressed','true'); femaleBtn.setAttribute('aria-pressed','false'); });
-  femaleBtn?.addEventListener('click', () => { gender = 'female'; femaleBtn.classList.add('active'); maleBtn.classList.remove('active'); femaleBtn.setAttribute('aria-pressed','true'); maleBtn.setAttribute('aria-pressed','false'); });
+  // Collapsible Settings drawer
+  const settingsToggleBtn = document.getElementById('settings-toggle-btn') as HTMLButtonElement;
+  const settingsDrawer = document.getElementById('settings-drawer') as HTMLElement;
+  const settingsToggleIcon = document.getElementById('settings-toggle-icon') as HTMLElement;
 
-  function animateCalorieValue(obj: HTMLElement, start: number, end: number, duration: number) {
+  settingsToggleBtn?.addEventListener('click', () => {
+    const isExpanded = settingsToggleBtn.getAttribute('aria-expanded') === 'true';
+    settingsToggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+    settingsDrawer.style.display = isExpanded ? 'none' : 'block';
+    settingsToggleIcon.textContent = isExpanded ? '＋' : '－';
+  });
+
+  // BMR Formula listener to show/hide body fat percentage input
+  const bmrFormulaRadios = document.getElementsByName('bmr-formula');
+  const bodyFatContainer = document.getElementById('body-fat-container') as HTMLElement;
+
+  function updateBodyFatVisibility() {
+    const checkedFormula = Array.from(bmrFormulaRadios).find(r => (r as HTMLInputElement).checked) as HTMLInputElement;
+    if (checkedFormula && checkedFormula.value === 'katch') {
+      bodyFatContainer.hidden = false;
+    } else {
+      bodyFatContainer.hidden = true;
+    }
+  }
+
+  bmrFormulaRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      updateBodyFatVisibility();
+      updateUrl();
+    });
+  });
+
+  // Embedded Unit Converter Widget functionality
+  let activeConvTab = 'length'; // 'length', 'weight'
+  const btnConvLength = document.getElementById('btn-conv-length') as HTMLButtonElement;
+  const btnConvWeight = document.getElementById('btn-conv-weight') as HTMLButtonElement;
+  
+  const convInput = document.getElementById('conv-input') as HTMLInputElement;
+  const convOutput = document.getElementById('conv-output') as HTMLInputElement;
+  const convFromUnit = document.getElementById('conv-from-unit') as HTMLSelectElement;
+  const convToUnit = document.getElementById('conv-to-unit') as HTMLSelectElement;
+
+  const lengthUnits = [
+    { value: 'm', label: 'Meter (m)' },
+    { value: 'cm', label: 'Centimeter (cm)' },
+    { value: 'in', label: 'Inch (in)' },
+    { value: 'ft', label: 'Foot (ft)' },
+    { value: 'yard', label: 'Yard' },
+    { value: 'km', label: 'Kilometer (km)' }
+  ];
+
+  const weightUnits = [
+    { value: 'kg', label: 'Kilogram (kg)' },
+    { value: 'g', label: 'Gram (g)' },
+    { value: 'lbs', label: 'Pound (lbs)' },
+    { value: 'st', label: 'Stone (st)' },
+    { value: 'oz', label: 'Ounce (oz)' }
+  ];
+
+  const lengthMultipliers: Record<string, number> = {
+    m: 1,
+    cm: 0.01,
+    in: 0.0254,
+    ft: 0.3048,
+    yard: 0.9144,
+    km: 1000
+  };
+
+  const weightMultipliers: Record<string, number> = {
+    kg: 1,
+    g: 0.001,
+    lbs: 0.45359237,
+    st: 6.35029318,
+    oz: 0.0283495231
+  };
+
+  function populateConvDropdowns() {
+    const list = activeConvTab === 'length' ? lengthUnits : weightUnits;
+    
+    // Save current values to restore if possible
+    const prevFrom = convFromUnit.value;
+    const prevTo = convToUnit.value;
+
+    convFromUnit.innerHTML = '';
+    convToUnit.innerHTML = '';
+
+    list.forEach(item => {
+      const optFrom = document.createElement('option');
+      optFrom.value = item.value;
+      optFrom.textContent = item.label;
+      convFromUnit.appendChild(optFrom);
+
+      const optTo = document.createElement('option');
+      optTo.value = item.value;
+      optTo.textContent = item.label;
+      convToUnit.appendChild(optTo);
+    });
+
+    // Restore or select defaults
+    if (activeConvTab === 'length') {
+      convFromUnit.value = list.map(x=>x.value).includes(prevFrom) ? prevFrom : 'm';
+      convToUnit.value = list.map(x=>x.value).includes(prevTo) ? prevTo : 'cm';
+    } else {
+      convFromUnit.value = list.map(x=>x.value).includes(prevFrom) ? prevFrom : 'lbs';
+      convToUnit.value = list.map(x=>x.value).includes(prevTo) ? prevTo : 'kg';
+    }
+  }
+
+  function runConversion() {
+    const val = parseFloat(convInput.value);
+    if (isNaN(val)) {
+      convOutput.value = '';
+      return;
+    }
+    const from = convFromUnit.value;
+    const to = convToUnit.value;
+    let res = 0;
+    
+    if (activeConvTab === 'length') {
+      const baseM = val * lengthMultipliers[from];
+      res = baseM / lengthMultipliers[to];
+    } else {
+      const baseKg = val * weightMultipliers[from];
+      res = baseKg / weightMultipliers[to];
+    }
+
+    convOutput.value = res.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 });
+  }
+
+  function switchConvTab(tab: string) {
+    activeConvTab = tab;
+    btnConvLength.classList.toggle('active', tab === 'length');
+    btnConvWeight.classList.toggle('active', tab === 'weight');
+    populateConvDropdowns();
+    runConversion();
+  }
+
+  btnConvLength?.addEventListener('click', () => switchConvTab('length'));
+  btnConvWeight?.addEventListener('click', () => switchConvTab('weight'));
+  convInput?.addEventListener('input', runConversion);
+  convFromUnit?.addEventListener('change', runConversion);
+  convToUnit?.addEventListener('change', runConversion);
+
+  // Helper selectors for standard calculations
+  function getRadioValue(name: string): string {
+    const el = document.querySelector(`input[name="${name}"]:checked`) as HTMLInputElement;
+    return el ? el.value : '';
+  }
+
+  function setRadioValue(name: string, value: string) {
+    const el = document.querySelector(`input[name="${name}"][value="${value}"]`) as HTMLInputElement;
+    if (el) {
+      el.checked = true;
+      el.dispatchEvent(new Event('change'));
+    }
+  }
+
+  // Animation values helper
+  function animateCalorieValue(obj: HTMLElement, start: number, end: number, duration: number, suffix: string = '') {
     let startTimestamp: number | null = null;
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
       const current = progress * (end - start) + start;
-      obj.textContent = Math.round(current).toLocaleString();
+      obj.textContent = Math.round(current).toLocaleString() + suffix;
       if (progress < 1) {
         window.requestAnimationFrame(step);
       }
@@ -419,59 +820,293 @@ const goalOptions = [
     window.requestAnimationFrame(step);
   }
 
-  document.getElementById('calc-cal-btn')?.addEventListener('click', () => {
-    const age = parseFloat((document.getElementById('cal-age') as HTMLInputElement).value);
+  // Core calculations and execution
+  function calculateCalories() {
+    const ageVal = parseFloat((document.getElementById('cal-age') as HTMLInputElement).value);
     
-    let height = 0;
-    let weight = 0;
+    let heightCm = 0;
+    let weightKg = 0;
 
-    if (isMetric) {
-      height = parseFloat((document.getElementById('cal-height-cm') as HTMLInputElement).value);
-      weight = parseFloat((document.getElementById('cal-weight-kg') as HTMLInputElement).value);
-    } else {
+    if (activeSystem === 'metric') {
+      heightCm = parseFloat((document.getElementById('cal-height-cm') as HTMLInputElement).value) || 0;
+      weightKg = parseFloat((document.getElementById('cal-weight-kg') as HTMLInputElement).value) || 0;
+    } else if (activeSystem === 'imperial') {
       const ft = parseFloat((document.getElementById('cal-height-ft') as HTMLInputElement).value) || 0;
       const inch = parseFloat((document.getElementById('cal-height-in') as HTMLInputElement).value) || 0;
-      height = (ft * 12 + inch) * 2.54; // convert to cm
-      const lbs = parseFloat((document.getElementById('cal-weight-lbs') as HTMLInputElement).value);
-      weight = lbs / 2.20462; // convert to kg
+      heightCm = (ft * 12 + inch) * 2.54;
+      
+      const lbs = parseFloat((document.getElementById('cal-weight-lbs') as HTMLInputElement).value) || 0;
+      weightKg = lbs / 2.20462262;
+    } else {
+      const heightVal = parseFloat((document.getElementById('cal-height-other-val') as HTMLInputElement).value) || 0;
+      const heightUnit = (document.getElementById('cal-height-other-unit') as HTMLSelectElement).value;
+      if (heightUnit === 'm') heightCm = heightVal * 100;
+      else if (heightUnit === 'cm') heightCm = heightVal;
+      else if (heightUnit === 'in') heightCm = heightVal * 2.54;
+      else if (heightUnit === 'ft') heightCm = heightVal * 30.48;
+
+      const weightVal = parseFloat((document.getElementById('cal-weight-other-val') as HTMLInputElement).value) || 0;
+      const weightUnit = (document.getElementById('cal-weight-other-unit') as HTMLSelectElement).value;
+      if (weightUnit === 'kg') weightKg = weightVal;
+      else if (weightUnit === 'lbs') weightKg = weightVal / 2.20462262;
+      else if (weightUnit === 'g') weightKg = weightVal / 1000;
+      else if (weightUnit === 'st') weightKg = weightVal * 6.35029318;
     }
 
-    const activity = (document.getElementById('cal-activity') as HTMLSelectElement).value;
+    const activity = getRadioValue('cal-activity-radio');
     const goal = (document.getElementById('cal-goal') as HTMLSelectElement).value;
+    const gender = getRadioValue('cal-gender');
+    
     const errEl = document.getElementById('cal-error') as HTMLElement;
     const errMsg = document.getElementById('cal-error-msg') as HTMLElement;
 
-    if (!age || !height || !weight || height <= 0 || weight <= 0) { errMsg.textContent = 'Please fill in all fields with valid positive values.'; errEl.hidden = false; return; }
-    if (age < 15 || age > 120) { errMsg.textContent = 'Age must be between 15 and 120.'; errEl.hidden = false; return; }
+    if (!ageVal || !heightCm || !weightKg || heightCm <= 0 || weightKg <= 0) {
+      errMsg.textContent = 'Please fill in all fields with valid positive values.';
+      errEl.hidden = false;
+      return;
+    }
+    if (ageVal < 15 || ageVal > 80) {
+      errMsg.textContent = 'Age must be between 15 and 80.';
+      errEl.hidden = false;
+      return;
+    }
     errEl.hidden = true;
 
-    const bmr = gender === 'male'
-      ? 10 * weight + 6.25 * height - 5 * age + 5
-      : 10 * weight + 6.25 * height - 5 * age - 161;
-    const tdee = bmr * ACTIVITY[activity];
-    const target = Math.max(1200, tdee + GOAL[goal]);
-    const protein = Math.round((target * 0.30) / 4);
-    const carbs = Math.round((target * 0.40) / 4);
-    const fat = Math.round((target * 0.30) / 9);
+    // Retrieve formula details
+    const formula = getRadioValue('bmr-formula');
+    let bmrKcal = 0;
 
-    const targetVal = Math.round(target);
+    if (formula === 'mifflin') {
+      bmrKcal = gender === 'male'
+        ? (10 * weightKg) + (6.25 * heightCm) - (5 * ageVal) + 5
+        : (10 * weightKg) + (6.25 * heightCm) - (5 * ageVal) - 161;
+    } else if (formula === 'harris') {
+      bmrKcal = gender === 'male'
+        ? 88.362 + (13.397 * weightKg) + (4.799 * heightCm) - (5.677 * ageVal)
+        : 447.593 + (9.247 * weightKg) + (3.098 * heightCm) - (4.330 * ageVal);
+    } else if (formula === 'katch') {
+      const bf = parseFloat((document.getElementById('cal-bodyfat') as HTMLInputElement).value) || 20;
+      const lbm = weightKg * (100 - bf) / 100;
+      bmrKcal = 370 + (21.6 * lbm);
+    }
 
+    const tdeeKcal = bmrKcal * ACTIVITY[activity];
+    
+    // Output conversions (Calories vs Kilojoules)
+    const resultsUnit = getRadioValue('results-unit');
+    const isKj = resultsUnit === 'kilojoules';
+    const convFactor = isKj ? 4.184 : 1;
+    const unitSuffix = isKj ? ' kJ' : ' kcal';
+
+    const bmrOut = bmrKcal * convFactor;
+    const tdeeOut = tdeeKcal * convFactor;
+    
+    // Adjust target according to goal
+    const goalDelta = GOAL[goal] * convFactor;
+    const targetOut = Math.max(1000 * convFactor, tdeeOut + goalDelta);
+
+    // Dynamic macros grammar
+    // Protein: 30%, Carbs: 40%, Fat: 30%
+    // 1g Protein = 4 kcal (16.736 kJ)
+    // 1g Carbs = 4 kcal (16.736 kJ)
+    // 1g Fat = 9 kcal (37.656 kJ)
+    const proteinG = Math.round((targetOut * 0.30) / (4 * convFactor));
+    const carbsG = Math.round((targetOut * 0.40) / (4 * convFactor));
+    const fatG = Math.round((targetOut * 0.30) / (9 * convFactor));
+
+    // Update labels contextually
+    const targetLabelText = document.getElementById('cal-target-label-text') as HTMLElement;
+    targetLabelText.textContent = isKj ? 'Kilojoules / Day' : 'Calories / Day';
+
+    const bmrTitleLabel = document.getElementById('bmr-title-label') as HTMLElement;
+    bmrTitleLabel.textContent = isKj ? '🔥 BMR (Basal Metabolic Rate)' : '🔥 BMR (Basal Metabolic Rate)';
+
+    const tdeeTitleLabel = document.getElementById('tdee-title-label') as HTMLElement;
+    tdeeTitleLabel.textContent = isKj ? '⚡ TDEE (Total Daily Energy Expenditure)' : '⚡ TDEE (Total Daily Energy Expenditure)';
+
+    // Set textual outputs
     (document.getElementById('cal-goal-label') as HTMLElement).textContent = GOAL_LABEL[goal];
-    (document.getElementById('cal-bmr') as HTMLElement).textContent = Math.round(bmr).toLocaleString() + ' kcal';
-    (document.getElementById('cal-tdee') as HTMLElement).textContent = Math.round(tdee).toLocaleString() + ' kcal';
-    (document.getElementById('cal-target-row') as HTMLElement).textContent = targetVal.toLocaleString() + ' kcal';
-    (document.getElementById('macro-protein') as HTMLElement).textContent = protein + 'g';
-    (document.getElementById('macro-carbs') as HTMLElement).textContent = carbs + 'g';
-    (document.getElementById('macro-fat') as HTMLElement).textContent = fat + 'g';
+    (document.getElementById('cal-bmr') as HTMLElement).textContent = Math.round(bmrOut).toLocaleString() + unitSuffix;
+    (document.getElementById('cal-tdee') as HTMLElement).textContent = Math.round(tdeeOut).toLocaleString() + unitSuffix;
+    (document.getElementById('cal-target-row') as HTMLElement).textContent = Math.round(targetOut).toLocaleString() + unitSuffix;
+    (document.getElementById('macro-protein') as HTMLElement).textContent = proteinG + 'g';
+    (document.getElementById('macro-carbs') as HTMLElement).textContent = carbsG + 'g';
+    (document.getElementById('macro-fat') as HTMLElement).textContent = fatG + 'g';
 
     const results = document.getElementById('cal-results') as HTMLElement;
     results.hidden = false;
     results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
     const targetEl = document.getElementById('cal-target') as HTMLElement;
-    animateCalorieValue(targetEl, 0, targetVal, 800);
+    animateCalorieValue(targetEl, 0, targetOut, 800, isKj ? ' kJ' : '');
+
+    updateUrl();
+  }
+
+  // Clear inputs action
+  function clearAllInputs() {
+    (document.getElementById('cal-age') as HTMLInputElement).value = '';
+    (document.getElementById('cal-height-cm') as HTMLInputElement).value = '';
+    (document.getElementById('cal-weight-kg') as HTMLInputElement).value = '';
+    
+    (document.getElementById('cal-height-ft') as HTMLInputElement).value = '';
+    (document.getElementById('cal-height-in') as HTMLInputElement).value = '';
+    (document.getElementById('cal-weight-lbs') as HTMLInputElement).value = '';
+
+    (document.getElementById('cal-height-other-val') as HTMLInputElement).value = '';
+    (document.getElementById('cal-weight-other-val') as HTMLInputElement).value = '';
+
+    (document.getElementById('cal-bodyfat') as HTMLInputElement).value = '20';
+
+    (document.getElementById('cal-goal') as HTMLSelectElement).selectedIndex = 2; // maintain
+
+    setRadioValue('cal-gender', 'male');
+    setRadioValue('cal-activity-radio', 'sedentary');
+    setRadioValue('results-unit', 'calories');
+    setRadioValue('bmr-formula', 'mifflin');
+
+    // Hide output
+    (document.getElementById('cal-results') as HTMLElement).hidden = true;
+    (document.getElementById('cal-error') as HTMLElement).hidden = true;
+
+    // Reset url
+    const url = new URL(window.location.href);
+    url.search = '';
+    window.history.replaceState({}, '', url.toString());
+  }
+
+  document.getElementById('calc-cal-btn')?.addEventListener('click', calculateCalories);
+  document.getElementById('clear-cal-btn')?.addEventListener('click', clearAllInputs);
+
+  // URL State persistence sync
+  function updateUrl() {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams();
+
+    params.set('system', activeSystem);
+    params.set('age', (document.getElementById('cal-age') as HTMLInputElement).value || '');
+    params.set('gender', getRadioValue('cal-gender'));
+    params.set('activity', getRadioValue('cal-activity-radio'));
+    params.set('goal', (document.getElementById('cal-goal') as HTMLSelectElement).value);
+    params.set('res_unit', getRadioValue('results-unit'));
+    params.set('formula', getRadioValue('bmr-formula'));
+    params.set('bodyfat', (document.getElementById('cal-bodyfat') as HTMLInputElement).value || '20');
+
+    if (activeSystem === 'metric') {
+      params.set('height', (document.getElementById('cal-height-cm') as HTMLInputElement).value || '');
+      params.set('weight', (document.getElementById('cal-weight-kg') as HTMLInputElement).value || '');
+    } else if (activeSystem === 'imperial') {
+      params.set('height_ft', (document.getElementById('cal-height-ft') as HTMLInputElement).value || '');
+      params.set('height_in', (document.getElementById('cal-height-in') as HTMLInputElement).value || '');
+      params.set('weight', (document.getElementById('cal-weight-lbs') as HTMLInputElement).value || '');
+    } else {
+      params.set('height', (document.getElementById('cal-height-other-val') as HTMLInputElement).value || '');
+      params.set('height_unit', (document.getElementById('cal-height-other-unit') as HTMLSelectElement).value);
+      params.set('weight', (document.getElementById('cal-weight-other-val') as HTMLInputElement).value || '');
+      params.set('weight_unit', (document.getElementById('cal-weight-other-unit') as HTMLSelectElement).value);
+    }
+
+    url.search = params.toString();
+    window.history.replaceState({}, '', url.toString());
+  }
+
+  function initFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.has('system')) return; // nothing to load
+
+    const sys = params.get('system') || 'metric';
+    switchSystem(sys);
+
+    const age = params.get('age');
+    if (age) (document.getElementById('cal-age') as HTMLInputElement).value = age;
+
+    const gender = params.get('gender');
+    if (gender) setRadioValue('cal-gender', gender);
+
+    const activity = params.get('activity');
+    if (activity) setRadioValue('cal-activity-radio', activity);
+
+    const goal = params.get('goal');
+    if (goal) (document.getElementById('cal-goal') as HTMLSelectElement).value = goal;
+
+    const resUnit = params.get('res_unit');
+    if (resUnit) setRadioValue('results-unit', resUnit);
+
+    const formula = params.get('formula');
+    if (formula) setRadioValue('bmr-formula', formula);
+
+    const bodyfat = params.get('bodyfat');
+    if (bodyfat) (document.getElementById('cal-bodyfat') as HTMLInputElement).value = bodyfat;
+
+    if (sys === 'metric') {
+      const h = params.get('height');
+      const w = params.get('weight');
+      if (h) (document.getElementById('cal-height-cm') as HTMLInputElement).value = h;
+      if (w) (document.getElementById('cal-weight-kg') as HTMLInputElement).value = w;
+    } else if (sys === 'imperial') {
+      const hFt = params.get('height_ft');
+      const hIn = params.get('height_in');
+      const w = params.get('weight');
+      if (hFt) (document.getElementById('cal-height-ft') as HTMLInputElement).value = hFt;
+      if (hIn) (document.getElementById('cal-height-in') as HTMLInputElement).value = hIn;
+      if (w) (document.getElementById('cal-weight-lbs') as HTMLInputElement).value = w;
+    } else {
+      const hVal = params.get('height');
+      const hUnit = params.get('height_unit');
+      const wVal = params.get('weight');
+      const wUnit = params.get('weight_unit');
+      if (hVal) (document.getElementById('cal-height-other-val') as HTMLInputElement).value = hVal;
+      if (hUnit) (document.getElementById('cal-height-other-unit') as HTMLSelectElement).value = hUnit;
+      if (wVal) (document.getElementById('cal-weight-other-val') as HTMLInputElement).value = wVal;
+      if (wUnit) (document.getElementById('cal-weight-other-unit') as HTMLSelectElement).value = wUnit;
+    }
+
+    calculateCalories();
+  }
+
+  // Food Energy Converter Widget client operations
+  const foodInput = document.getElementById('food-input-val') as HTMLInputElement;
+  const foodFromUnit = document.getElementById('food-from-unit') as HTMLSelectElement;
+  const foodToUnit = document.getElementById('food-to-unit') as HTMLSelectElement;
+  const foodOutput = document.getElementById('food-output-val') as HTMLInputElement;
+
+  const foodMultipliers: Record<string, number> = {
+    kcal: 4.184,
+    kj: 1,
+    j: 0.001,
+    kcal_it: 4.1868,
+    wh: 3.6
+  };
+
+  function calculateFoodConversion() {
+    const val = parseFloat(foodInput.value);
+    if (isNaN(val)) {
+      foodOutput.value = '';
+      return;
+    }
+    const from = foodFromUnit.value;
+    const to = foodToUnit.value;
+
+    const baseKj = val * foodMultipliers[from];
+    const res = baseKj / foodMultipliers[to];
+
+    foodOutput.value = res.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 4 });
+  }
+
+  document.getElementById('calc-food-btn')?.addEventListener('click', calculateFoodConversion);
+  document.getElementById('clear-food-btn')?.addEventListener('click', () => {
+    foodInput.value = '1';
+    foodOutput.value = '';
+    foodFromUnit.selectedIndex = 0;
+    foodToUnit.selectedIndex = 0;
   });
 
+  // Global triggers
+  populateConvDropdowns();
+  switchConvTab('length');
+  initFromUrl();
+
+  // FAQ listeners
   document.querySelectorAll('.faq-question').forEach((btn) => {
     btn.addEventListener('click', () => {
       const exp = btn.getAttribute('aria-expanded') === 'true';

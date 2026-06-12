@@ -44,74 +44,305 @@ const relatedCalcs = [
     </p>
   </div>
 
-  <!-- Calculator Panel -->
-  <div class="calc-panel fade-up stagger-1" id="age-calculator">
-    <div class="calc-form">
-      <div class="form-row">
-        <div class="form-field">
-          <label for="birth-date" class="label">Date of Birth</label>
-          <input
-            type="date"
-            id="birth-date"
-            class="input-base input-lg"
-            aria-required="true"
-            aria-describedby="birth-date-hint"
-            max=""
-          />
-          <p id="birth-date-hint" class="field-hint">Enter your date of birth</p>
-        </div>
-        <div class="form-field">
-          <label for="birth-time" class="label">Time of Birth <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(Optional)</span></label>
-          <input
-            type="time"
-            id="birth-time"
-            class="input-base input-lg"
-            aria-describedby="birth-time-hint"
-          />
-          <p id="birth-time-hint" class="field-hint">Enter your birth time</p>
-        </div>
-      </div>
+  <!-- Calculator Panel with Tabs -->
+  <div class="calc-panel fade-up stagger-1" id="age-calculator-container">
+    <!-- Tabs Switcher -->
+    <div class="calc-tabs" role="tablist" aria-label="Age Calculator Modes" style="display: flex; gap: 4px; margin-bottom: 24px; padding: 4px; background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-lg);">
+      <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-chrono" id="tab-chrono" type="button" style="flex: 1; padding: 10px 12px; border: none; background: transparent; border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; color: var(--color-body); cursor: pointer; transition: all 0.15s ease;">
+        📅 Chronological Age
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-diff" id="tab-diff" type="button" style="flex: 1; padding: 10px 12px; border: none; background: transparent; border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; color: var(--color-body); cursor: pointer; transition: all 0.15s ease;">
+        ⏳ Days Between Dates
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-addsub" id="tab-addsub" type="button" style="flex: 1; padding: 10px 12px; border: none; background: transparent; border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; color: var(--color-body); cursor: pointer; transition: all 0.15s ease;">
+        ➕ Add/Subtract Date
+      </button>
+    </div>
 
-      <div class="form-row">
-        <div class="form-field">
-          <label for="to-date" class="label">Calculate Age On</label>
-          <input
-            type="date"
-            id="to-date"
-            class="input-base input-lg"
-            aria-describedby="to-date-hint"
-          />
-          <p id="to-date-hint" class="field-hint">Leave blank for today</p>
-        </div>
-        <div class="form-field">
-          <label for="to-time" class="label">Target Time <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(Optional)</span></label>
-          <input
-            type="time"
-            id="to-time"
-            class="input-base input-lg"
-            aria-describedby="to-time-hint"
-          />
-          <p id="to-time-hint" class="field-hint">Leave blank for current time</p>
-        </div>
-      </div>
+    <!-- TAB 1: Chronological Age Panel -->
+    <div id="panel-chrono" class="tab-content">
+      <div class="calc-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="label">Date of Birth</label>
+            <div class="date-select-group" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; position: relative;">
+              <select id="birth-month" class="input-base" style="flex: 1.8; min-width: 95px; padding-right: 16px;" aria-label="Birth month">
+                <option value="">Month</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+              </select>
+              <select id="birth-day" class="input-base" style="flex: 1; min-width: 60px; padding-right: 16px;" aria-label="Birth day">
+                <option value="">Day</option>
+                <!-- Filled via js -->
+              </select>
+              <input type="number" id="birth-year" class="input-base" placeholder="Year" style="flex: 1.2; min-width: 70px; padding-right: 12px;" min="1" max="9999" aria-label="Birth year" />
+              <input type="date" id="birth-picker-hidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" />
+              <button type="button" id="birth-calendar-btn" class="btn-secondary" style="padding: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); flex-shrink: 0;" aria-label="Select birth date from calendar">
+                📅
+              </button>
+            </div>
+            <p class="field-hint">Select or type your birth date</p>
+          </div>
 
-      <div style="display: flex; gap: 12px; margin-top: 12px;">
-        <button id="calc-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate age">
-          Calculate Age
-        </button>
-        <button id="reset-btn" class="btn-secondary" aria-label="Reset calculator">
-          Reset
-        </button>
+          <div class="form-field">
+            <label class="label">Time of Birth <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(Optional)</span></label>
+            <div class="time-select-group" style="display: flex; gap: 6px; align-items: center;">
+              <select id="birth-hour" class="input-base" style="flex: 1; padding-right: 16px;" aria-label="Birth hour">
+                <option value="">Hour</option>
+                <!-- Filled via js -->
+              </select>
+              <span style="color: var(--color-muted); font-weight: bold;">:</span>
+              <select id="birth-minute" class="input-base" style="flex: 1; padding-right: 16px;" aria-label="Birth minute">
+                <option value="">Minute</option>
+                <!-- Filled via js -->
+              </select>
+            </div>
+            <p class="field-hint">Enter your birth time</p>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="label">Calculate Age On</label>
+            <div class="date-select-group" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; position: relative;">
+              <select id="to-month" class="input-base" style="flex: 1.8; min-width: 95px; padding-right: 16px;" aria-label="Target month">
+                <option value="">Month</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+              </select>
+              <select id="to-day" class="input-base" style="flex: 1; min-width: 60px; padding-right: 16px;" aria-label="Target day">
+                <option value="">Day</option>
+                <!-- Filled via js -->
+              </select>
+              <input type="number" id="to-year" class="input-base" placeholder="Year" style="flex: 1.2; min-width: 70px; padding-right: 12px;" min="1" max="9999" aria-label="Target year" />
+              <input type="date" id="to-picker-hidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" />
+              <button type="button" id="to-calendar-btn" class="btn-secondary" style="padding: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); flex-shrink: 0;" aria-label="Select target date from calendar">
+                📅
+              </button>
+            </div>
+            <p class="field-hint">Defaults to today</p>
+          </div>
+
+          <div class="form-field">
+            <label class="label">Target Time <span style="font-size: 11px; color: var(--color-muted); font-weight: normal; margin-left: 4px;">(Optional)</span></label>
+            <div class="time-select-group" style="display: flex; gap: 6px; align-items: center;">
+              <select id="to-hour" class="input-base" style="flex: 1; padding-right: 16px;" aria-label="Target hour">
+                <option value="">Hour</option>
+                <!-- Filled via js -->
+              </select>
+              <span style="color: var(--color-muted); font-weight: bold;">:</span>
+              <select id="to-minute" class="input-base" style="flex: 1; padding-right: 16px;" aria-label="Target minute">
+                <option value="">Minute</option>
+                <!-- Filled via js -->
+              </select>
+            </div>
+            <p class="field-hint">Defaults to current time</p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 12px;">
+          <button id="calc-chrono-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate age">
+            Calculate Age
+          </button>
+          <button id="reset-chrono-btn" class="btn-secondary" aria-label="Reset fields">
+            Clear
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Error -->
+    <!-- TAB 2: Days Between Dates Panel -->
+    <div id="panel-diff" class="tab-content" style="display: none;">
+      <div class="calc-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="label">Start Date</label>
+            <div class="date-select-group" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; position: relative;">
+              <select id="diff-start-month" class="input-base" style="flex: 1.8; min-width: 95px; padding-right: 16px;" aria-label="Start month">
+                <option value="">Month</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+              </select>
+              <select id="diff-start-day" class="input-base" style="flex: 1; min-width: 60px; padding-right: 16px;" aria-label="Start day">
+                <option value="">Day</option>
+                <!-- Filled via js -->
+              </select>
+              <input type="number" id="diff-start-year" class="input-base" placeholder="Year" style="flex: 1.2; min-width: 70px; padding-right: 12px;" min="1" max="9999" aria-label="Start year" />
+              <input type="date" id="diff-start-picker-hidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" />
+              <button type="button" id="diff-start-calendar-btn" class="btn-secondary" style="padding: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); flex-shrink: 0;" aria-label="Select start date from calendar">
+                📅
+              </button>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="label">End Date</label>
+            <div class="date-select-group" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; position: relative;">
+              <select id="diff-end-month" class="input-base" style="flex: 1.8; min-width: 95px; padding-right: 16px;" aria-label="End month">
+                <option value="">Month</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+              </select>
+              <select id="diff-end-day" class="input-base" style="flex: 1; min-width: 60px; padding-right: 16px;" aria-label="End day">
+                <option value="">Day</option>
+                <!-- Filled via js -->
+              </select>
+              <input type="number" id="diff-end-year" class="input-base" placeholder="Year" style="flex: 1.2; min-width: 70px; padding-right: 12px;" min="1" max="9999" aria-label="End year" />
+              <input type="date" id="diff-end-picker-hidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" />
+              <button type="button" id="diff-end-calendar-btn" class="btn-secondary" style="padding: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); flex-shrink: 0;" aria-label="Select end date from calendar">
+                📅
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 4px;">
+          <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; cursor: pointer; color: var(--color-body); user-select: none;">
+            <input type="checkbox" id="diff-include-end" style="width: 16px; height: 16px; accent-color: var(--color-link);" />
+            <span>Include end date in calculation (add 1 day)</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button id="calc-diff-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate difference">
+            Calculate Difference
+          </button>
+          <button id="reset-diff-btn" class="btn-secondary" aria-label="Reset fields">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Add / Subtract Date Panel -->
+    <div id="panel-addsub" class="tab-content" style="display: none;">
+      <div class="calc-form">
+        <div class="form-row">
+          <div class="form-field" style="grid-column: span 2;">
+            <label class="label">Base Date</label>
+            <div class="date-select-group" style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap; position: relative;">
+              <select id="addsub-month" class="input-base" style="flex: 1.8; min-width: 95px; padding-right: 16px;" aria-label="Base month">
+                <option value="">Month</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+              </select>
+              <select id="addsub-day" class="input-base" style="flex: 1; min-width: 60px; padding-right: 16px;" aria-label="Base day">
+                <option value="">Day</option>
+                <!-- Filled via js -->
+              </select>
+              <input type="number" id="addsub-year" class="input-base" placeholder="Year" style="flex: 1.2; min-width: 70px; padding-right: 12px;" min="1" max="9999" aria-label="Base year" />
+              <input type="date" id="addsub-picker-hidden" style="position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;" />
+              <button type="button" id="addsub-calendar-btn" class="btn-secondary" style="padding: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); flex-shrink: 0;" aria-label="Select base date from calendar">
+                📅
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label for="addsub-op" class="label">Action</label>
+            <select id="addsub-op" class="input-base input-lg" aria-label="Add or subtract operation">
+              <option value="add">➕ Add</option>
+              <option value="subtract">➖ Subtract</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="addsub-years" class="label">Years</label>
+            <input type="number" id="addsub-years" class="input-base input-lg" value="0" min="0" />
+          </div>
+        </div>
+
+        <div class="form-row" style="grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div class="form-field">
+            <label for="addsub-months" class="label">Months</label>
+            <input type="number" id="addsub-months" class="input-base input-lg" value="0" min="0" />
+          </div>
+          <div class="form-field">
+            <label for="addsub-weeks" class="label">Weeks</label>
+            <input type="number" id="addsub-weeks" class="input-base input-lg" value="0" min="0" />
+          </div>
+          <div class="form-field">
+            <label for="addsub-days" class="label">Days</label>
+            <input type="number" id="addsub-days" class="input-base input-lg" value="0" min="0" />
+          </div>
+        </div>
+
+        <div style="margin-top: 4px;">
+          <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; cursor: pointer; color: var(--color-body); user-select: none;">
+            <input type="checkbox" id="addsub-bizonly" style="width: 16px; height: 16px; accent-color: var(--color-link);" />
+            <span>Calculate using business days only (skips weekends/holidays)</span>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 16px;">
+          <button id="calc-addsub-btn" class="btn-primary" style="flex: 1;" aria-label="Calculate new date">
+            Calculate Date
+          </button>
+          <button id="reset-addsub-btn" class="btn-secondary" aria-label="Reset fields">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- General Error Banner -->
     <div id="calc-error" class="calc-error" role="alert" aria-live="polite" hidden>
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       <span id="error-msg"></span>
     </div>
 
-    <!-- Results -->
+    <!-- RESULTS FOR TAB 1: Chronological Age -->
     <div id="calc-results" hidden aria-live="polite" aria-label="Age calculation results">
       <div class="results-divider"></div>
 
@@ -166,6 +397,122 @@ const relatedCalcs = [
         </div>
       </div>
     </div>
+
+    <!-- RESULTS FOR TAB 2: Days Between Dates -->
+    <div id="diff-results" hidden aria-live="polite" aria-label="Date difference results" style="margin-top: 24px;">
+      <div class="results-divider"></div>
+      <h3 style="font-size: 16px; font-weight: 600; color: var(--color-ink); margin-bottom: 4px;" id="diff-summary-title">Difference between dates:</h3>
+      <p style="font-size: 13.5px; color: var(--color-muted); margin-bottom: 20px;" id="diff-summary-subtitle"></p>
+
+      <div class="main-result-card" style="margin-bottom: 20px;">
+        <div class="main-result-value" id="diff-main-value" style="font-size: 44px; letter-spacing: -1.5px; line-height: 1.2;">--</div>
+        <div class="main-result-label">Elapsed Time</div>
+      </div>
+
+      <!-- Alternative breakdowns list -->
+      <div class="result-panel" style="margin-bottom: 24px;">
+        <div class="result-row">
+          <span class="result-row-label">📅 Or Months &amp; Days</span>
+          <span class="result-row-value" id="diff-alt-months">--</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">📅 Or Weeks &amp; Days</span>
+          <span class="result-row-value" id="diff-alt-weeks">--</span>
+        </div>
+        <div class="result-row" style="border-bottom: none;">
+          <span class="result-row-label">📅 Or Total Days</span>
+          <span class="result-row-value" id="diff-alt-days">--</span>
+        </div>
+      </div>
+
+      <!-- Business day details -->
+      <h4 style="font-size: 14px; font-weight: 600; color: var(--color-ink); margin-bottom: 12px;">Workweek &amp; Holiday Breakdown:</h4>
+      <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;">
+        <div class="stat-card" style="padding: 16px 12px;">
+          <div class="stat-value" id="diff-stat-weekends" style="font-size: 24px;">--</div>
+          <div class="stat-label" style="font-size: 11px;">Weekend Days</div>
+        </div>
+        <div class="stat-card" style="padding: 16px 12px; position: relative;">
+          <div class="stat-value" id="diff-stat-holidays" style="font-size: 24px;">--</div>
+          <div class="stat-label" style="font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">
+            <span>Holidays</span>
+            <button type="button" id="toggle-holidays-btn" style="border: none; background: transparent; padding: 0; color: var(--color-link); cursor: pointer; text-decoration: underline; font-weight: 600; font-family: inherit; font-size: 11px;">(edit)</button>
+          </div>
+        </div>
+        <div class="stat-card" style="padding: 16px 12px; background: var(--color-canvas-soft-2); border: 1px solid var(--color-link-soft);">
+          <div class="stat-value" id="diff-stat-bizdays" style="font-size: 24px; color: var(--color-link);">--</div>
+          <div class="stat-label" style="font-size: 11px; font-weight: 600; color: var(--color-ink);">Business Days</div>
+        </div>
+      </div>
+
+      <!-- Holiday Settings Slideout/Dropdown -->
+      <div id="holiday-settings-panel" style="margin-top: -12px; margin-bottom: 24px; padding: 16px; background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-md);" hidden>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h5 style="font-size: 13.5px; font-weight: 600; color: var(--color-ink); margin: 0;">Holiday &amp; Weekend Settings</h5>
+          <button type="button" id="close-holidays-btn" style="border: none; background: transparent; font-size: 16px; cursor: pointer; color: var(--color-muted);">✕</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <label style="font-size: 12px; font-weight: 600; color: var(--color-muted); display: block; margin-bottom: 6px;">HOLIDAY SCHEME</label>
+            <div style="display: flex; gap: 16px; align-items: center;">
+              <label style="font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="radio" name="holiday-region" value="us" checked style="accent-color: var(--color-link);" /> US Federal Holidays
+              </label>
+              <label style="font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="radio" name="holiday-region" value="none" style="accent-color: var(--color-link);" /> None (Custom Only)
+              </label>
+            </div>
+          </div>
+          <div style="border-top: 1px solid var(--color-hairline); padding-top: 12px;">
+            <label style="font-size: 12px; font-weight: 600; color: var(--color-muted); display: block; margin-bottom: 6px;">ADD CUSTOM HOLIDAY</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="date" id="custom-holiday-date" class="input-base" style="font-size: 13px; height: 38px;" />
+              <button type="button" id="add-holiday-btn" class="btn-primary" style="font-size: 13px; height: 38px; padding: 0 16px; border-radius: var(--radius-md);">Add</button>
+            </div>
+          </div>
+          <div>
+            <label style="font-size: 12px; font-weight: 600; color: var(--color-muted); display: block; margin-bottom: 6px;">ACTIVE CUSTOM HOLIDAYS</label>
+            <div id="custom-holidays-list" style="display: flex; flex-wrap: wrap; gap: 6px; max-height: 100px; overflow-y: auto; padding: 4px; background: var(--color-canvas); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); min-height: 38px; align-content: flex-start;">
+              <span style="font-size: 12px; color: var(--color-muted); padding: 6px;">No custom holidays added yet.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar grids comparison -->
+      <h4 style="font-size: 14px; font-weight: 600; color: var(--color-ink); margin-bottom: 12px;">Visual Calendar Grids:</h4>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;" class="diff-calendars-grid">
+        <div style="background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); padding: 12px;">
+          <div id="diff-calendar-start-title" style="font-size: 13.5px; font-weight: 600; text-align: center; margin-bottom: 8px; color: var(--color-ink);">Start Month</div>
+          <div id="diff-calendar-start"></div>
+        </div>
+        <div style="background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); padding: 12px;">
+          <div id="diff-calendar-end-title" style="font-size: 13.5px; font-weight: 600; text-align: center; margin-bottom: 8px; color: var(--color-ink);">End Month</div>
+          <div id="diff-calendar-end"></div>
+        </div>
+      </div>
+
+      <p class="text-body-sm" style="color: var(--color-muted); font-size: 12px; line-height: 1.5; font-style: italic;">
+        * This calculator assumes the workweek is from Monday to Friday and the weekend is Saturday and Sunday in a seven-day week.
+      </p>
+    </div>
+
+    <!-- RESULTS FOR TAB 3: Add / Subtract Date -->
+    <div id="addsub-results" hidden aria-live="polite" aria-label="Date adjustment results" style="margin-top: 24px;">
+      <div class="results-divider"></div>
+      <h3 style="font-size: 16px; font-weight: 600; color: var(--color-ink); margin-bottom: 12px;">Calculated Target Date:</h3>
+      <div class="main-result-card" style="margin-bottom: 12px;">
+        <div class="main-result-value" id="addsub-target-date" style="font-size: 32px; letter-spacing: -1px; line-height: 1.3;">--</div>
+        <div class="main-result-label">Result Date</div>
+      </div>
+      <div class="result-panel" style="margin-bottom: 24px;">
+        <div class="result-row" style="border-bottom: none;">
+          <span class="result-row-label">📅 Days in Year</span>
+          <span class="result-row-value" id="addsub-year-day-num">Day -- of the year</span>
+        </div>
+      </div>
+    </div>
+  </div>
   </div>
 
   <!-- Detailed SEO Article Section -->
@@ -297,68 +644,390 @@ const relatedCalcs = [
   
   .calc-error { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--color-error-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); margin-top: 16px; font-size: 14px; color: var(--color-error); }
   .prose-section { padding: 32px; background: var(--color-canvas); border-radius: var(--radius-lg); border: 1px solid var(--color-hairline); }
+  
+  /* Tabs active state */
+  .tab-btn.active {
+    background: var(--color-canvas) !important;
+    color: var(--color-ink) !important;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-hairline) !important;
+  }
+
+  /* Calendar styling */
+  .calendar-grid-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    text-align: center;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+  .calendar-day-header {
+    font-weight: 600;
+    color: var(--color-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    padding: 4px 0;
+  }
+  .calendar-day-cell {
+    padding: 6px 0;
+    border-radius: var(--radius-sm);
+    color: var(--color-body);
+    font-family: var(--font-mono);
+  }
+  .calendar-day-cell.empty {
+    visibility: hidden;
+  }
+  .calendar-day-cell.highlight {
+    background: var(--color-link);
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  .calendar-day-cell.weekend {
+    color: var(--color-muted);
+  }
+
+  .badge-holiday {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-pill);
+    font-size: 12.5px;
+    color: var(--color-body);
+    font-weight: 500;
+  }
+  .badge-holiday button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-error);
+    font-weight: bold;
+    padding: 0;
+    font-size: 14px;
+  }
+
   @media (max-width: 599px) {
     .form-row { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
     .main-result-value { font-size: 54px; }
+    .diff-calendars-grid { grid-template-columns: 1fr !important; }
   }
 </style>
 
 <script>
-  // Age Calculator Client Logic
-  const birthInput = document.getElementById('birth-date') as HTMLInputElement;
-  const birthTimeInput = document.getElementById('birth-time') as HTMLInputElement;
-  const toInput = document.getElementById('to-date') as HTMLInputElement;
-  const toTimeInput = document.getElementById('to-time') as HTMLInputElement;
-  const calcBtn = document.getElementById('calc-btn') as HTMLButtonElement;
-  const resetBtn = document.getElementById('reset-btn') as HTMLButtonElement;
-  const resultsEl = document.getElementById('calc-results') as HTMLElement;
+  // Helper functions for US federal holidays
+  function getNthDayOfMonth(year: number, month: number, dayOfWeek: number, n: number): number {
+    let count = 0;
+    for (let d = 1; d <= 31; d++) {
+      const dt = new Date(year, month, d);
+      if (dt.getMonth() !== month) break;
+      if (dt.getDay() === dayOfWeek) {
+        count++;
+        if (count === n) return d;
+      }
+    }
+    return 1;
+  }
+
+  function getLastDayOfMonth(year: number, month: number, dayOfWeek: number): number {
+    for (let d = 31; d >= 20; d--) {
+      const dt = new Date(year, month, d);
+      if (dt.getMonth() === month && dt.getDay() === dayOfWeek) return d;
+    }
+    return 31;
+  }
+
+  function isUSFederalHoliday(date: Date): boolean {
+    const y = date.getFullYear();
+    const m = date.getMonth();
+    const d = date.getDate();
+
+    if (m === 0 && d === 1) return true; // New Year's Day
+    if (m === 0 && d === getNthDayOfMonth(y, 0, 1, 3)) return true; // MLK Day
+    if (m === 1 && d === getNthDayOfMonth(y, 1, 1, 3)) return true; // Washington's Birthday
+    if (m === 4 && d === getLastDayOfMonth(y, 4, 1)) return true; // Memorial Day
+    if (m === 5 && d === 19) return true; // Juneteenth
+    if (m === 6 && d === 4) return true; // Independence Day
+    if (m === 8 && d === getNthDayOfMonth(y, 8, 1, 1)) return true; // Labor Day
+    if (m === 9 && d === getNthDayOfMonth(y, 9, 1, 2)) return true; // Columbus Day
+    if (m === 10 && d === 11) return true; // Veterans Day
+    if (m === 10 && d === getNthDayOfMonth(y, 10, 4, 4)) return true; // Thanksgiving Day
+    if (m === 11 && d === 25) return true; // Christmas Day
+
+    return false;
+  }
+
+  // State
+  let activeTab = 'chrono';
+  let customHolidays: string[] = [];
+  let holidayRegion = 'us';
+
+  // Formatting helpers
+  const formatNum = (n: number): string => n.toLocaleString();
+
+  // Populate Dropdown Select Helpers
+  function populateDaySelect(monthSelect: HTMLSelectElement, daySelect: HTMLSelectElement, yearInput: HTMLInputElement) {
+    const month = parseInt(monthSelect.value);
+    const year = parseInt(yearInput.value) || new Date().getFullYear();
+    const currentVal = daySelect.value;
+    
+    daySelect.innerHTML = '<option value="">Day</option>';
+    let daysInMonth = 31;
+    if (!isNaN(month)) {
+      daysInMonth = new Date(year, month + 1, 0).getDate();
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i);
+      daySelect.appendChild(opt);
+    }
+    if (currentVal && parseInt(currentVal) <= daysInMonth) {
+      daySelect.value = currentVal;
+    }
+  }
+
+  function populateHourMinuteSelects(hourSelect: HTMLSelectElement, minuteSelect: HTMLSelectElement) {
+    hourSelect.innerHTML = '<option value="">Hour (Optional)</option>';
+    for (let i = 0; i < 24; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      const isPm = i >= 12;
+      const displayHour = i % 12 === 0 ? 12 : i % 12;
+      opt.textContent = `${displayHour} ${isPm ? 'PM' : 'AM'} (${String(i).padStart(2, '0')})`;
+      hourSelect.appendChild(opt);
+    }
+
+    minuteSelect.innerHTML = '<option value="">Minute (Optional)</option>';
+    for (let i = 0; i < 60; i++) {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = String(i).padStart(2, '0');
+      minuteSelect.appendChild(opt);
+    }
+  }
+
+  // Sync Calendar Trigger to Native Hidden Input
+  function setupCalendarSync(triggerId: string, pickerId: string, monthId: string, dayId: string, yearId: string) {
+    const trigger = document.getElementById(triggerId);
+    const picker = document.getElementById(pickerId) as HTMLInputElement;
+    const monthSelect = document.getElementById(monthId) as HTMLSelectElement;
+    const daySelect = document.getElementById(dayId) as HTMLSelectElement;
+    const yearInput = document.getElementById(yearId) as HTMLInputElement;
+
+    if (!trigger || !picker) return;
+
+    trigger.addEventListener('click', () => {
+      picker.showPicker();
+    });
+
+    picker.addEventListener('change', () => {
+      if (!picker.value) return;
+      const [y, m, d] = picker.value.split('-').map(Number);
+      yearInput.value = String(y);
+      monthSelect.value = String(m - 1);
+      populateDaySelect(monthSelect, daySelect, yearInput);
+      daySelect.value = String(d);
+    });
+  }
+
+  // Setup Date Listeners to keep day counts correct
+  function setupDateChangeListeners(monthId: string, dayId: string, yearId: string) {
+    const monthSelect = document.getElementById(monthId) as HTMLSelectElement;
+    const daySelect = document.getElementById(dayId) as HTMLSelectElement;
+    const yearInput = document.getElementById(yearId) as HTMLInputElement;
+
+    monthSelect?.addEventListener('change', () => populateDaySelect(monthSelect, daySelect, yearInput));
+    yearInput?.addEventListener('input', () => populateDaySelect(monthSelect, daySelect, yearInput));
+  }
+
+  // Initialize dropdown options on load
+  const todayDateObj = new Date();
+  
+  // Tab 1: Chronological inputs
+  const birthMonth = document.getElementById('birth-month') as HTMLSelectElement;
+  const birthDay = document.getElementById('birth-day') as HTMLSelectElement;
+  const birthYear = document.getElementById('birth-year') as HTMLInputElement;
+  const birthHour = document.getElementById('birth-hour') as HTMLSelectElement;
+  const birthMinute = document.getElementById('birth-minute') as HTMLSelectElement;
+  
+  const toMonth = document.getElementById('to-month') as HTMLSelectElement;
+  const toDay = document.getElementById('to-day') as HTMLSelectElement;
+  const toYear = document.getElementById('to-year') as HTMLInputElement;
+  const toHour = document.getElementById('to-hour') as HTMLSelectElement;
+  const toMinute = document.getElementById('to-minute') as HTMLSelectElement;
+
+  // Tab 2: Diff inputs
+  const diffStartMonth = document.getElementById('diff-start-month') as HTMLSelectElement;
+  const diffStartDay = document.getElementById('diff-start-day') as HTMLSelectElement;
+  const diffStartYear = document.getElementById('diff-start-year') as HTMLInputElement;
+  
+  const diffEndMonth = document.getElementById('diff-end-month') as HTMLSelectElement;
+  const diffEndDay = document.getElementById('diff-end-day') as HTMLSelectElement;
+  const diffEndYear = document.getElementById('diff-end-year') as HTMLInputElement;
+  const diffIncludeEnd = document.getElementById('diff-include-end') as HTMLInputElement;
+
+  // Tab 3: AddSub inputs
+  const addsubMonth = document.getElementById('addsub-month') as HTMLSelectElement;
+  const addsubDay = document.getElementById('addsub-day') as HTMLSelectElement;
+  const addsubYear = document.getElementById('addsub-year') as HTMLInputElement;
+  const addsubOp = document.getElementById('addsub-op') as HTMLSelectElement;
+  const addsubYears = document.getElementById('addsub-years') as HTMLInputElement;
+  const addsubMonths = document.getElementById('addsub-months') as HTMLInputElement;
+  const addsubWeeks = document.getElementById('addsub-weeks') as HTMLInputElement;
+  const addsubDays = document.getElementById('addsub-days') as HTMLInputElement;
+  const addsubBizonly = document.getElementById('addsub-bizonly') as HTMLInputElement;
+
+  // General error banner & panels
   const errorEl = document.getElementById('calc-error') as HTMLElement;
   const errorMsg = document.getElementById('error-msg') as HTMLElement;
-
-  // Set max date to today
-  const today = new Date().toISOString().split('T')[0];
-  if (birthInput) birthInput.max = today;
-  if (toInput) { toInput.max = today; }
+  const chronoResults = document.getElementById('calc-results') as HTMLElement;
+  const diffResults = document.getElementById('diff-results') as HTMLElement;
+  const addsubResults = document.getElementById('addsub-results') as HTMLElement;
 
   function showError(msg: string) {
     errorMsg.textContent = msg;
     errorEl.hidden = false;
-    resultsEl.hidden = true;
+    chronoResults.hidden = true;
+    diffResults.hidden = true;
+    addsubResults.hidden = true;
   }
-  function hideError() { errorEl.hidden = true; }
-
-  function formatNum(n: number): string {
-    return n.toLocaleString();
+  
+  function hideError() {
+    errorEl.hidden = true;
   }
 
-  function calculate() {
+  // Populate Dropdowns Init
+  [birthMonth, toMonth, diffStartMonth, diffEndMonth, addsubMonth].forEach(mSelect => {
+    if (mSelect) {
+      mSelect.addEventListener('change', () => {});
+    }
+  });
+
+  // Populate days
+  const populateAllDays = () => {
+    populateDaySelect(birthMonth, birthDay, birthYear);
+    populateDaySelect(toMonth, toDay, toYear);
+    populateDaySelect(diffStartMonth, diffStartDay, diffStartYear);
+    populateDaySelect(diffEndMonth, diffEndDay, diffEndYear);
+    populateDaySelect(addsubMonth, addsubDay, addsubYear);
+  };
+
+  // Populate Hours/Mins
+  populateHourMinuteSelects(birthHour, birthMinute);
+  populateHourMinuteSelects(toHour, toMinute);
+  populateAllDays();
+
+  // Setup Date and Calendar triggers
+  setupCalendarSync('birth-calendar-btn', 'birth-picker-hidden', 'birth-month', 'birth-day', 'birth-year');
+  setupCalendarSync('to-calendar-btn', 'to-picker-hidden', 'to-month', 'to-day', 'to-year');
+  setupCalendarSync('diff-start-calendar-btn', 'diff-start-picker-hidden', 'diff-start-month', 'diff-start-day', 'diff-start-year');
+  setupCalendarSync('diff-end-calendar-btn', 'diff-end-picker-hidden', 'diff-end-month', 'diff-end-day', 'diff-end-year');
+  setupCalendarSync('addsub-calendar-btn', 'addsub-picker-hidden', 'addsub-month', 'addsub-day', 'addsub-year');
+
+  // Listeners to keep day counts correct when month or year changes
+  setupDateChangeListeners('birth-month', 'birth-day', 'birth-year');
+  setupDateChangeListeners('to-month', 'to-day', 'to-year');
+  setupDateChangeListeners('diff-start-month', 'diff-start-day', 'diff-start-year');
+  setupDateChangeListeners('diff-end-month', 'diff-end-day', 'diff-end-year');
+  setupDateChangeListeners('addsub-month', 'addsub-day', 'addsub-year');
+
+  // Set default values for Target Date (Today)
+  toMonth.value = String(todayDateObj.getMonth());
+  populateDaySelect(toMonth, toDay, toYear);
+  toDay.value = String(todayDateObj.getDate());
+  toYear.value = String(todayDateObj.getFullYear());
+  toHour.value = String(todayDateObj.getHours());
+  toMinute.value = String(todayDateObj.getMinutes());
+
+  // URL synchronizers
+  function updateUrl(params: Record<string, string>) {
+    const url = new URL(window.location.href);
+    url.search = '';
+    for (const [k, v] of Object.entries(params)) {
+      url.searchParams.set(k, v);
+    }
+    window.history.pushState({}, '', url.toString());
+  }
+
+  function clearUrl() {
+    const url = new URL(window.location.href);
+    url.search = '';
+    window.history.pushState({}, '', url.toString());
+  }
+
+  // ─── TAB TOGGLER LOGIC ───
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-content');
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.id.replace('tab-', '');
+      switchTab(mode);
+    });
+  });
+
+  function switchTab(mode: string, shouldClearUrl = true) {
+    activeTab = mode;
+    tabButtons.forEach(b => {
+      b.classList.toggle('active', b.id === `tab-${mode}`);
+      b.setAttribute('aria-selected', String(b.id === `tab-${mode}`));
+    });
+    tabPanels.forEach(p => {
+      (p as HTMLElement).style.display = p.id === `panel-${mode}` ? 'block' : 'none';
+    });
+
     hideError();
-    const birthVal = birthInput?.value;
-    const birthTimeVal = birthTimeInput?.value || "00:00";
-    const toVal = toInput?.value || today;
-    
-    let toTimeVal = toTimeInput?.value;
-    if (!toTimeVal) {
-      const now = new Date();
-      const pad = (num: number) => String(num).padStart(2, '0');
-      toTimeVal = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+    chronoResults.hidden = true;
+    diffResults.hidden = true;
+    addsubResults.hidden = true;
+
+    if (shouldClearUrl) {
+      clearUrl();
+    }
+  }
+
+  // ─── CHRONOLOGICAL AGE CALCULATION LOGIC (ctype=1) ───
+  function parseDateFromGroup(monthEl: HTMLSelectElement, dayEl: HTMLSelectElement, yearEl: HTMLInputElement, hourEl: HTMLSelectElement, minuteEl: HTMLSelectElement): Date | null {
+    const m = parseInt(monthEl.value);
+    const d = parseInt(dayEl.value);
+    const y = parseInt(yearEl.value);
+    const h = parseInt(hourEl.value) || 0;
+    const min = parseInt(minuteEl.value) || 0;
+
+    if (isNaN(m) || isNaN(d) || isNaN(y)) return null;
+    const date = new Date(y, m, d, h, min);
+    if (date.getFullYear() !== y || date.getMonth() !== m || date.getDate() !== d) return null;
+    return date;
+  }
+
+  function calculateChrono(shouldUpdateUrl = true) {
+    hideError();
+    const birthDateObj = parseDateFromGroup(birthMonth, birthDay, birthYear, birthHour, birthMinute);
+    const targetDateObj = parseDateFromGroup(toMonth, toDay, toYear, toHour, toMinute);
+
+    if (!birthDateObj) {
+      showError('Please select a valid birth date.');
+      return;
+    }
+    if (!targetDateObj) {
+      showError('Please select a valid target calculation date.');
+      return;
+    }
+    if (birthDateObj > targetDateObj) {
+      showError('Birth date cannot be in the future of the target calculation date.');
+      return;
     }
 
-    if (!birthVal) { showError('Please enter your date of birth.'); return; }
-
-    const birth = new Date(`${birthVal}T${birthTimeVal}`);
-    const to = new Date(`${toVal}T${toTimeVal}`);
-
-    if (isNaN(birth.getTime())) { showError('Invalid birth date or time.'); return; }
-    if (isNaN(to.getTime())) { showError('Invalid target date or time.'); return; }
-    if (birth > to) { showError('Birth date/time cannot be in the future of the target date/time.'); return; }
-
-    let years = to.getFullYear() - birth.getFullYear();
-    let months = to.getMonth() - birth.getMonth();
-    let days = to.getDate() - birth.getDate();
-    let hours = to.getHours() - birth.getHours();
-    let minutes = to.getMinutes() - birth.getMinutes();
+    let years = targetDateObj.getFullYear() - birthDateObj.getFullYear();
+    let months = targetDateObj.getMonth() - birthDateObj.getMonth();
+    let days = targetDateObj.getDate() - birthDateObj.getDate();
+    let hours = targetDateObj.getHours() - birthDateObj.getHours();
+    let minutes = targetDateObj.getMinutes() - birthDateObj.getMinutes();
 
     if (minutes < 0) {
       hours--;
@@ -370,13 +1039,16 @@ const relatedCalcs = [
     }
     if (days < 0) {
       months--;
-      const prevMonth = new Date(to.getFullYear(), to.getMonth(), 0);
+      const prevMonth = new Date(targetDateObj.getFullYear(), targetDateObj.getMonth(), 0);
       days += prevMonth.getDate();
     }
-    if (months < 0) { years--; months += 12; }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
 
     const msPerMin = 60000;
-    const totalMs = to.getTime() - birth.getTime();
+    const totalMs = targetDateObj.getTime() - birthDateObj.getTime();
     const totalSeconds = Math.floor(totalMs / 1000);
     const totalMinutes = Math.floor(totalMs / msPerMin);
     const totalHours = Math.floor(totalMinutes / 60);
@@ -384,23 +1056,23 @@ const relatedCalcs = [
     const totalWeeks = Math.floor(totalDays / 7);
     const totalMonths = years * 12 + months;
 
-    // Next birthday
-    let nextBday = new Date(to.getFullYear(), birth.getMonth(), birth.getDate(), birth.getHours(), birth.getMinutes());
-    if (nextBday <= to) {
-      nextBday = new Date(to.getFullYear() + 1, birth.getMonth(), birth.getDate(), birth.getHours(), birth.getMinutes());
+    // Next Birthday countdown
+    let nextBday = new Date(targetDateObj.getFullYear(), birthDateObj.getMonth(), birthDateObj.getDate(), birthDateObj.getHours(), birthDateObj.getMinutes());
+    if (nextBday <= targetDateObj) {
+      nextBday = new Date(targetDateObj.getFullYear() + 1, birthDateObj.getMonth(), birthDateObj.getDate(), birthDateObj.getHours(), birthDateObj.getMinutes());
     }
-    const bdayMsDiff = nextBday.getTime() - to.getTime();
-    const bdayDays = Math.floor(bdayMsDiff / (86400000));
+    const bdayMsDiff = nextBday.getTime() - targetDateObj.getTime();
+    const bdayDays = Math.floor(bdayMsDiff / 86400000);
     const bdayHours = Math.floor((bdayMsDiff % 86400000) / 3600000);
     const bdayMins = Math.floor((bdayMsDiff % 3600000) / 60000);
 
-    // Zodiac
-    const m = birth.getMonth() + 1;
-    const d = birth.getDate();
+    // Zodiac sign
+    const m = birthDateObj.getMonth() + 1;
+    const d = birthDateObj.getDate();
     const zodiacs = [
-      [1,20,'Aquarius'],[2,19,'Pisces'],[3,21,'Aries'],[4,20,'Taurus'],
-      [5,21,'Gemini'],[6,21,'Cancer'],[7,23,'Leo'],[8,23,'Virgo'],
-      [9,23,'Libra'],[10,23,'Scorpio'],[11,22,'Sagittarius'],[12,22,'Capricorn']
+      [1, 20, 'Aquarius'], [2, 19, 'Pisces'], [3, 21, 'Aries'], [4, 20, 'Taurus'],
+      [5, 21, 'Gemini'], [6, 21, 'Cancer'], [7, 23, 'Leo'], [8, 23, 'Virgo'],
+      [9, 23, 'Libra'], [10, 23, 'Scorpio'], [11, 22, 'Sagittarius'], [12, 22, 'Capricorn']
     ];
     let zodiac = 'Capricorn';
     for (const [zm, zd, zn] of zodiacs) {
@@ -408,11 +1080,11 @@ const relatedCalcs = [
       if (m === zm - 1 && d < (zd as number)) { zodiac = zn as string; break; }
     }
 
-    // Update DOM
+    // Render results
     (document.getElementById('age-years') as HTMLElement).textContent = String(years);
     
     let detailText = `${years} years, ${months} months, ${days} days`;
-    if (birthTimeInput.value || toTimeInput.value) {
+    if (birthHour.value || birthMinute.value || toHour.value || toMinute.value) {
       detailText += `, ${hours} hours, ${minutes} minutes`;
     }
     (document.getElementById('age-detail') as HTMLElement).textContent = detailText;
@@ -424,36 +1096,486 @@ const relatedCalcs = [
     (document.getElementById('stat-minutes') as HTMLElement).textContent = formatNum(totalMinutes);
     (document.getElementById('stat-seconds') as HTMLElement).textContent = formatNum(totalSeconds);
     
-    (document.getElementById('next-bday') as HTMLElement).textContent = nextBday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + (birthTimeInput.value ? ` at ${nextBday.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` : '');
+    (document.getElementById('next-bday') as HTMLElement).textContent = nextBday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + (birthHour.value ? ` at ${nextBday.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}` : '');
     
     let countdownText = `${bdayDays} days`;
-    if (birthTimeInput.value || toTimeInput.value) {
+    if (birthHour.value || birthMinute.value || toHour.value || toMinute.value) {
       countdownText += `, ${bdayHours} hours, ${bdayMins} mins`;
     }
     (document.getElementById('days-until-bday') as HTMLElement).textContent = countdownText;
     (document.getElementById('zodiac') as HTMLElement).textContent = zodiac;
 
-    resultsEl.hidden = false;
-    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    chronoResults.hidden = false;
+    chronoResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    if (shouldUpdateUrl) {
+      const birthStr = `${birthYear.value}-${String(parseInt(birthMonth.value) + 1).padStart(2, '0')}-${String(birthDay.value).padStart(2, '0')}`;
+      const birthTimeStr = birthHour.value ? `${String(birthHour.value).padStart(2, '0')}:${String(birthMinute.value || 0).padStart(2, '0')}` : '';
+      const toStr = `${toYear.value}-${String(parseInt(toMonth.value) + 1).padStart(2, '0')}-${String(toDay.value).padStart(2, '0')}`;
+      const toTimeStr = toHour.value ? `${String(toHour.value).padStart(2, '0')}:${String(toMinute.value || 0).padStart(2, '0')}` : '';
+
+      updateUrl({
+        birthdate: birthStr,
+        birthtime: birthTimeStr,
+        todate: toStr,
+        totime: toTimeStr,
+        ctype: '1',
+        x: 'Calculate'
+      });
+    }
   }
 
-  calcBtn?.addEventListener('click', calculate);
-  resetBtn?.addEventListener('click', () => {
-    if (birthInput) birthInput.value = '';
-    if (birthTimeInput) birthTimeInput.value = '';
-    if (toInput) toInput.value = '';
-    if (toTimeInput) toTimeInput.value = '';
-    resultsEl.hidden = true;
+  document.getElementById('calc-chrono-btn')?.addEventListener('click', () => calculateChrono(true));
+  document.getElementById('reset-chrono-btn')?.addEventListener('click', () => {
+    birthMonth.value = '';
+    birthDay.value = '';
+    birthYear.value = '';
+    birthHour.value = '';
+    birthMinute.value = '';
+    chronoResults.hidden = true;
     hideError();
+    clearUrl();
   });
-  
-  const handleKey = (e: KeyboardEvent) => { if (e.key === 'Enter') calculate(); };
-  birthInput?.addEventListener('keydown', handleKey);
-  birthTimeInput?.addEventListener('keydown', handleKey);
-  toInput?.addEventListener('keydown', handleKey);
-  toTimeInput?.addEventListener('keydown', handleKey);
 
-  // FAQ toggle
+  // ─── TAB 2: DAYS BETWEEN TWO DATES (ctype=2) ───
+  function renderCalendarGrid(containerId: string, titleId: string, date: Date, highlightedDay: number) {
+    const container = document.getElementById(containerId);
+    const title = document.getElementById(titleId);
+    if (!container || !title) return;
+
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    title.textContent = `${monthNames[month]} ${year}`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const totalDays = new Date(year, month + 1, 0).getDate();
+
+    let html = '<div class="calendar-grid-container">';
+    const dayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    dayHeaders.forEach(h => {
+      html += `<div class="calendar-day-header">${h}</div>`;
+    });
+
+    for (let i = 0; i < firstDay; i++) {
+      html += '<div class="calendar-day-cell empty"></div>';
+    }
+
+    for (let d = 1; d <= totalDays; d++) {
+      const curDate = new Date(year, month, d);
+      const dayOfWeek = curDate.getDay();
+      const isW = (dayOfWeek === 0 || dayOfWeek === 6);
+      let classes = ['calendar-day-cell'];
+      if (isW) classes.push('weekend');
+      if (d === highlightedDay) classes.push('highlight');
+      html += `<div class="${classes.join(' ')}">${d}</div>`;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+  }
+
+  function renderCustomHolidaysList() {
+    const container = document.getElementById('custom-holidays-list');
+    if (!container) return;
+
+    if (customHolidays.length === 0) {
+      container.innerHTML = '<span style="font-size: 12px; color: var(--color-muted); padding: 6px;">No custom holidays added yet.</span>';
+      return;
+    }
+
+    container.innerHTML = '';
+    customHolidays.forEach(dateStr => {
+      const badge = document.createElement('span');
+      badge.className = 'badge-holiday';
+      const formattedDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      badge.innerHTML = `<span>${formattedDate}</span><button type="button" data-val="${dateStr}">✕</button>`;
+      container.appendChild(badge);
+
+      badge.querySelector('button')?.addEventListener('click', (e) => {
+        const val = (e.currentTarget as HTMLButtonElement).dataset.val;
+        if (val) {
+          customHolidays = customHolidays.filter(item => item !== val);
+          renderCustomHolidaysList();
+          calculateDiff(true); // Recalculate diff instantly
+        }
+      });
+    });
+  }
+
+  function calculateDiff(shouldUpdateUrl = true) {
+    hideError();
+    const d1 = parseDateFromGroup(diffStartMonth, diffStartDay, diffStartYear, birthHour, birthMinute); // use dummy hours
+    const d2 = parseDateFromGroup(diffEndMonth, diffEndDay, diffEndYear, birthHour, birthMinute);
+
+    if (!d1) {
+      showError('Please select a valid start date.');
+      return;
+    }
+    if (!d2) {
+      showError('Please select a valid end date.');
+      return;
+    }
+    if (d1 > d2) {
+      showError('Start date cannot be after the end date.');
+      return;
+    }
+
+    const includeEnd = diffIncludeEnd.checked;
+
+    // Run business, weekend, and holiday calculations day-by-day
+    let weekends = 0;
+    let holidays = 0;
+    let bizdays = 0;
+
+    const startVal = d1.getTime();
+    const endVal = d2.getTime();
+    const totalMsDiff = endVal - startVal;
+    
+    // Calendar days count
+    const totalCalendarDays = Math.round(totalMsDiff / 86400000) + (includeEnd ? 1 : 0);
+    const limit = Math.round(totalMsDiff / 86400000);
+    const endLimit = includeEnd ? limit : limit - 1;
+
+    for (let i = 0; i <= endLimit; i++) {
+      const current = new Date(d1.getFullYear(), d1.getMonth(), d1.getDate() + i);
+      const w = current.getDay();
+      const isW = (w === 0 || w === 6);
+
+      const yStr = current.getFullYear();
+      const mStr = String(current.getMonth() + 1).padStart(2, '0');
+      const dStr = String(current.getDate()).padStart(2, '0');
+      const dateStr = `${yStr}-${mStr}-${dStr}`;
+
+      const isCustomH = customHolidays.includes(dateStr);
+      const isRegionH = (holidayRegion === 'us' && isUSFederalHoliday(current));
+      const isH = !isW && (isCustomH || isRegionH);
+
+      if (isW) {
+        weekends++;
+      } else if (isH) {
+        holidays++;
+      } else {
+        bizdays++;
+      }
+    }
+
+    // Elapsed breakdown (Years, Months, Days)
+    let years = d2.getFullYear() - d1.getFullYear();
+    let months = d2.getMonth() - d1.getMonth();
+    let days = d2.getDate() - d1.getDate();
+
+    if (includeEnd) {
+      days += 1;
+    }
+
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(d2.getFullYear(), d2.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    const daysInTargetMonth = new Date(d2.getFullYear(), d2.getMonth() + 1, 0).getDate();
+    if (days >= daysInTargetMonth) {
+      months++;
+      days -= daysInTargetMonth;
+    }
+    if (months >= 12) {
+      years++;
+      months -= 12;
+    }
+
+    const totalMonths = years * 12 + months;
+    const totalWeeks = Math.floor(totalCalendarDays / 7);
+    const remainingDays = totalCalendarDays % 7;
+
+    // Render output
+    const fmtLongDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    document.getElementById('diff-summary-title')!.textContent = `Difference between ${fmtLongDate(d1)} and ${fmtLongDate(d2)}:`;
+    document.getElementById('diff-summary-subtitle')!.textContent = includeEnd ? 'Including the end date (adds 1 day).' : 'Excluding the end date.';
+
+    let mainValueText = '';
+    if (years > 0) mainValueText += `${years} year${years > 1 ? 's' : ''} `;
+    if (months > 0) mainValueText += `${months} month${months > 1 ? 's' : ''} `;
+    mainValueText += `${days} day${days !== 1 ? 's' : ''}`;
+    document.getElementById('diff-main-value')!.textContent = mainValueText;
+
+    document.getElementById('diff-alt-months')!.textContent = `${formatNum(totalMonths)} month${totalMonths !== 1 ? 's' : ''} ${days} day${days !== 1 ? 's' : ''}`;
+    document.getElementById('diff-alt-weeks')!.textContent = `${formatNum(totalWeeks)} week${totalWeeks !== 1 ? 's' : ''} ${remainingDays} day${remainingDays !== 1 ? 's' : ''}`;
+    document.getElementById('diff-alt-days')!.textContent = `${formatNum(totalCalendarDays)} calendar day${totalCalendarDays !== 1 ? 's' : ''}`;
+
+    document.getElementById('diff-stat-weekends')!.textContent = formatNum(weekends);
+    document.getElementById('diff-stat-holidays')!.textContent = formatNum(holidays);
+    document.getElementById('diff-stat-bizdays')!.textContent = formatNum(bizdays);
+
+    // Renders visual calendar grids
+    renderCalendarGrid('diff-calendar-start', 'diff-calendar-start-title', d1, d1.getDate());
+    renderCalendarGrid('diff-calendar-end', 'diff-calendar-end-title', d2, d2.getDate());
+
+    diffResults.hidden = false;
+    diffResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    if (shouldUpdateUrl) {
+      const startStr = `${diffStartYear.value}-${String(parseInt(diffStartMonth.value) + 1).padStart(2, '0')}-${String(diffStartDay.value).padStart(2, '0')}`;
+      const endStr = `${diffEndYear.value}-${String(parseInt(diffEndMonth.value) + 1).padStart(2, '0')}-${String(diffEndDay.value).padStart(2, '0')}`;
+      
+      updateUrl({
+        startdate: startStr,
+        enddate: endStr,
+        includeend: includeEnd ? '1' : '0',
+        ctype: '2',
+        x: 'Calculate'
+      });
+    }
+  }
+
+  document.getElementById('calc-diff-btn')?.addEventListener('click', () => calculateDiff(true));
+  document.getElementById('reset-diff-btn')?.addEventListener('click', () => {
+    diffStartMonth.value = '';
+    diffStartDay.value = '';
+    diffStartYear.value = '';
+    diffEndMonth.value = '';
+    diffEndDay.value = '';
+    diffEndYear.value = '';
+    diffIncludeEnd.checked = false;
+    diffResults.hidden = true;
+    hideError();
+    clearUrl();
+  });
+
+  // Holiday Settings Toggles
+  const holidaysPanel = document.getElementById('holiday-settings-panel') as HTMLElement;
+  document.getElementById('toggle-holidays-btn')?.addEventListener('click', () => {
+    holidaysPanel.hidden = false;
+  });
+  document.getElementById('close-holidays-btn')?.addEventListener('click', () => {
+    holidaysPanel.hidden = true;
+  });
+
+  // Country Radio Toggles
+  document.querySelectorAll('input[name="holiday-region"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
+      holidayRegion = (e.currentTarget as HTMLInputElement).value;
+      calculateDiff(true); // Recalculate instantly
+    });
+  });
+
+  // Add Custom Holiday
+  const customHolidayInput = document.getElementById('custom-holiday-date') as HTMLInputElement;
+  document.getElementById('add-holiday-btn')?.addEventListener('click', () => {
+    const val = customHolidayInput.value;
+    if (val && !customHolidays.includes(val)) {
+      customHolidays.push(val);
+      renderCustomHolidaysList();
+      customHolidayInput.value = '';
+      calculateDiff(true); // Recalculate instantly
+    }
+  });
+
+  // ─── TAB 3: ADD OR SUBTRACT FROM DATE (ctype=3) ───
+  function calculateAddSub(shouldUpdateUrl = true) {
+    hideError();
+    const dBase = parseDateFromGroup(addsubMonth, addsubDay, addsubYear, birthHour, birthMinute);
+    if (!dBase) {
+      showError('Please select a valid base date.');
+      return;
+    }
+
+    const op = addsubOp.value; // 'add' or 'subtract'
+    const sign = op === 'add' ? 1 : -1;
+    const yVal = parseInt(addsubYears.value) || 0;
+    const mVal = parseInt(addsubMonths.value) || 0;
+    const wVal = parseInt(addsubWeeks.value) || 0;
+    const dVal = parseInt(addsubDays.value) || 0;
+    const bizOnly = addsubBizonly.checked;
+
+    let result = new Date(dBase.getFullYear(), dBase.getMonth(), dBase.getDate());
+
+    if (!bizOnly) {
+      // Calendar arithmetic
+      result.setFullYear(result.getFullYear() + yVal * sign);
+      result.setMonth(result.getMonth() + mVal * sign);
+      const daysDiff = (wVal * 7 + dVal) * sign;
+      result.setDate(result.getDate() + daysDiff);
+    } else {
+      // Business days arithmetic (skipping weekends & holidays)
+      result.setFullYear(result.getFullYear() + yVal * sign);
+      result.setMonth(result.getMonth() + mVal * sign);
+
+      let businessDaysToMove = wVal * 5 + dVal;
+      while (businessDaysToMove > 0) {
+        result.setDate(result.getDate() + (1 * sign));
+        const w = result.getDay();
+        const isW = (w === 0 || w === 6);
+
+        const yStr = result.getFullYear();
+        const mStr = String(result.getMonth() + 1).padStart(2, '0');
+        const dStr = String(result.getDate()).padStart(2, '0');
+        const dateStr = `${yStr}-${mStr}-${dStr}`;
+
+        const isCustomH = customHolidays.includes(dateStr);
+        const isRegionH = (holidayRegion === 'us' && isUSFederalHoliday(result));
+        const isH = !isW && (isCustomH || isRegionH);
+
+        if (!isW && !isH) {
+          businessDaysToMove--;
+        }
+      }
+    }
+
+    // Day of the year calculation
+    const startOfYear = new Date(result.getFullYear(), 0, 1);
+    const diffMs = result.getTime() - startOfYear.getTime();
+    const dayNum = Math.floor(diffMs / 86400000) + 1;
+
+    // Render output
+    const fmtOptions: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+    document.getElementById('addsub-target-date')!.textContent = result.toLocaleDateString('en-US', fmtOptions);
+    document.getElementById('addsub-year-day-num')!.textContent = `Day ${dayNum} of the year (${result.getFullYear()})`;
+
+    addsubResults.hidden = false;
+    addsubResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    if (shouldUpdateUrl) {
+      const baseStr = `${addsubYear.value}-${String(parseInt(addsubMonth.value) + 1).padStart(2, '0')}-${String(addsubDay.value).padStart(2, '0')}`;
+      
+      updateUrl({
+        basedate: baseStr,
+        years: String(yVal),
+        months: String(mVal),
+        weeks: String(wVal),
+        days: String(dVal),
+        operation: op,
+        bizonly: bizOnly ? '1' : '0',
+        ctype: '3',
+        x: 'Calculate'
+      });
+    }
+  }
+
+  document.getElementById('calc-addsub-btn')?.addEventListener('click', () => calculateAddSub(true));
+  document.getElementById('reset-addsub-btn')?.addEventListener('click', () => {
+    addsubMonth.value = '';
+    addsubDay.value = '';
+    addsubYear.value = '';
+    addsubOp.value = 'add';
+    addsubYears.value = '0';
+    addsubMonths.value = '0';
+    addsubWeeks.value = '0';
+    addsubDays.value = '0';
+    addsubBizonly.checked = false;
+    addsubResults.hidden = true;
+    hideError();
+    clearUrl();
+  });
+
+  // ─── SYNCHRONIZE ON PAGE LOAD FROM URL QUERY STRINGS ───
+  function initFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const ctype = params.get('ctype');
+
+    if (ctype === '1') {
+      const birthDate = params.get('birthdate');
+      const birthTime = params.get('birthtime');
+      const toDate = params.get('todate');
+      const toTime = params.get('totime');
+
+      if (birthDate) {
+        const [y, m, d] = birthDate.split('-').map(Number);
+        birthYear.value = String(y);
+        birthMonth.value = String(m - 1);
+        populateDaySelect(birthMonth, birthDay, birthYear);
+        birthDay.value = String(d);
+
+        if (birthTime) {
+          const [h, min] = birthTime.split(':').map(Number);
+          birthHour.value = String(h);
+          birthMinute.value = String(min);
+        }
+      }
+
+      if (toDate) {
+        const [y, m, d] = toDate.split('-').map(Number);
+        toYear.value = String(y);
+        toMonth.value = String(m - 1);
+        populateDaySelect(toMonth, toDay, toYear);
+        toDay.value = String(d);
+
+        if (toTime) {
+          const [h, min] = toTime.split(':').map(Number);
+          toHour.value = String(h);
+          toMinute.value = String(min);
+        }
+      }
+
+      switchTab('chrono', false);
+      calculateChrono(false);
+
+    } else if (ctype === '2') {
+      const startDate = params.get('startdate');
+      const endDate = params.get('enddate');
+      const includeEnd = params.get('includeend') === '1';
+
+      if (startDate) {
+        const [y, m, d] = startDate.split('-').map(Number);
+        diffStartYear.value = String(y);
+        diffStartMonth.value = String(m - 1);
+        populateDaySelect(diffStartMonth, diffStartDay, diffStartYear);
+        diffStartDay.value = String(d);
+      }
+
+      if (endDate) {
+        const [y, m, d] = endDate.split('-').map(Number);
+        diffEndYear.value = String(y);
+        diffEndMonth.value = String(m - 1);
+        populateDaySelect(diffEndMonth, diffEndDay, diffEndYear);
+        diffEndDay.value = String(d);
+      }
+
+      diffIncludeEnd.checked = includeEnd;
+
+      switchTab('diff', false);
+      calculateDiff(false);
+
+    } else if (ctype === '3') {
+      const baseDate = params.get('basedate');
+      const yearsVal = params.get('years');
+      const monthsVal = params.get('months');
+      const weeksVal = params.get('weeks');
+      const daysVal = params.get('days');
+      const op = params.get('operation') || 'add';
+      const bizonly = params.get('bizonly') === '1';
+
+      if (baseDate) {
+        const [y, m, d] = baseDate.split('-').map(Number);
+        addsubYear.value = String(y);
+        addsubMonth.value = String(m - 1);
+        populateDaySelect(addsubMonth, addsubDay, addsubYear);
+        addsubDay.value = String(d);
+      }
+
+      addsubYears.value = yearsVal || '0';
+      addsubMonths.value = monthsVal || '0';
+      addsubWeeks.value = weeksVal || '0';
+      addsubDays.value = daysVal || '0';
+      addsubOp.value = op;
+      addsubBizonly.checked = bizonly;
+
+      switchTab('addsub', false);
+      calculateAddSub(false);
+    }
+  }
+
+  // Load state and custom holiday lists
+  renderCustomHolidaysList();
+  initFromUrl();
+
+  // FAQ Expand / Collapse
   document.querySelectorAll('.faq-question').forEach((btn) => {
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';
