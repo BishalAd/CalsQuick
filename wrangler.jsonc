@@ -1,6 +1,7 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "calcquick",
-  "pages_build_output_dir": "dist",
-  "compatibility_date": "2026-06-10"
+    "name": "calcquick",
+    "compatibility_date": "2026-06-11",
+    "assets": {
+        "directory": "./dist"
+    }
 }

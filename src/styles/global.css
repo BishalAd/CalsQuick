@@ -522,7 +522,7 @@ body {
   .container-site { padding-left: 16px; padding-right: 16px; }
   .text-display-xl { font-size: 32px; }
   .text-display-lg { font-size: 24px; }
-  .calc-panel { padding: 16px; }
+  .calc-panel { padding: 12px; }
   .btn-primary, .btn-secondary { height: 44px; } /* Larger tap targets on mobile */
 
   /* Stack list item results on small viewports */
@@ -535,4 +535,9 @@ body {
     font-size: 15px !important;
     margin-top: 2px !important;
   }
+}
+
+@media (max-width: 380px) {
+  .container-site { padding-left: 12px; padding-right: 12px; }
+  .calc-panel { padding: 10px; }
 }
