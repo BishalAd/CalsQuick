@@ -4,6 +4,9 @@ Allow: /
 # Do not index error pages
 Disallow: /404
 
+# Disallow sitemap stylesheet (not content)
+Disallow: /sitemap.xsl
+
 # Allow Google AdSense crawler
 User-agent: Mediapartners-Google
 Allow: /
@@ -13,4 +16,4 @@ User-agent: AdsBot-Google
 Allow: /
 
 # Sitemap location
-Sitemap: https://calcquick.online/sitemap-index.xml
+Sitemap: https://calcquick.online/sitemap.xml
