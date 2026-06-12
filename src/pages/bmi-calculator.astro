@@ -333,6 +333,21 @@ const relatedCalcs = [
   .bmi-table-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; padding: 12px 16px; border-bottom: 1px solid var(--color-hairline); font-size: 14px; gap: 16px; }
   .bmi-table-row:last-child { border-bottom: none; }
   .bmi-table-header { background: var(--color-canvas-soft-2); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-muted); font-family: var(--font-mono); }
+
+  @media (max-width: 480px) {
+    .bmi-table-row {
+      grid-template-columns: 1.1fr 1fr 1fr;
+      font-size: 12px;
+      padding: 10px 8px;
+      gap: 8px;
+    }
+    .main-result-value {
+      font-size: 54px;
+    }
+    .prose-section {
+      padding: 20px 16px;
+    }
+  }
 </style>
 
 <script>

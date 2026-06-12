@@ -524,4 +524,15 @@ body {
   .text-display-lg { font-size: 24px; }
   .calc-panel { padding: 16px; }
   .btn-primary, .btn-secondary { height: 44px; } /* Larger tap targets on mobile */
+
+  /* Stack list item results on small viewports */
+  .result-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+  .result-row-value {
+    font-size: 15px !important;
+    margin-top: 2px !important;
+  }
 }
