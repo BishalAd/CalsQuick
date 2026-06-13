@@ -481,15 +481,8 @@ const relatedCalcs = [
 
       <!-- Calendar grids comparison -->
       <h4 style="font-size: 14px; font-weight: 600; color: var(--color-ink); margin-bottom: 12px;">Visual Calendar Grids:</h4>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;" class="diff-calendars-grid">
-        <div style="background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); padding: 12px;">
-          <div id="diff-calendar-start-title" style="font-size: 13.5px; font-weight: 600; text-align: center; margin-bottom: 8px; color: var(--color-ink);">Start Month</div>
-          <div id="diff-calendar-start"></div>
-        </div>
-        <div style="background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); padding: 12px;">
-          <div id="diff-calendar-end-title" style="font-size: 13.5px; font-weight: 600; text-align: center; margin-bottom: 8px; color: var(--color-ink);">End Month</div>
-          <div id="diff-calendar-end"></div>
-        </div>
+      <div id="diff-calendars-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;" class="diff-calendars-grid">
+        <!-- Dynamic calendar cards loaded via JS -->
       </div>
 
       <p class="text-body-sm" style="color: var(--color-muted); font-size: 12px; line-height: 1.5; font-style: italic;">
@@ -721,14 +714,35 @@ const relatedCalcs = [
   .calendar-day-cell.empty {
     visibility: hidden;
   }
-  .calendar-day-cell.highlight {
-    background: var(--color-link);
-    color: white;
+  .calendar-day-cell.range-start,
+  .calendar-day-cell.range-end {
+    background: var(--color-link) !important;
+    color: white !important;
     font-weight: bold;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   }
+  .calendar-day-cell.range {
+    background: rgba(0, 112, 243, 0.08) !important;
+    color: var(--color-link) !important;
+    font-weight: 500;
+  }
   .calendar-day-cell.weekend {
     color: var(--color-muted);
+  }
+  .calendar-day-cell.holiday {
+    position: relative;
+    font-weight: bold;
+  }
+  .calendar-day-cell.holiday::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--color-error);
   }
 
   .badge-holiday {
@@ -1216,16 +1230,23 @@ const relatedCalcs = [
   });
 
   // ─── TAB 2: DAYS BETWEEN TWO DATES (ctype=2) ───
-  function renderCalendarGrid(containerId: string, titleId: string, date: Date, highlightedDay: number) {
-    const container = document.getElementById(containerId);
-    const title = document.getElementById(titleId);
-    if (!container || !title) return;
-
-    const year = date.getFullYear();
-    const month = date.getMonth();
+  function createCalendarMonthCard(year: number, month: number, startDate: Date, endDate: Date): HTMLElement {
+    const card = document.createElement('div');
+    card.style.background = 'var(--color-canvas-soft-2)';
+    card.style.border = '1px solid var(--color-hairline)';
+    card.style.borderRadius = 'var(--radius-md)';
+    card.style.padding = '12px';
 
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    const title = document.createElement('div');
+    title.style.fontSize = '13.5px';
+    title.style.fontWeight = '600';
+    title.style.textAlign = 'center';
+    title.style.marginBottom = '8px';
+    title.style.color = 'var(--color-ink)';
     title.textContent = `${monthNames[month]} ${year}`;
+    card.appendChild(title);
 
     const firstDay = new Date(year, month, 1).getDay();
     const totalDays = new Date(year, month + 1, 0).getDate();
@@ -1240,18 +1261,81 @@ const relatedCalcs = [
       html += '<div class="calendar-day-cell empty"></div>';
     }
 
+    // Strip times for date comparison
+    const sTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()).getTime();
+    const eTime = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate()).getTime();
+
     for (let d = 1; d <= totalDays; d++) {
       const curDate = new Date(year, month, d);
+      const curTime = curDate.getTime();
       const dayOfWeek = curDate.getDay();
       const isW = (dayOfWeek === 0 || dayOfWeek === 6);
+
+      // Check if this day is a holiday
+      const yStr = year;
+      const mStr = String(month + 1).padStart(2, '0');
+      const dStr = String(d).padStart(2, '0');
+      const dateStr = `${yStr}-${mStr}-${dStr}`;
+      const isCustomH = customHolidays.includes(dateStr);
+      const isRegionH = (holidayRegion === 'us' && isUSFederalHoliday(curDate));
+      const isHoliday = !isW && (isCustomH || isRegionH);
+
       let classes = ['calendar-day-cell'];
       if (isW) classes.push('weekend');
-      if (d === highlightedDay) classes.push('highlight');
-      html += `<div class="${classes.join(' ')}">${d}</div>`;
+      if (isHoliday) classes.push('holiday');
+
+      if (curTime === sTime) {
+        classes.push('range-start');
+      } else if (curTime === eTime) {
+        classes.push('range-end');
+      } else if (curTime > sTime && curTime < eTime) {
+        classes.push('range');
+      }
+
+      // Format title tooltip with holiday name or weekend info if applicable
+      let cellTitle = '';
+      if (isHoliday) {
+        cellTitle = 'Holiday';
+      } else if (isW) {
+        cellTitle = 'Weekend';
+      }
+
+      html += `<div class="${classes.join(' ')}" title="${cellTitle}">${d}</div>`;
     }
 
     html += '</div>';
-    container.innerHTML = html;
+    
+    const gridContainer = document.createElement('div');
+    gridContainer.innerHTML = html;
+    card.appendChild(gridContainer.firstChild!);
+
+    return card;
+  }
+
+  function renderCalendarsForRange(d1: Date, d2: Date) {
+    const container = document.getElementById('diff-calendars-grid');
+    if (!container) return;
+
+    // Reset container HTML
+    container.innerHTML = '';
+
+    const sameMonth = d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth();
+
+    if (sameMonth) {
+      // Create single card
+      const card = createCalendarMonthCard(d1.getFullYear(), d1.getMonth(), d1, d2);
+      container.appendChild(card);
+      // Make it 1 column wide on CSS
+      container.style.gridTemplateColumns = '1fr';
+    } else {
+      // Create two cards: Start Month and End Month
+      const cardStart = createCalendarMonthCard(d1.getFullYear(), d1.getMonth(), d1, d2);
+      const cardEnd = createCalendarMonthCard(d2.getFullYear(), d2.getMonth(), d1, d2);
+      container.appendChild(cardStart);
+      container.appendChild(cardEnd);
+      // Responsive grid columns
+      container.style.gridTemplateColumns = ''; // fall back to CSS grid rules
+    }
   }
 
   function renderCustomHolidaysList() {
@@ -1392,8 +1476,7 @@ const relatedCalcs = [
     document.getElementById('diff-stat-bizdays')!.textContent = formatNum(bizdays);
 
     // Renders visual calendar grids
-    renderCalendarGrid('diff-calendar-start', 'diff-calendar-start-title', d1, d1.getDate());
-    renderCalendarGrid('diff-calendar-end', 'diff-calendar-end-title', d2, d2.getDate());
+    renderCalendarsForRange(d1, d2);
 
     diffResults.hidden = false;
     diffResults.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

@@ -200,17 +200,9 @@ const quickTips = [10, 15, 18, 20, 25];
       <div class="results-divider"></div>
 
       <!-- Per-person highlight (shown when people > 1) -->
-      <div id="per-person-section" style="margin-bottom: 24px;">
-        <div class="tip-results-grid">
-          <div class="tip-result-main" id="pp-total-card">
-            <div class="tip-result-value" id="total-per-person">$--</div>
-            <div class="tip-result-label">Per Person (Total)</div>
-          </div>
-          <div class="tip-result-secondary" id="pp-tip-card">
-            <div class="tip-result-value-sm" id="tip-per-person">$--</div>
-            <div class="tip-result-label-sm">Tip Per Person</div>
-          </div>
-        </div>
+      <div id="per-person-section" class="main-result-card" style="margin-bottom: 24px;">
+        <div class="main-result-value" id="tip-per-person">$--</div>
+        <div class="main-result-label">Tip Per Person</div>
       </div>
 
       <!-- Single Person Main result highlight -->
@@ -615,7 +607,6 @@ const quickTips = [10, 15, 18, 20, 25];
       ppSection.style.display = 'block';
       spSection.style.display = 'none';
       splitRow.style.display = 'flex';
-      (document.getElementById('total-per-person') as HTMLElement).textContent = fmt(totalPP);
       (document.getElementById('tip-per-person') as HTMLElement).textContent = fmt(tipPP);
     } else {
       ppSection.style.display = 'none';
