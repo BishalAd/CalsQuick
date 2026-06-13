@@ -49,6 +49,36 @@ const entries: SitemapEntry[] = [
     changefreq: 'weekly',
     priority:   0.9,
   },
+  {
+    url:        `${SITE}/online-ruler/`,
+    lastmod:    '2026-06-13',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/mortgage-calculator/`,
+    lastmod:    '2026-06-13',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/aspect-ratio-calculator/`,
+    lastmod:    '2026-06-13',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/loan-emi-calculator/`,
+    lastmod:    '2026-06-13',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/what-is-my-ip/`,
+    lastmod:    '2026-06-13',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
 
   // ── Blog ──────────────────────────────────────────────────────────────────
   {

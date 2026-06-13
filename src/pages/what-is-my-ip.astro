@@ -1,0 +1,892 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is my IP address?', a: 'Your IP address is a unique numerical label assigned to your device by your Internet Service Provider (ISP) when you connect to the internet. It identifies your device on the network, similar to how a postal address identifies your home. This page shows your current public IP address automatically.' },
+  { q: 'What is the difference between a public and private IP address?', a: 'A public IP address is assigned by your ISP and is visible on the internet — it\'s what websites and servers see when you connect. A private IP address is assigned by your router to devices on your local network (like your phone, laptop, or TV) and is not visible on the internet. Common private IP ranges are 192.168.x.x, 10.x.x.x, and 172.16.x.x.' },
+  { q: 'What is the difference between IPv4 and IPv6?', a: 'IPv4 is the older 32-bit address format (e.g. 192.168.1.1) supporting about 4.3 billion unique addresses. IPv6 is the newer 128-bit format (e.g. 2001:0db8:85a3::8a2e:0370:7334) supporting virtually unlimited addresses. IPv6 was introduced because the world ran out of IPv4 addresses. Most devices now support both.' },
+  { q: 'What is my IP address location?', a: 'Your IP address is associated with a geographic location based on data registered by your ISP. This is called IP geolocation. The location shown is typically accurate to your city or region, but may not reflect your exact street address. VPNs and proxies can make your IP appear to be in a different location.' },
+  { q: 'Am I using a VPN? How can I tell?', a: 'If your IP address location is different from where you actually are, you are likely using a VPN or proxy. You can also check if the ISP/organization shown belongs to a known VPN provider. Our tool displays your current public IP — if it matches your VPN server location, your VPN is working correctly.' },
+  { q: 'Can someone track my location using my IP address?', a: 'Partially. Your IP address can reveal your approximate city, region, country, and ISP — but not your exact street address. Law enforcement can request exact address details from your ISP. To prevent IP tracking, use a VPN, which replaces your real IP with the VPN server\'s IP address.' },
+  { q: 'Why does my IP address change?', a: 'Most ISPs assign dynamic IP addresses, which change periodically — sometimes daily or weekly. This is done to efficiently manage their pool of IP addresses. If you need a permanent IP that never changes, you can request a static IP from your ISP (usually for an extra fee), or use a VPN with a dedicated IP option.' },
+  { q: 'How do I find my local (private) IP address?', a: 'Your local IP cannot be detected by websites since it never leaves your network. To find it: On Windows, open Command Prompt and type "ipconfig". On Mac, go to System Preferences > Network. On iPhone/Android, go to Settings > Wi-Fi > tap your network. Your local IP will typically start with 192.168, 10., or 172.16.' },
+  { q: 'What is my IP address on iPhone or Android?', a: 'The IP address shown on this page is your public IP — the same regardless of whether you\'re on iPhone or Android. To find your device\'s local IP on iPhone: Settings > Wi-Fi > tap the (i) next to your network. On Android: Settings > Network & Internet > Wi-Fi > tap your network.' },
+  { q: 'How do I hide or change my IP address?', a: 'The most common method is using a VPN (Virtual Private Network), which routes your traffic through a server in another location, replacing your real IP. Other methods include using the Tor Browser (slower but very private), a proxy server, or simply switching networks (e.g. from home Wi-Fi to mobile data). Your IP also changes naturally if you reset your router.' },
+  { q: 'Is my IP address safe to share?', a: 'Sharing your IP address publicly is generally not recommended. While it alone cannot give someone access to your device, it can reveal your approximate location and ISP, and could be used in targeted attacks, DDoS attempts, or to block you from certain services. Avoid sharing your IP in public forums or with untrusted parties.' },
+  { q: 'What is a static vs dynamic IP address?', a: 'A static IP address never changes — it\'s permanently assigned to your connection. Businesses and servers often use static IPs for reliability. A dynamic IP address is temporary and reassigned periodically by your ISP from a pool of addresses. Home internet connections almost always use dynamic IPs by default.' },
+  { q: 'What is a DNS leak?', a: 'A DNS leak occurs when your DNS queries (requests to look up website addresses) are sent to your ISP\'s DNS servers instead of through your VPN, potentially exposing your browsing activity even when you think you\'re protected by a VPN. You can test for DNS leaks using dedicated DNS leak test tools.' },
+  { q: 'What does my IP address reveal about me?', a: 'Your IP address can reveal your approximate city and region, your country, your Internet Service Provider (ISP), your connection type, and whether you are using a VPN, proxy, or Tor. It cannot reveal your exact home address, your name, or personal details without a formal request to your ISP.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'What Is My IP Address',
+    description: 'Instantly find your public IP address, IPv4, IPv6, location, ISP, and VPN status. Free IP lookup tool with geolocation.',
+    url: '/what-is-my-ip',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure on your screen' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💵', desc: 'Calculate & split tips' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+];
+---
+
+<CalculatorLayout
+  title="What Is My IP Address — IPv4, IPv6, Location & VPN Check"
+  description="Instantly find your public IP address, IPv4 and IPv6, location, ISP, and VPN status. Free IP address lookup with geolocation, city, country, and more. No signup required."
+  canonical="/what-is-my-ip"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'What Is My IP', url: '/what-is-my-ip' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Network Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">What Is My IP Address?</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Instantly see your public IP address, IPv4, IPv6, location, ISP, and whether your VPN is active. No signup. No tracking.
+    </p>
+  </div>
+
+  <!-- MAIN IP CARD -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom: 40px;">
+
+    <!-- Loading state -->
+    <div id="ip-loading" class="ip-loading-state">
+      <div class="ip-spinner" aria-hidden="true"></div>
+      <p style="font-size: 14px; color: var(--color-muted); margin-top: 12px;">Detecting your IP address…</p>
+    </div>
+
+    <!-- Main IP Display -->
+    <div id="ip-main" hidden>
+
+      <!-- Public IPv4 Hero -->
+      <div class="ip-hero" id="ip-hero-card">
+        <div class="ip-hero-label">Your Public IP Address</div>
+        <div class="ip-hero-value" id="display-ip" aria-live="polite">—</div>
+        <div class="ip-hero-meta" id="display-ip-type">IPv4</div>
+        <button class="copy-btn" id="copy-ip-btn" aria-label="Copy IP address to clipboard">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2.5A1.5 1.5 0 0 1 3.5 1H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          Copy
+        </button>
+      </div>
+
+      <!-- IP Details Grid -->
+      <div class="ip-details-grid" style="margin-top: 24px;">
+
+        <!-- IPv4 -->
+        <div class="ip-detail-card" id="card-ipv4">
+          <div class="ip-detail-icon">🌐</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">IPv4 Address</div>
+            <div class="ip-detail-value" id="detail-ipv4">Detecting…</div>
+          </div>
+          <button class="mini-copy-btn" data-target="detail-ipv4" aria-label="Copy IPv4 address" title="Copy">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2.5A1.5 1.5 0 0 1 3.5 1H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <!-- IPv6 -->
+        <div class="ip-detail-card" id="card-ipv6">
+          <div class="ip-detail-icon">🔷</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">IPv6 Address</div>
+            <div class="ip-detail-value ip-detail-value-sm" id="detail-ipv6">Detecting…</div>
+          </div>
+          <button class="mini-copy-btn" data-target="detail-ipv6" aria-label="Copy IPv6 address" title="Copy">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 10V2.5A1.5 1.5 0 0 1 3.5 1H10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Location -->
+        <div class="ip-detail-card">
+          <div class="ip-detail-icon">📍</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">Location</div>
+            <div class="ip-detail-value" id="detail-location">—</div>
+          </div>
+        </div>
+
+        <!-- Country -->
+        <div class="ip-detail-card">
+          <div class="ip-detail-icon" id="detail-flag">🌍</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">Country</div>
+            <div class="ip-detail-value" id="detail-country">—</div>
+          </div>
+        </div>
+
+        <!-- City -->
+        <div class="ip-detail-card">
+          <div class="ip-detail-icon">🏙️</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">City / Region</div>
+            <div class="ip-detail-value" id="detail-city">—</div>
+          </div>
+        </div>
+
+        <!-- ISP -->
+        <div class="ip-detail-card">
+          <div class="ip-detail-icon">📡</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">ISP / Organization</div>
+            <div class="ip-detail-value ip-detail-value-sm" id="detail-isp">—</div>
+          </div>
+        </div>
+
+        <!-- Timezone -->
+        <div class="ip-detail-card">
+          <div class="ip-detail-icon">🕐</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">Timezone</div>
+            <div class="ip-detail-value" id="detail-timezone">—</div>
+          </div>
+        </div>
+
+        <!-- ASN -->
+        <div class="ip-detail-card">
+          <div class="ip-detail-icon">🔢</div>
+          <div class="ip-detail-body">
+            <div class="ip-detail-label">ASN</div>
+            <div class="ip-detail-value" id="detail-asn">—</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- VPN / Proxy Status -->
+      <div class="vpn-status-bar" id="vpn-bar" style="margin-top: 20px;">
+        <div class="vpn-indicator" id="vpn-indicator">
+          <div class="vpn-dot" id="vpn-dot"></div>
+          <span id="vpn-text">Checking VPN status…</span>
+        </div>
+        <div class="vpn-hint" id="vpn-hint"></div>
+      </div>
+
+      <!-- Refresh -->
+      <div style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap;">
+        <button id="refresh-btn" class="btn-secondary" style="font-size: 13px; padding: 8px 16px; height: auto;" aria-label="Refresh IP detection">
+          🔄 Refresh
+        </button>
+        <button id="full-report-btn" class="btn-secondary" style="font-size: 13px; padding: 8px 16px; height: auto;" aria-label="View full raw JSON report">
+          📋 Raw JSON
+        </button>
+      </div>
+
+      <!-- Raw JSON panel -->
+      <div id="raw-json-panel" hidden style="margin-top: 16px;">
+        <pre id="raw-json-content" class="raw-json-block" aria-label="Raw IP data JSON"></pre>
+      </div>
+
+    </div>
+
+    <!-- Error state -->
+    <div id="ip-error" hidden>
+      <div class="calc-error" role="alert">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span id="ip-error-msg">Unable to detect IP address. Please check your connection and try again.</span>
+      </div>
+      <button id="retry-btn" class="btn-primary" style="margin-top: 12px; font-size: 14px; padding: 10px 20px; height: auto;">Try Again</button>
+    </div>
+
+  </div>
+
+  <!-- PUBLIC vs PRIVATE Section -->
+  <div style="margin-bottom: 40px;" class="fade-up stagger-1">
+    <h2 class="text-display-xs" style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">Public vs Private IP Address</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">Understanding the difference between your public and local IP address.</p>
+
+    <div class="vs-grid">
+      <div class="vs-card vs-public">
+        <div class="vs-card-header">
+          <span style="font-size: 22px;">🌐</span>
+          <div>
+            <div class="vs-title">Public IP Address</div>
+            <div class="vs-subtitle">What the internet sees</div>
+          </div>
+        </div>
+        <ul class="vs-list">
+          <li>Assigned by your ISP</li>
+          <li>Visible to all websites you visit</li>
+          <li>Shared across your router (all devices on your network use the same public IP)</li>
+          <li>Changes periodically (dynamic) unless you pay for a static IP</li>
+          <li>Used for internet communication</li>
+        </ul>
+        <div class="vs-example">Your IP: <code id="vs-public-ip" style="color:var(--color-link)">Detecting…</code></div>
+      </div>
+
+      <div class="vs-card vs-private">
+        <div class="vs-card-header">
+          <span style="font-size: 22px;">🏠</span>
+          <div>
+            <div class="vs-title">Private IP Address</div>
+            <div class="vs-subtitle">What your router assigns</div>
+          </div>
+        </div>
+        <ul class="vs-list">
+          <li>Assigned by your router (DHCP)</li>
+          <li>Only visible within your local network</li>
+          <li>Each device gets a unique private IP</li>
+          <li>Cannot be detected by websites</li>
+          <li>Used for local communication (printer, smart TV, etc.)</li>
+        </ul>
+        <div class="vs-example">Example ranges: <code>192.168.x.x</code> · <code>10.x.x.x</code> · <code>172.16.x.x</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO FIND LOCAL IP -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom: 40px;">
+    <h2 class="text-display-xs" style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">How to Find Your Local IP Address</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 20px;">Your private/local IP cannot be detected by websites. Here's how to find it on each device.</p>
+
+    <div class="device-grid">
+      {[
+        { icon: '🪟', name: 'Windows', steps: ['Press Win + R, type cmd, press Enter', 'Type: ipconfig', 'Look for "IPv4 Address" under your adapter'] },
+        { icon: '🍎', name: 'macOS', steps: ['Go to System Settings → Network', 'Select your Wi-Fi or Ethernet connection', 'Your IP is shown under "IP Address"'] },
+        { icon: '📱', name: 'iPhone / iOS', steps: ['Open Settings → Wi-Fi', 'Tap the (ⓘ) next to your network', 'Your IP is shown under "IP Address"'] },
+        { icon: '🤖', name: 'Android', steps: ['Open Settings → Network & Internet', 'Tap Wi-Fi → tap your connected network', 'Expand "Advanced" to see IP address'] },
+        { icon: '🐧', name: 'Linux', steps: ['Open Terminal', 'Type: hostname -I or ip addr show', 'Look for inet address under your interface'] },
+        { icon: '📶', name: 'Router Admin', steps: ['Open browser, go to 192.168.1.1 or 192.168.0.1', 'Log in with your router credentials', 'Check "Connected Devices" or "DHCP" section'] },
+      ].map(device => (
+        <div class="device-card">
+          <div class="device-header">
+            <span style="font-size: 20px;">{device.icon}</span>
+            <span class="device-name">{device.name}</span>
+          </div>
+          <ol class="device-steps">
+            {device.steps.map(step => <li>{step}</li>)}
+          </ol>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- VPN & PRIVACY GUIDE -->
+  <div style="margin-bottom: 40px;" class="fade-up stagger-1">
+    <h2 class="text-display-xs" style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">VPN, Privacy & IP Protection</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">Understanding how VPNs affect your IP address and what they protect.</p>
+
+    <div class="privacy-grid">
+      {[
+        { icon: '🛡️', title: 'How a VPN Hides Your IP', desc: 'A VPN (Virtual Private Network) routes your internet traffic through a server in another location. Websites see the VPN server\'s IP instead of your real IP, masking your identity and approximate location.' },
+        { icon: '🔍', title: 'DNS Leak Test', desc: 'Even with a VPN, DNS queries can bypass the tunnel and reveal your real ISP. A DNS leak test checks whether your DNS requests are going through your VPN or leaking to your ISP\'s servers.' },
+        { icon: '📹', title: 'WebRTC Leak', desc: 'Browsers can expose your real IP through WebRTC even when using a VPN. This is called a WebRTC leak. Disabling WebRTC in your browser settings or using a VPN that blocks it prevents this.' },
+        { icon: '🔄', title: 'How to Change Your IP', desc: 'Connect to a VPN (changes IP to VPN server), use Tor Browser (routes through multiple servers), switch networks (mobile data vs Wi-Fi have different IPs), or restart your router (may get new dynamic IP from ISP).' },
+        { icon: '📍', title: 'IP Geolocation Accuracy', desc: 'IP geolocation is accurate to country level in ~95% of cases, city level in ~70% of cases, but cannot determine your exact address. Location data comes from ISP registration, not GPS.' },
+        { icon: '⚠️', title: 'What Your IP Can Reveal', desc: 'Your approximate city, region and country. Your ISP name. Whether you\'re using a VPN, proxy, or Tor. Your connection type (residential, business, mobile). It cannot reveal your name, exact address, or personal data.' },
+      ].map(item => (
+        <div class="privacy-card">
+          <div class="privacy-icon">{item.icon}</div>
+          <div class="privacy-title">{item.title}</div>
+          <div class="privacy-desc">{item.desc}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div style="margin-top: 48px;" class="prose-section fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 20px;">Complete Guide: IP Addresses, Geolocation & Online Privacy</h2>
+
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      Your <strong>public IP address</strong> is the unique identifier assigned to your internet connection by your Internet Service Provider (ISP). When you visit any website, your IP address is visible to that server — it's how the internet knows where to send the data back to you. This page detects your <strong>current IP address</strong> automatically, including your <strong>IPv4 address</strong>, <strong>IPv6 address</strong>, location, and ISP.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">IPv4 vs IPv6: What's the Difference?</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      <strong>IPv4</strong> (Internet Protocol version 4) is the traditional format — four groups of numbers separated by dots, like <code>203.0.113.1</code>. There are only about 4.3 billion possible IPv4 addresses, and the world has essentially run out. <strong>IPv6</strong> uses a 128-bit format like <code>2001:0db8:85a3:0000:0000:8a2e:0370:7334</code>, supporting 340 undecillion addresses — enough for every grain of sand on Earth to have its own address. Most modern devices support both (called dual-stack), and your ISP may assign you one or both.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">IP Address Geolocation: How Accurate Is It?</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      <strong>IP geolocation</strong> maps an IP address to a physical location using databases maintained by ISPs and regional internet registries. The accuracy varies: country-level is highly accurate (~99%), city-level is reasonably accurate (~70–80%), but street-level accuracy is not possible through IP alone. If your detected location is off, it typically means your ISP's infrastructure routes your traffic through a different city. This is common in rural areas or with mobile networks.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Dynamic vs Static IP Addresses</h3>
+    <div style="overflow-x: auto; margin-top: 16px; margin-bottom: 24px; border: 1px solid var(--color-hairline); border-radius: var(--radius-md);">
+      <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; color: var(--color-body);">
+        <thead>
+          <tr style="background: var(--color-canvas-soft-2); border-bottom: 1px solid var(--color-hairline); font-weight: 600; color: var(--color-ink);">
+            <th style="padding: 12px 16px;">Feature</th>
+            <th style="padding: 12px 16px;">Dynamic IP</th>
+            <th style="padding: 12px 16px;">Static IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Changes over time', '✅ Yes (periodically)', '❌ Never changes'],
+            ['Cost', 'Free (default)', 'Extra fee from ISP'],
+            ['Best for', 'Home internet users', 'Servers, businesses, VPNs'],
+            ['Privacy', 'Slightly better (changes)', 'Easier to track over time'],
+            ['Remote access', 'Difficult (IP changes)', 'Easy (always same IP)'],
+            ['Assigned by', 'ISP DHCP server', 'ISP manually configured'],
+          ].map(([feat, dyn, stat]) => (
+            <tr style="border-bottom: 1px solid var(--color-hairline);">
+              <td style="padding: 12px 16px; font-weight: 500;">{feat}</td>
+              <td style="padding: 12px 16px;">{dyn}</td>
+              <td style="padding: 12px 16px;">{stat}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Common Questions About IP Addresses</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 8px;">
+      <strong>What is my router IP?</strong> Your router has two IPs: a public IP (shared with all devices on your network, shown above) and a gateway IP (usually 192.168.1.1 or 192.168.0.1) used to access its admin panel.
+    </p>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 8px;">
+      <strong>What is my WAN IP?</strong> WAN (Wide Area Network) IP is the same as your public IP — the address your router uses to communicate with the internet.
+    </p>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 8px;">
+      <strong>What is my LAN IP?</strong> LAN (Local Area Network) IP is your private IP — assigned by your router, used only within your home or office network. Websites cannot see this.
+    </p>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px;">
+      <strong>Is my IP address safe to share?</strong> Avoid sharing your IP address publicly. While it reveals only approximate location and ISP to the average person, it can be misused for targeted attacks or to identify your internet provider. Use a VPN if privacy is a concern.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top: 48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top: 1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`ip-faq-${i}`} id={`ip-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`ip-faq-${i}`} role="region" aria-labelledby={`ip-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  /* ─── Loading ─── */
+  .ip-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+  }
+  .ip-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--color-hairline);
+    border-top-color: var(--color-link);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ─── Hero IP Card ─── */
+  .ip-hero {
+    text-align: center;
+    padding: 36px 24px 28px;
+    background: var(--color-canvas-soft-2);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+    position: relative;
+  }
+  .ip-hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    margin-bottom: 10px;
+  }
+  .ip-hero-value {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 700;
+    color: var(--color-ink);
+    letter-spacing: -1px;
+    line-height: 1.1;
+    font-family: var(--font-mono);
+    word-break: break-all;
+  }
+  .ip-hero-meta {
+    font-size: 12px;
+    color: var(--color-muted);
+    margin-top: 8px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 7px 18px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-pill);
+    background: var(--color-canvas);
+    color: var(--color-body);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .copy-btn:hover { background: var(--color-canvas-soft-2); color: var(--color-ink); border-color: var(--color-hairline-strong); }
+  .copy-btn.copied { background: var(--color-success-soft, #d1fae5); color: #065f46; border-color: #6ee7b7; }
+
+  /* ─── Details Grid ─── */
+  .ip-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .ip-detail-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    position: relative;
+  }
+  .ip-detail-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .ip-detail-body { flex: 1; min-width: 0; }
+  .ip-detail-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    margin-bottom: 4px;
+  }
+  .ip-detail-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    word-break: break-all;
+  }
+  .ip-detail-value-sm { font-size: 12px; }
+  .mini-copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-muted);
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+  }
+  .mini-copy-btn:hover { color: var(--color-ink); }
+
+  /* ─── VPN Status ─── */
+  .vpn-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-hairline);
+    background: var(--color-canvas-soft-2);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vpn-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-ink);
+  }
+  .vpn-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-muted);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .vpn-dot.vpn-on { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+  .vpn-dot.vpn-off { background: #6b7280; }
+  .vpn-dot.vpn-maybe { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.15); }
+  .vpn-hint { font-size: 12px; color: var(--color-muted); }
+
+  /* ─── Raw JSON ─── */
+  .raw-json-block {
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--color-body);
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  /* ─── vs grid ─── */
+  .vs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .vs-card {
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+  .vs-public { background: var(--color-canvas-soft-2); }
+  .vs-private { background: var(--color-canvas-soft-2); }
+  .vs-card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .vs-title { font-size: 15px; font-weight: 600; color: var(--color-ink); }
+  .vs-subtitle { font-size: 12px; color: var(--color-muted); margin-top: 2px; }
+  .vs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .vs-list li {
+    font-size: 13px;
+    color: var(--color-body);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .vs-list li::before { content: '·'; position: absolute; left: 4px; color: var(--color-muted); }
+  .vs-example {
+    font-size: 12px;
+    color: var(--color-muted);
+    border-top: 1px solid var(--color-hairline);
+    padding-top: 10px;
+    margin-top: 8px;
+  }
+  .vs-example code {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-ink);
+  }
+
+  /* ─── Device Grid ─── */
+  .device-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .device-card {
+    padding: 16px;
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+  }
+  .device-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .device-name { font-size: 14px; font-weight: 600; color: var(--color-ink); }
+  .device-steps {
+    padding-left: 16px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .device-steps li { font-size: 12.5px; color: var(--color-body); line-height: 1.5; }
+
+  /* ─── Privacy Grid ─── */
+  .privacy-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .privacy-card {
+    padding: 16px;
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+  }
+  .privacy-icon { font-size: 22px; margin-bottom: 8px; }
+  .privacy-title { font-size: 14px; font-weight: 600; color: var(--color-ink); margin-bottom: 6px; }
+  .privacy-desc { font-size: 13px; color: var(--color-body); line-height: 1.55; }
+
+  /* ─── Calc error reuse ─── */
+  .calc-error { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--color-error-soft); border: 1px solid var(--color-hairline); border-radius: var(--radius-md); font-size: 14px; color: var(--color-error); }
+  .prose-section { padding: 32px; background: var(--color-canvas); border-radius: var(--radius-lg); border: 1px solid var(--color-hairline); }
+  code { background: var(--color-canvas-soft-2); border: 1px solid var(--color-hairline); border-radius: 4px; padding: 1px 6px; font-family: var(--font-mono); font-size: 13px; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 900px) {
+    .privacy-grid { grid-template-columns: repeat(2, 1fr); }
+    .device-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .ip-details-grid { grid-template-columns: 1fr; }
+    .vs-grid { grid-template-columns: 1fr; }
+    .device-grid { grid-template-columns: 1fr; }
+    .privacy-grid { grid-template-columns: 1fr; }
+    .prose-section { padding: 20px 16px; }
+    .ip-hero { padding: 28px 16px 20px; }
+  }
+  @media (max-width: 480px) {
+    .ip-hero-value { letter-spacing: -0.5px; }
+    .device-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  // ─── Types ──────────────────────────────────────────────────────────────────
+  interface IPData {
+    ip: string;
+    ipv4?: string;
+    ipv6?: string;
+    city?: string;
+    region?: string;
+    country?: string;
+    country_name?: string;
+    org?: string;
+    asn?: string;
+    timezone?: string;
+    loc?: string;
+    hostname?: string;
+    postal?: string;
+  }
+
+  // ─── DOM ────────────────────────────────────────────────────────────────────
+  const loading  = document.getElementById('ip-loading')!;
+  const main     = document.getElementById('ip-main')!;
+  const errorEl  = document.getElementById('ip-error')!;
+  const errorMsg = document.getElementById('ip-error-msg')!;
+
+  const displayIp    = document.getElementById('display-ip')!;
+  const displayType  = document.getElementById('display-ip-type')!;
+  const detailIpv4   = document.getElementById('detail-ipv4')!;
+  const detailIpv6   = document.getElementById('detail-ipv6')!;
+  const detailLoc    = document.getElementById('detail-location')!;
+  const detailFlag   = document.getElementById('detail-flag')!;
+  const detailCountry = document.getElementById('detail-country')!;
+  const detailCity   = document.getElementById('detail-city')!;
+  const detailIsp    = document.getElementById('detail-isp')!;
+  const detailTz     = document.getElementById('detail-timezone')!;
+  const detailAsn    = document.getElementById('detail-asn')!;
+  const vpnDot       = document.getElementById('vpn-dot')!;
+  const vpnText      = document.getElementById('vpn-text')!;
+  const vpnHint      = document.getElementById('vpn-hint')!;
+  const vsPublicIp   = document.getElementById('vs-public-ip')!;
+  const rawPanel     = document.getElementById('raw-json-panel')!;
+  const rawContent   = document.getElementById('raw-json-content')!;
+
+  let rawData: any = null;
+  let currentIp = '';
+
+  // ─── Country flag emoji from country code ───────────────────────────────────
+  function countryFlag(code: string): string {
+    if (!code || code.length !== 2) return '🌍';
+    const offset = 127397;
+    return String.fromCodePoint(...[...code.toUpperCase()].map(c => c.charCodeAt(0) + offset));
+  }
+
+  // ─── Is IPv6? ───────────────────────────────────────────────────────────────
+  function isIPv6(ip: string): boolean {
+    return ip.includes(':');
+  }
+
+  // ─── Detect VPN heuristically ───────────────────────────────────────────────
+  function detectVPN(data: IPData): { status: 'vpn' | 'maybe' | 'clean', label: string, hint: string } {
+    const org = (data.org || '').toLowerCase();
+    const vpnKeywords = ['vpn', 'proxy', 'hosting', 'cloud', 'datacenter', 'data center',
+      'digitalocean', 'linode', 'vultr', 'amazon', 'google cloud', 'microsoft azure',
+      'ovh', 'hetzner', 'contabo', 'mullvad', 'nordvpn', 'expressvpn', 'private'];
+    const isLikelyVPN = vpnKeywords.some(kw => org.includes(kw));
+
+    if (isLikelyVPN) {
+      return {
+        status: 'vpn',
+        label: '🛡️ VPN or Proxy Detected',
+        hint: 'Your IP belongs to a hosting or VPN provider. Your real IP is hidden.'
+      };
+    }
+    return {
+      status: 'clean',
+      label: '🔓 No VPN Detected',
+      hint: 'Your real IP address appears to be visible. Use a VPN to hide your IP.'
+    };
+  }
+
+  // ─── Fetch IPv4 via ipinfo ──────────────────────────────────────────────────
+  async function fetchIPv4(): Promise<IPData> {
+    const res = await fetch('https://ipinfo.io/json?token=');
+    if (!res.ok) throw new Error('ipinfo failed');
+    return res.json();
+  }
+
+  // ─── Fetch IPv6 via ipify ──────────────────────────────────────────────────
+  async function fetchIPv6(): Promise<string | null> {
+    try {
+      const res = await fetch('https://api6.ipify.org?format=json', { signal: AbortSignal.timeout(3000) });
+      const data = await res.json();
+      return data.ip && isIPv6(data.ip) ? data.ip : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // ─── Render ─────────────────────────────────────────────────────────────────
+  function render(data: IPData) {
+    const ip = data.ip || '—';
+    const ipv6 = data.ipv6 || null;
+    const isV6 = isIPv6(ip);
+
+    currentIp = ip;
+    rawData = data;
+
+    // Hero
+    displayIp.textContent = ip;
+    displayType.textContent = isV6 ? 'IPv6' : 'IPv4';
+    vsPublicIp.textContent = ip;
+
+    // IPv4 detail
+    if (!isV6) {
+      detailIpv4.textContent = ip;
+    } else {
+      detailIpv4.textContent = 'Not detected (IPv6 connection)';
+      detailIpv4.style.color = 'var(--color-muted)';
+      detailIpv4.style.fontSize = '12px';
+    }
+
+    // IPv6 detail
+    if (ipv6) {
+      detailIpv6.textContent = ipv6;
+    } else if (isV6) {
+      detailIpv6.textContent = ip;
+    } else {
+      detailIpv6.textContent = 'Not available on this connection';
+      detailIpv6.style.color = 'var(--color-muted)';
+    }
+
+    // Location
+    const city = data.city || '';
+    const region = data.region || '';
+    const country = data.country || '';
+    const countryName = data.country_name || country;
+
+    detailLoc.textContent = [city, region, countryName].filter(Boolean).join(', ') || '—';
+    detailFlag.textContent = countryFlag(country);
+    detailCountry.textContent = countryName || '—';
+    detailCity.textContent = [city, region].filter(Boolean).join(', ') || '—';
+    detailIsp.textContent = data.org || '—';
+    detailTz.textContent = data.timezone || '—';
+    detailAsn.textContent = data.org?.split(' ')[0] || '—';
+
+    // VPN status
+    const vpn = detectVPN(data);
+    vpnDot.className = 'vpn-dot ' + (vpn.status === 'vpn' ? 'vpn-on' : vpn.status === 'maybe' ? 'vpn-maybe' : 'vpn-off');
+    vpnText.textContent = vpn.label;
+    vpnHint.textContent = vpn.hint;
+
+    // Show
+    loading.hidden = true;
+    main.hidden = false;
+    errorEl.hidden = true;
+  }
+
+  // ─── Load ───────────────────────────────────────────────────────────────────
+  async function load() {
+    loading.hidden = false;
+    main.hidden = true;
+    errorEl.hidden = true;
+
+    try {
+      // Fetch IPv4 data + IPv6 in parallel
+      const [ipData, ipv6] = await Promise.all([
+        fetchIPv4(),
+        fetchIPv6(),
+      ]);
+
+      if (ipv6) ipData.ipv6 = ipv6;
+      render(ipData);
+    } catch (err) {
+      // Fallback: try ipify
+      try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const { ip } = await res.json();
+        render({ ip } as IPData);
+      } catch {
+        loading.hidden = true;
+        errorEl.hidden = false;
+        errorMsg.textContent = 'Unable to detect your IP address. Please check your connection and try again.';
+      }
+    }
+  }
+
+  // ─── Copy ───────────────────────────────────────────────────────────────────
+  async function copyText(text: string, btn: HTMLElement) {
+    try {
+      await navigator.clipboard.writeText(text);
+      const orig = btn.innerHTML;
+      btn.innerHTML = btn.tagName === 'BUTTON' && btn.classList.contains('copy-btn')
+        ? `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copied!`
+        : `<svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`;
+      btn.classList.add('copied');
+      setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 1800);
+    } catch {}
+  }
+
+  document.getElementById('copy-ip-btn')!.addEventListener('click', (e) => {
+    copyText(currentIp, e.currentTarget as HTMLElement);
+  });
+
+  document.querySelectorAll('.mini-copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = (btn as HTMLElement).dataset.target;
+      const targetEl = targetId ? document.getElementById(targetId) : null;
+      const text = targetEl?.textContent?.trim() || '';
+      if (text && text !== '—' && !text.includes('Not')) {
+        copyText(text, btn as HTMLElement);
+      }
+    });
+  });
+
+  // ─── Refresh ─────────────────────────────────────────────────────────────────
+  document.getElementById('refresh-btn')!.addEventListener('click', load);
+  document.getElementById('retry-btn')?.addEventListener('click', load);
+
+  // ─── Raw JSON toggle ─────────────────────────────────────────────────────────
+  document.getElementById('full-report-btn')!.addEventListener('click', () => {
+    const isHidden = rawPanel.hidden;
+    rawPanel.hidden = !isHidden;
+    if (!isHidden) return;
+    rawContent.textContent = JSON.stringify(rawData, null, 2);
+  });
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+
+  // ─── Init ─────────────────────────────────────────────────────────────────
+  load();
+</script>

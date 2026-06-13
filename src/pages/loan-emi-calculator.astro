@@ -1,0 +1,688 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is an EMI?', a: 'EMI stands for Equated Monthly Installment. It is the fixed amount you pay to your lender every month to repay a loan. Each EMI consists of two parts: the principal (the actual loan amount being repaid) and the interest (the cost charged by the lender). In early months, more of the EMI goes toward interest. Over time, the principal portion increases.' },
+  { q: 'How is EMI calculated?', a: 'EMI is calculated using the formula: EMI = P × r × (1+r)^n / ((1+r)^n - 1), where P is the principal loan amount, r is the monthly interest rate (annual rate ÷ 12 ÷ 100), and n is the total number of monthly installments. Our calculator applies this formula instantly for any loan amount, rate, and tenure.' },
+  { q: 'What is the difference between flat rate and reducing balance interest?', a: 'Flat rate interest is calculated on the original loan amount throughout the tenure. Reducing balance (diminishing balance) calculates interest only on the outstanding principal each month, which decreases as you repay. Reducing balance results in lower effective interest. Most home loans, car loans, and personal loans in Nepal use reducing balance method.' },
+  { q: 'What is the current home loan interest rate in Nepal?', a: 'Home loan interest rates in Nepal vary between banks and are linked to the Nepal Rastra Bank (NRB) base rate. As of recent periods, home loan rates typically range from 9% to 12% per annum depending on the bank, loan tenure, and borrower profile. Check with individual banks like NMB, Everest Bank, Standard Chartered Nepal, or NIC Asia for current rates.' },
+  { q: 'How much home loan can I get in Nepal?', a: 'Most Nepali banks lend up to 60-70% of the property value (Loan to Value ratio). Eligibility depends on your monthly income — typically your EMI should not exceed 40-50% of your monthly income. For example, if your salary is Rs. 50,000/month, most banks will approve an EMI up to Rs. 20,000-25,000.' },
+  { q: 'What is a loan amortization schedule?', a: 'An amortization schedule is a complete table showing each monthly payment over the life of the loan, broken down into the principal and interest components. It shows how your outstanding balance decreases month by month. Our calculator generates the full amortization schedule for any loan.' },
+  { q: 'How can I reduce my EMI?', a: 'You can reduce your EMI by: (1) Increasing the loan tenure — longer repayment period means lower monthly payment but more total interest paid. (2) Making a larger down payment — borrowing less means lower EMI. (3) Negotiating a lower interest rate with your bank. (4) Prepaying the loan — making extra payments reduces the outstanding principal and future EMIs.' },
+  { q: 'What is the processing fee on loans in Nepal?', a: 'Nepali banks typically charge a processing fee of 0.5% to 1.5% of the loan amount when you take out a loan. This is a one-time fee charged at disbursement and is separate from your EMI. Some banks also charge annual service fees or insurance premiums.' },
+  { q: 'What happens if I miss an EMI payment?', a: 'Missing an EMI payment attracts a late payment penalty (typically 1-2% per month on the overdue amount in Nepal). It also negatively affects your credit score with the Credit Information Bureau (CIB). If you miss multiple EMIs, the bank may classify the loan as Non-Performing Loan (NPL) and take legal action.' },
+  { q: 'Should I choose a shorter or longer loan tenure?', a: 'Shorter tenure: Higher EMI, less total interest paid, loan cleared faster, less financial burden long-term. Longer tenure: Lower EMI, more affordable monthly payment, but significantly more total interest paid over the life of the loan. Choose shorter tenure if you can comfortably afford the higher EMI — you save lakhs in interest.' },
+  { q: 'What is prepayment and foreclosure of a loan?', a: 'Prepayment means paying extra money toward your loan principal before the due date, which reduces future EMIs or the remaining tenure. Foreclosure means fully repaying the entire outstanding loan before the tenure ends. In Nepal, banks may charge a prepayment penalty of 1-2%, though this varies by bank and loan type.' },
+  { q: 'How does a down payment affect my EMI?', a: 'The down payment is the portion of the purchase price you pay upfront. A higher down payment reduces the loan amount, which directly reduces your EMI and total interest paid. For example, on a Rs. 50 lakh home loan at 10% for 20 years, increasing down payment from 20% to 30% saves approximately Rs. 6,000/month in EMI.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Loan EMI Calculator',
+    description: 'Free EMI calculator for home loan, car loan, personal loan, and business loan. Calculate monthly installment, total interest, and view complete amortization schedule.',
+    url: '/loan-emi-calculator',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💵', desc: 'Calculate & split tips' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+  { name: 'What Is My IP', href: '/what-is-my-ip', icon: '🌐', desc: 'Find your IP address' },
+];
+
+const loanPresets = [
+  { label: 'Home Loan', icon: '🏠', amount: 5000000, rate: 10.5, tenure: 20 },
+  { label: 'Car Loan', icon: '🚗', amount: 1500000, rate: 12, tenure: 5 },
+  { label: 'Personal Loan', icon: '👤', amount: 500000, rate: 15, tenure: 3 },
+  { label: 'Business Loan', icon: '🏢', amount: 2000000, rate: 11, tenure: 7 },
+  { label: 'Education Loan', icon: '🎓', amount: 1000000, rate: 9, tenure: 10 },
+  { label: 'Gold Loan', icon: '🪙', amount: 300000, rate: 10, tenure: 2 },
+];
+---
+
+<CalculatorLayout
+  title="Loan EMI Calculator — Home Loan, Car Loan, Personal Loan Nepal"
+  description="Free EMI calculator for Nepal. Calculate monthly installment for home loan, car loan, personal loan, and business loan. View full amortization schedule with interest breakdown. Supports all Nepali banks."
+  canonical="/loan-emi-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Loan EMI Calculator', url: '/loan-emi-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Financial Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Loan EMI Calculator</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Calculate your exact monthly installment for any loan — home, car, personal, or business. View the full repayment schedule and total interest breakdown.
+    </p>
+  </div>
+
+  <!-- Loan Type Presets -->
+  <div style="margin-bottom:20px;" class="fade-up stagger-1">
+    <div class="loan-presets">
+      {loanPresets.map(p => (
+        <button class="loan-preset-btn" data-amount={p.amount} data-rate={p.rate} data-tenure={p.tenure} aria-label={`Load ${p.label} example`}>
+          <span class="loan-preset-icon">{p.icon}</span>
+          <span class="loan-preset-label">{p.label}</span>
+        </button>
+      ))}
+    </div>
+  </div>
+
+  <!-- MAIN CALCULATOR -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom:40px;">
+    <div class="calc-form">
+
+      <!-- Loan Amount -->
+      <div>
+        <label for="loan-amount" class="label">Loan Amount</label>
+        <div class="input-currency-wrap">
+          <span class="currency-symbol" aria-hidden="true">Rs.</span>
+          <input type="number" id="loan-amount" class="input-base input-lg input-with-prefix"
+            placeholder="e.g. 5000000" min="1000" step="1000"
+            aria-label="Loan amount in Nepali Rupees" />
+        </div>
+        <div class="quick-amount-btns" style="margin-top:8px;">
+          {['1L','5L','10L','25L','50L','1Cr'].map(a => (
+            <button class="quick-amt-btn" data-val={a} aria-label={`Set amount to ${a}`}>{a}</button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Annual Interest Rate -->
+      <div>
+        <label for="interest-rate" class="label" style="margin-bottom:10px;">
+          Annual Interest Rate
+          <span class="label-hint">Reducing balance (standard for Nepal banks)</span>
+        </label>
+        <div style="position:relative;display:flex;align-items:center;">
+          <input type="number" id="interest-rate" class="input-base input-lg"
+            placeholder="e.g. 10.5" min="0.1" max="50" step="0.1"
+            aria-label="Annual interest rate percentage" style="padding-right:48px;" />
+          <span class="unit-badge">%</span>
+        </div>
+        <div class="rate-range-info" style="margin-top:6px;">
+          <span>🏠 Home: 9–12%</span>
+          <span>🚗 Car: 11–14%</span>
+          <span>👤 Personal: 13–18%</span>
+        </div>
+      </div>
+
+      <!-- Loan Tenure -->
+      <div>
+        <label class="label" style="margin-bottom:10px;">Loan Tenure</label>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+          <div style="flex:1;min-width:140px;">
+            <input type="number" id="tenure-years" class="input-base input-lg"
+              placeholder="Years" min="0" max="30" step="1"
+              aria-label="Loan tenure in years" />
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:13px;color:var(--color-muted);">or</span>
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <input type="number" id="tenure-months" class="input-base input-lg"
+              placeholder="Months" min="1" max="360" step="1"
+              aria-label="Loan tenure in months" />
+          </div>
+        </div>
+        <div class="tenure-btns" style="margin-top:8px;">
+          {[1,2,3,5,7,10,15,20,25,30].map(y => (
+            <button class="tenure-quick-btn" data-years={y} aria-label={`Set tenure to ${y} years`}>{y}yr</button>
+          ))}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button id="calc-emi-btn" class="btn-primary" style="flex:1;">Calculate EMI</button>
+        <button id="clear-emi-btn" class="btn-secondary">Clear</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="emi-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="emi-error-msg"></span>
+    </div>
+
+    <!-- Results -->
+    <div id="emi-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:28px 0;"></div>
+
+      <!-- Hero EMI -->
+      <div class="emi-hero-card">
+        <div class="emi-hero-label">Monthly EMI</div>
+        <div class="emi-hero-value" id="res-emi">—</div>
+        <div class="emi-hero-sub" id="res-emi-sub">per month</div>
+      </div>
+
+      <!-- Breakdown grid -->
+      <div class="emi-breakdown-grid" style="margin-top:20px;">
+        <div class="emi-breakdown-item">
+          <div class="ebi-icon">🏦</div>
+          <div class="ebi-label">Principal Amount</div>
+          <div class="ebi-value" id="res-principal">—</div>
+        </div>
+        <div class="emi-breakdown-item emi-interest">
+          <div class="ebi-icon">💸</div>
+          <div class="ebi-label">Total Interest</div>
+          <div class="ebi-value ebi-value-accent" id="res-interest">—</div>
+        </div>
+        <div class="emi-breakdown-item emi-total">
+          <div class="ebi-icon">💰</div>
+          <div class="ebi-label">Total Payment</div>
+          <div class="ebi-value" id="res-total">—</div>
+        </div>
+      </div>
+
+      <!-- Visual interest bar -->
+      <div class="interest-bar-wrap" style="margin-top:20px;">
+        <div class="interest-bar-labels">
+          <span class="ibl-principal">Principal <span id="bar-principal-pct">—</span></span>
+          <span class="ibl-interest">Interest <span id="bar-interest-pct">—</span></span>
+        </div>
+        <div class="interest-bar" role="img" aria-label="Principal vs interest breakdown">
+          <div class="interest-bar-fill-principal" id="bar-principal-fill"></div>
+          <div class="interest-bar-fill-interest" id="bar-interest-fill"></div>
+        </div>
+      </div>
+
+      <!-- Extra details -->
+      <div class="result-panel" style="margin-top:20px;">
+        <div class="result-row">
+          <span class="result-row-label">📅 Loan Tenure</span>
+          <span class="result-row-value" id="res-tenure-display">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">📊 Annual Interest Rate</span>
+          <span class="result-row-value" id="res-rate-display">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">🔢 Monthly Interest Rate</span>
+          <span class="result-row-value" id="res-monthly-rate">—</span>
+        </div>
+        <div class="result-row" style="border-bottom:none;">
+          <span class="result-row-label">💹 Interest to Principal Ratio</span>
+          <span class="result-row-value" id="res-interest-ratio">—</span>
+        </div>
+      </div>
+
+      <!-- Amortization toggle -->
+      <div style="margin-top:20px;">
+        <button id="show-schedule-btn" class="btn-secondary" style="width:100%;font-size:13px;padding:10px;height:auto;">
+          📋 View Full Amortization Schedule
+        </button>
+      </div>
+
+      <!-- Amortization Table -->
+      <div id="amortization-panel" hidden style="margin-top:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+          <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);">Monthly Amortization Schedule</h3>
+          <div style="display:flex;gap:8px;">
+            <button id="view-yearly-btn" class="unit-btn active" style="font-size:12px;padding:5px 10px;">Yearly</button>
+            <button id="view-monthly-btn" class="unit-btn" style="font-size:12px;padding:5px 10px;">Monthly</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--color-body);text-align:right;">
+            <thead>
+              <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+                <th style="padding:10px 12px;text-align:left;" id="schedule-col-label">Year</th>
+                <th style="padding:10px 12px;">EMI Paid</th>
+                <th style="padding:10px 12px;">Principal</th>
+                <th style="padding:10px 12px;">Interest</th>
+                <th style="padding:10px 12px;">Balance</th>
+              </tr>
+            </thead>
+            <tbody id="amortization-body"></tbody>
+          </table>
+        </div>
+        <p style="font-size:11px;color:var(--color-muted);margin-top:8px;font-style:italic;">
+          * Amounts in Nepali Rupees (Rs.). Minor rounding differences may occur.
+        </p>
+      </div>
+
+      <!-- Tip -->
+      <div style="padding:14px 16px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);border:1px solid var(--color-hairline);margin-top:16px;">
+        <p class="text-body-sm" style="color:var(--color-body);line-height:1.5;margin:0;">
+          💡 <strong>Pro Tip:</strong> Even paying one extra EMI per year can reduce your loan tenure by 2–4 years and save lakhs in interest on a typical home loan.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nepal Bank Rates Reference -->
+  <div style="margin-bottom:40px;" class="fade-up stagger-1">
+    <h2 style="color:var(--color-ink);margin-bottom:8px;font-size:22px;font-weight:600;">Nepal Bank Loan Rate Reference</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Approximate interest rates from major Nepali banks (check with bank for current rates).</p>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Loan Type</th>
+            <th style="padding:12px 16px;">Typical Rate</th>
+            <th style="padding:12px 16px;">Max Tenure</th>
+            <th style="padding:12px 16px;">Max LTV</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['🏠 Home Loan', '9% – 12%', 'Up to 25 years', '60–70% of property value'],
+            ['🚗 Auto / Car Loan', '11% – 14%', 'Up to 7 years', '80% of vehicle value'],
+            ['👤 Personal Loan', '13% – 18%', 'Up to 5 years', 'Based on income'],
+            ['🏢 Business Loan', '10% – 13%', 'Up to 10 years', 'Based on collateral'],
+            ['🎓 Education Loan', '8% – 11%', 'Up to 10 years', 'Up to Rs. 40 lakh'],
+            ['🪙 Gold Loan', '9% – 12%', 'Up to 3 years', '75% of gold value'],
+            ['🌾 Agricultural Loan', '7% – 10%', 'Varies', 'Subsidized by NRB'],
+          ].map(([type, rate, tenure, ltv]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:12px 16px;font-weight:500;">{type}</td>
+              <td style="padding:12px 16px;font-family:var(--font-mono);font-weight:600;color:var(--color-link);">{rate}</td>
+              <td style="padding:12px 16px;">{tenure}</td>
+              <td style="padding:12px 16px;color:var(--color-muted);">{ltv}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--color-muted);margin-top:8px;">Rates are indicative and change based on NRB base rate. Always confirm with your bank.</p>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">EMI Calculator Guide — Home Loan, Personal Loan & More</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      An <strong>EMI calculator</strong> helps you plan your loan repayment before you take a loan. By entering the <strong>loan amount</strong>, <strong>interest rate</strong>, and <strong>tenure</strong>, you instantly see your monthly obligation and the total cost of borrowing. This is critical in Nepal where bank interest rates change with the Nepal Rastra Bank (NRB) base rate, and understanding your EMI prevents financial stress.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">EMI Formula Explained</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The standard EMI formula is: <strong>EMI = P × r × (1+r)^n ÷ ((1+r)^n - 1)</strong>, where <strong>P</strong> is the principal loan amount, <strong>r</strong> is the monthly interest rate (annual rate ÷ 12 ÷ 100), and <strong>n</strong> is the number of monthly payments. For a Rs. 50 lakh home loan at 10.5% annual interest for 20 years: r = 10.5/12/100 = 0.00875, n = 240 months. EMI ≈ Rs. 49,919 per month.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">How to Compare Loan Offers</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      When comparing loan offers from different Nepali banks, don't just compare the interest rate. Also consider: processing fee (0.5–1.5% of loan amount), prepayment penalty, documentation requirements, and disbursement speed. The bank with the lowest rate isn't always the best deal once fees are included. Use our calculator to compare the total cost (EMI × tenure + fees) for each offer.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Smart Loan Planning Tips for Nepal</h3>
+    <div style="overflow-x:auto;margin:16px 0 24px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Scenario</th>
+            <th style="padding:12px 16px;">Recommendation</th>
+            <th style="padding:12px 16px;">Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['EMI too high', 'Extend tenure by 3–5 years', 'Lowers EMI but increases total interest'],
+            ['Want to save interest', 'Shorten tenure or prepay', 'Save lakhs over loan life'],
+            ['Rate floats up', 'Increase EMI (not tenure)', 'Prevents tenure from ballooning'],
+            ['Good cash flow', 'Make lump sum prepayments', 'Reduces outstanding principal fast'],
+            ['Comparing banks', 'Use Total Cost = EMI×n + fees', 'More accurate than rate alone'],
+          ].map(([s, r, i]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:12px 16px;font-weight:500;">{s}</td>
+              <td style="padding:12px 16px;">{r}</td>
+              <td style="padding:12px 16px;color:var(--color-muted);">{i}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`emi-faq-${i}`} id={`emi-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`emi-faq-${i}`} role="region" aria-labelledby={`emi-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .calc-form { display:flex;flex-direction:column;gap:20px; }
+  .input-currency-wrap { position:relative; }
+  .currency-symbol { position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--color-muted);font-weight:600;pointer-events:none;z-index:1; }
+  .input-with-prefix { padding-left:44px !important; }
+  .unit-badge { position:absolute;right:14px;font-size:13px;font-weight:600;color:var(--color-muted);pointer-events:none;user-select:none; }
+  .label-hint { font-size:11px;color:var(--color-muted);font-weight:400;margin-left:6px; }
+  .rate-range-info { display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--color-muted); }
+  .calc-error { display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error); }
+
+  /* Loan presets */
+  .loan-presets { display:grid;grid-template-columns:repeat(6,1fr);gap:8px; }
+  .loan-preset-btn {
+    display:flex;flex-direction:column;align-items:center;gap:5px;
+    padding:12px 6px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);
+    background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s ease;
+    font-size:12px;font-weight:500;color:var(--color-body);
+  }
+  .loan-preset-btn:hover { border-color:var(--color-link);background:var(--color-canvas);color:var(--color-ink); }
+  .loan-preset-btn.active { border-color:var(--color-link);background:var(--color-canvas);color:var(--color-ink); }
+  .loan-preset-icon { font-size:20px; }
+  .loan-preset-label { font-size:11px;font-weight:600;text-align:center; }
+
+  /* Quick amount buttons */
+  .quick-amount-btns,.tenure-btns { display:flex;gap:6px;flex-wrap:wrap; }
+  .quick-amt-btn,.tenure-quick-btn {
+    padding:4px 10px;font-size:12px;font-weight:500;
+    border:1px solid var(--color-hairline);border-radius:99px;
+    background:var(--color-canvas-soft-2);color:var(--color-body);
+    cursor:pointer;transition:all 0.15s;
+  }
+  .quick-amt-btn:hover,.tenure-quick-btn:hover { border-color:var(--color-link);color:var(--color-link); }
+  .quick-amt-btn.active,.tenure-quick-btn.active { border-color:var(--color-link);background:var(--color-link);color:#fff; }
+
+  /* Results */
+  .results-divider { height:1px;background:var(--color-hairline); }
+  .result-row { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--color-hairline); }
+  .result-row-label { font-size:14px;color:var(--color-body); }
+  .result-row-value { font-size:14px;font-weight:600;color:var(--color-ink); }
+
+  /* EMI Hero */
+  .emi-hero-card {
+    text-align:center;padding:36px 24px 28px;
+    background:var(--color-canvas-soft-2);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);
+  }
+  .emi-hero-label { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:10px; }
+  .emi-hero-value { font-size:clamp(32px,6vw,64px);font-weight:700;color:var(--color-ink);letter-spacing:-2px;line-height:1;font-family:var(--font-mono); }
+  .emi-hero-sub { font-size:13px;color:var(--color-muted);margin-top:8px; }
+
+  /* Breakdown grid */
+  .emi-breakdown-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:10px; }
+  .emi-breakdown-item {
+    padding:16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);
+    text-align:center;
+  }
+  .ebi-icon { font-size:20px;margin-bottom:6px; }
+  .ebi-label { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:6px; }
+  .ebi-value { font-size:15px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);word-break:break-all; }
+  .ebi-value-accent { color:#e5241a; }
+
+  /* Interest bar */
+  .interest-bar-wrap { background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);padding:16px; }
+  .interest-bar-labels { display:flex;justify-content:space-between;font-size:12px;font-weight:600;margin-bottom:8px; }
+  .ibl-principal { color:var(--color-link); }
+  .ibl-interest { color:#e5241a; }
+  .interest-bar { display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--color-hairline); }
+  .interest-bar-fill-principal { background:var(--color-link);transition:width 0.5s ease; }
+  .interest-bar-fill-interest { background:#e5241a;transition:width 0.5s ease; }
+
+  /* Unit toggle (reused for amort view) */
+  .unit-btn { padding:5px 12px;font-size:13px;font-weight:500;border:1px solid var(--color-hairline);background:var(--color-canvas-soft-2);color:var(--color-body);border-radius:var(--radius-md);cursor:pointer;transition:all 0.15s; }
+  .unit-btn.active { background:var(--color-ink);color:var(--color-on-ink, #fff);border-color:var(--color-ink); }
+
+  .prose-section { padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline); }
+
+  @media (max-width: 680px) {
+    .loan-presets { grid-template-columns:repeat(3,1fr); }
+    .emi-breakdown-grid { grid-template-columns:1fr; }
+    .emi-hero-value { letter-spacing:-1px; }
+    .prose-section { padding:20px 16px; }
+    .rate-range-info { flex-direction:column;gap:4px; }
+  }
+  @media (max-width: 400px) {
+    .loan-presets { grid-template-columns:repeat(2,1fr); }
+  }
+</style>
+
+<script>
+  // ─── Helpers ─────────────────────────────────────────────────────────────────
+  const fmt = (n: number) => 'Rs. ' + Math.round(n).toLocaleString('en-IN');
+  const fmtPct = (n: number) => n.toFixed(1) + '%';
+
+  // ─── EMI Formula ─────────────────────────────────────────────────────────────
+  function calcEMI(principal: number, annualRate: number, months: number): number {
+    const r = annualRate / 12 / 100;
+    if (r === 0) return principal / months;
+    return (principal * r * Math.pow(1 + r, months)) / (Math.pow(1 + r, months) - 1);
+  }
+
+  // ─── DOM Elements ────────────────────────────────────────────────────────────
+  const loanAmountInput = document.getElementById('loan-amount') as HTMLInputElement;
+  const interestRateInput = document.getElementById('interest-rate') as HTMLInputElement;
+  const tenureYearsInput = document.getElementById('tenure-years') as HTMLInputElement;
+  const tenureMonthsInput = document.getElementById('tenure-months') as HTMLInputElement;
+  const calcBtn = document.getElementById('calc-emi-btn') as HTMLButtonElement;
+  const clearBtn = document.getElementById('clear-emi-btn') as HTMLButtonElement;
+  const emiResults = document.getElementById('emi-results') as HTMLElement;
+  const emiError = document.getElementById('emi-error') as HTMLElement;
+  const emiErrorMsg = document.getElementById('emi-error-msg') as HTMLElement;
+  const amortPanel = document.getElementById('amortization-panel') as HTMLElement;
+  const showScheduleBtn = document.getElementById('show-schedule-btn') as HTMLButtonElement;
+  const amortBody = document.getElementById('amortization-body') as HTMLElement;
+
+  let lastSchedule: any[] = [];
+  let viewMode: 'yearly' | 'monthly' = 'yearly';
+
+  // ─── Sync tenure inputs ────────────────────────────────────────────────────
+  tenureYearsInput.addEventListener('input', () => {
+    const y = parseFloat(tenureYearsInput.value);
+    if (!isNaN(y) && y > 0) tenureMonthsInput.value = String(Math.round(y * 12));
+  });
+  tenureMonthsInput.addEventListener('input', () => {
+    const m = parseFloat(tenureMonthsInput.value);
+    if (!isNaN(m) && m > 0) tenureYearsInput.value = String(+(m / 12).toFixed(1));
+  });
+
+  // ─── Error helpers ────────────────────────────────────────────────────────
+  function showError(msg: string) {
+    emiErrorMsg.textContent = msg;
+    emiError.hidden = false;
+    emiResults.hidden = true;
+  }
+  function hideError() { emiError.hidden = true; }
+
+  // ─── Generate amortization schedule ──────────────────────────────────────
+  function generateSchedule(principal: number, annualRate: number, months: number, emi: number) {
+    const r = annualRate / 12 / 100;
+    let balance = principal;
+    const rows = [];
+    for (let m = 1; m <= months; m++) {
+      const interestPaid = balance * r;
+      const principalPaid = Math.min(emi - interestPaid, balance);
+      balance = Math.max(0, balance - principalPaid);
+      rows.push({ month: m, emi, principal: principalPaid, interest: interestPaid, balance });
+    }
+    return rows;
+  }
+
+  function renderYearlySchedule(rows: any[]) {
+    (document.getElementById('schedule-col-label') as HTMLElement).textContent = 'Year';
+    const yearlyMap: Record<number, { emi: number; principal: number; interest: number; balance: number }> = {};
+    rows.forEach(r => {
+      const y = Math.ceil(r.month / 12);
+      if (!yearlyMap[y]) yearlyMap[y] = { emi: 0, principal: 0, interest: 0, balance: 0 };
+      yearlyMap[y].emi += r.emi;
+      yearlyMap[y].principal += r.principal;
+      yearlyMap[y].interest += r.interest;
+      yearlyMap[y].balance = r.balance;
+    });
+    amortBody.innerHTML = '';
+    Object.entries(yearlyMap).forEach(([year, d]) => {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--color-hairline)';
+      tr.innerHTML = `
+        <td style="padding:10px 12px;text-align:left;font-weight:600;">Year ${year}</td>
+        <td style="padding:10px 12px;">${fmt(d.emi)}</td>
+        <td style="padding:10px 12px;color:var(--color-link);">${fmt(d.principal)}</td>
+        <td style="padding:10px 12px;color:#e5241a;">${fmt(d.interest)}</td>
+        <td style="padding:10px 12px;font-weight:600;">${fmt(d.balance)}</td>
+      `;
+      amortBody.appendChild(tr);
+    });
+  }
+
+  function renderMonthlySchedule(rows: any[]) {
+    (document.getElementById('schedule-col-label') as HTMLElement).textContent = 'Month';
+    amortBody.innerHTML = '';
+    const show = rows.slice(0, 60); // show first 60 months to avoid huge table
+    show.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--color-hairline)';
+      tr.innerHTML = `
+        <td style="padding:8px 12px;text-align:left;font-weight:500;">Month ${r.month}</td>
+        <td style="padding:8px 12px;">${fmt(r.emi)}</td>
+        <td style="padding:8px 12px;color:var(--color-link);">${fmt(r.principal)}</td>
+        <td style="padding:8px 12px;color:#e5241a;">${fmt(r.interest)}</td>
+        <td style="padding:8px 12px;font-weight:600;">${fmt(r.balance)}</td>
+      `;
+      amortBody.appendChild(tr);
+    });
+    if (rows.length > 60) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="5" style="padding:10px 12px;text-align:center;color:var(--color-muted);font-style:italic;font-size:12px;">Showing first 60 months of ${rows.length}. Switch to Yearly view for full overview.</td>`;
+      amortBody.appendChild(tr);
+    }
+  }
+
+  // ─── Main calculate ─────────────────────────────────────────────────────────
+  function calculate() {
+    hideError();
+    const principal = parseFloat(loanAmountInput.value);
+    const rate = parseFloat(interestRateInput.value);
+    const months = parseFloat(tenureMonthsInput.value) || parseFloat(tenureYearsInput.value) * 12;
+
+    if (!principal || principal < 1000) { showError('Please enter a valid loan amount (minimum Rs. 1,000).'); return; }
+    if (!rate || rate <= 0 || rate > 50) { showError('Please enter a valid interest rate between 0.1% and 50%.'); return; }
+    if (!months || months < 1 || months > 360) { showError('Please enter a valid tenure between 1 month and 30 years (360 months).'); return; }
+
+    const emi = calcEMI(principal, rate, months);
+    const totalPayment = emi * months;
+    const totalInterest = totalPayment - principal;
+    const principalPct = (principal / totalPayment) * 100;
+    const interestPct = (totalInterest / totalPayment) * 100;
+
+    (document.getElementById('res-emi') as HTMLElement).textContent = fmt(emi);
+    (document.getElementById('res-emi-sub') as HTMLElement).textContent = `for ${months} months`;
+    (document.getElementById('res-principal') as HTMLElement).textContent = fmt(principal);
+    (document.getElementById('res-interest') as HTMLElement).textContent = fmt(totalInterest);
+    (document.getElementById('res-total') as HTMLElement).textContent = fmt(totalPayment);
+    (document.getElementById('res-tenure-display') as HTMLElement).textContent = `${months} months (${(months/12).toFixed(1)} years)`;
+    (document.getElementById('res-rate-display') as HTMLElement).textContent = `${rate}% per annum`;
+    (document.getElementById('res-monthly-rate') as HTMLElement).textContent = `${(rate/12).toFixed(4)}% per month`;
+    (document.getElementById('res-interest-ratio') as HTMLElement).textContent = `${(totalInterest/principal*100).toFixed(1)}% of principal`;
+
+    // Bar
+    (document.getElementById('bar-principal-fill') as HTMLElement).style.width = principalPct + '%';
+    (document.getElementById('bar-interest-fill') as HTMLElement).style.width = interestPct + '%';
+    (document.getElementById('bar-principal-pct') as HTMLElement).textContent = fmtPct(principalPct);
+    (document.getElementById('bar-interest-pct') as HTMLElement).textContent = fmtPct(interestPct);
+
+    // Generate schedule
+    lastSchedule = generateSchedule(principal, rate, months, emi);
+
+    emiResults.hidden = false;
+    amortPanel.hidden = true;
+    showScheduleBtn.textContent = '📋 View Full Amortization Schedule';
+
+    // Update public IP example in vs card if it exists
+    const vsEl = document.getElementById('vs-public-ip');
+    if (vsEl) vsEl.textContent = fmt(emi);
+  }
+
+  calcBtn.addEventListener('click', calculate);
+  loanAmountInput.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+  interestRateInput.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
+
+  clearBtn.addEventListener('click', () => {
+    loanAmountInput.value = '';
+    interestRateInput.value = '';
+    tenureYearsInput.value = '';
+    tenureMonthsInput.value = '';
+    emiResults.hidden = true;
+    amortPanel.hidden = true;
+    hideError();
+    document.querySelectorAll('.loan-preset-btn,.quick-amt-btn,.tenure-quick-btn').forEach(b => b.classList.remove('active'));
+  });
+
+  // ─── Amortization toggle ──────────────────────────────────────────────────
+  showScheduleBtn.addEventListener('click', () => {
+    const isHidden = amortPanel.hidden;
+    amortPanel.hidden = !isHidden;
+    if (!isHidden) {
+      showScheduleBtn.textContent = '📋 View Full Amortization Schedule';
+      return;
+    }
+    showScheduleBtn.textContent = '🔼 Hide Schedule';
+    viewMode === 'yearly' ? renderYearlySchedule(lastSchedule) : renderMonthlySchedule(lastSchedule);
+  });
+
+  document.getElementById('view-yearly-btn')!.addEventListener('click', () => {
+    viewMode = 'yearly';
+    document.getElementById('view-yearly-btn')!.classList.add('active');
+    document.getElementById('view-monthly-btn')!.classList.remove('active');
+    renderYearlySchedule(lastSchedule);
+  });
+  document.getElementById('view-monthly-btn')!.addEventListener('click', () => {
+    viewMode = 'monthly';
+    document.getElementById('view-monthly-btn')!.classList.add('active');
+    document.getElementById('view-yearly-btn')!.classList.remove('active');
+    renderMonthlySchedule(lastSchedule);
+  });
+
+  // ─── Loan presets ─────────────────────────────────────────────────────────
+  document.querySelectorAll('.loan-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = btn as HTMLElement;
+      loanAmountInput.value = el.dataset.amount!;
+      interestRateInput.value = el.dataset.rate!;
+      const tenure = parseInt(el.dataset.tenure!);
+      tenureYearsInput.value = String(tenure);
+      tenureMonthsInput.value = String(tenure * 12);
+      document.querySelectorAll('.loan-preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      calculate();
+    });
+  });
+
+  // ─── Quick amount buttons ─────────────────────────────────────────────────
+  const amountMap: Record<string, number> = { '1L': 100000, '5L': 500000, '10L': 1000000, '25L': 2500000, '50L': 5000000, '1Cr': 10000000 };
+  document.querySelectorAll('.quick-amt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = (btn as HTMLElement).dataset.val!;
+      loanAmountInput.value = String(amountMap[val]);
+      document.querySelectorAll('.quick-amt-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ─── Tenure quick buttons ─────────────────────────────────────────────────
+  document.querySelectorAll('.tenure-quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const y = parseInt((btn as HTMLElement).dataset.years!);
+      tenureYearsInput.value = String(y);
+      tenureMonthsInput.value = String(y * 12);
+      document.querySelectorAll('.tenure-quick-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

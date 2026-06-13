@@ -1,0 +1,1063 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How accurate is this online ruler?', a: 'Our ruler auto-detects your screen\'s DPI (dots per inch) for accurate measurements. You can also manually calibrate it using a physical object like a credit card (exactly 85.6mm × 54mm) for maximum precision. Results are typically accurate within ±1mm on correctly calibrated displays.' },
+  { q: 'How do I calibrate the online ruler?', a: 'Click "Calibrate" and place a credit card (or any object with a known size) against your screen. Drag the calibration slider until the ruler matches the known measurement. Your calibration is saved for future visits.' },
+  { q: 'Can I use this ruler on mobile?', a: 'Yes. The ruler works on all devices — desktop, tablet, and mobile. On mobile, rotate your device to landscape mode for longer measurements. The DPI is auto-detected for your screen.' },
+  { q: 'How do I switch between inches and centimeters?', a: 'Use the unit toggle buttons (cm / mm / in / px) at the top of the ruler. The ruler instantly redraws to the selected unit with the correct scale.' },
+  { q: 'Why does my online ruler not match a physical ruler?', a: 'Screen DPI varies between devices. If the ruler looks off, use the Calibrate button and set it using a credit card or coin. Once calibrated, it will match your physical ruler accurately.' },
+  { q: 'What objects can I use to calibrate the ruler?', a: 'A standard credit/debit card is 85.6mm (3.37 inches) wide. A US quarter coin is 24.26mm in diameter. A standard A4 sheet is 210mm wide. Any of these work perfectly for calibration.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Online Ruler',
+    description: 'Free online screen ruler — measure in cm, mm, inches, or px directly on your screen. Works on all devices with auto DPI detection and calibration.',
+    url: '/online-ruler',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Mortgage Calculator', href: '/mortgage-calculator', icon: '🏠', desc: 'Calculate home payments & extras' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💵', desc: 'Calculate & split tips easily' },
+];
+
+const calibrationObjects = [
+  { name: 'Credit Card', size: '85.6mm wide', value: 85.6, icon: '💳' },
+  { name: 'US Quarter', size: '24.26mm', value: 24.26, icon: '🪙' },
+  { name: 'A4 Paper', size: '210mm wide', value: 210, icon: '📄' },
+];
+---
+
+<CalculatorLayout
+  title="Online Ruler — Free Screen Ruler in cm, mm, Inches & px"
+  description="Free online ruler for your screen. Measure in centimeters, millimeters, inches, or pixels with auto DPI detection. Works on all devices — desktop, tablet, and mobile. Calibrate for perfect accuracy."
+  canonical="/online-ruler"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Online Ruler', url: '/online-ruler' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Measurement Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Real Online Ruler</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Measure anything on your screen in centimeters, millimeters, inches, or pixels. Calibrate with a card for perfect physical accuracy. Click Fullscreen for borderless measuring.
+    </p>
+  </div>
+
+  <!-- RULER TOOL CONTAINER -->
+  <div id="ruler-fullscreen-wrapper" class="ruler-fullscreen-wrapper fade-up stagger-1">
+    
+    <!-- Floating Toolbar -->
+    <div class="ruler-toolbar" id="ruler-toolbar">
+      
+      <!-- Top Left Group -->
+      <div class="toolbar-left">
+        <span class="toolbar-title">📏 Real Online Ruler</span>
+        <div class="divider"></div>
+        
+        <!-- Alignment buttons -->
+        <div class="btn-group" role="group" aria-label="Select ruler layout">
+          <button class="tool-btn active" data-align="corner" title="Corner Ruler (L-shape)" aria-pressed="true">
+            <!-- Corner (L-shape) SVG -->
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 2v12h12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn" data-align="horizontal" title="Horizontal Ruler Only" aria-pressed="false">
+            <!-- Horizontal SVG -->
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 8h12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn" data-align="vertical" title="Vertical Ruler Only" aria-pressed="false">
+            <!-- Vertical SVG -->
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 2v12" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="tool-btn" data-align="foursided" title="4-Sided Ruler" aria-pressed="false">
+            <!-- 4-sided Border SVG -->
+            <rect x="2" y="2" width="12" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/>
+          </button>
+        </div>
+      </div>
+
+      <!-- Top Right Group -->
+      <div class="toolbar-right">
+        
+        <!-- Unit Select -->
+        <div class="btn-group" role="group" aria-label="Select measurement unit">
+          <button class="tool-btn active" data-unit="cm" aria-pressed="true">cm</button>
+          <button class="tool-btn" data-unit="mm" aria-pressed="false">mm</button>
+          <button class="tool-btn" data-unit="in" aria-pressed="false">in</button>
+          <button class="tool-btn" data-unit="px" aria-pressed="false">px</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Calibrate Action -->
+        <button class="tool-btn-action" id="ruler-cal-btn" aria-label="Open calibration panel">
+          ⚙️ Calibrate
+        </button>
+
+        <!-- Dynamic Theme Toggle inside ruler -->
+        <button class="tool-btn-action" id="ruler-theme-btn" aria-label="Toggle theme" title="Toggle dark mode">
+          🌗
+        </button>
+
+        <!-- Fullscreen Trigger -->
+        <button class="tool-btn-action" id="ruler-fs-btn" aria-label="Toggle Fullscreen" title="Toggle full screen mode">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M1.5 5.5v-4h4m8 4v-4h-4m-8 8v4h4m8-4v4h-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Dropdown Calibration Panel -->
+    <div id="ruler-cal-panel" class="ruler-cal-panel" hidden>
+      <div class="cal-panel-inner">
+        <h3 class="cal-panel-title">Calibrate Your Screen Ruler</h3>
+        <p class="cal-panel-text">
+          Place a physical card or quarter coin against the screen, then drag the slider until the ruler dimensions exactly match the physical object.
+        </p>
+
+        <!-- Presets -->
+        <div class="cal-presets">
+          {calibrationObjects.map(obj => (
+            <button class="preset-btn" data-mm={obj.value}>
+              <span class="preset-icon">{obj.icon}</span>
+              <div class="preset-info">
+                <span class="preset-name">{obj.name}</span>
+                <span class="preset-desc">{obj.size}</span>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <!-- Slider controls -->
+        <div class="cal-slider-group">
+          <div class="slider-header">
+            <span>DPI Value</span>
+            <span id="dpi-value-label">96 DPI</span>
+          </div>
+          <input type="range" id="ruler-dpi-slider" min="60" max="400" step="0.5" value="96" class="dpi-slider" />
+          <div class="slider-endpoints">
+            <span>60 DPI (Larger Ruler)</span>
+            <span>400 DPI (Smaller Ruler)</span>
+          </div>
+        </div>
+
+        <div class="cal-panel-actions">
+          <button id="ruler-cal-save" class="btn-primary btn-sm" style="flex:1;">Save Calibration</button>
+          <button id="ruler-cal-reset" class="btn-secondary btn-sm">Reset DPI</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Ruler Workspace -->
+    <div class="ruler-workspace" id="ruler-workspace">
+      
+      <!-- Canvas drawing ticks and lines -->
+      <canvas id="ruler-canvas" aria-label="Online screen ruler" role="img"></canvas>
+      
+      <!-- Dynamic Coordinates Tracking Tooltip -->
+      <div id="coords-tooltip" class="coords-tooltip" hidden>x: 0.0 cm y: 0.0 cm</div>
+
+      <!-- CSS Crosshairs -->
+      <div id="crosshair-h" class="crosshair-line horizontal" hidden></div>
+      <div id="crosshair-v" class="crosshair-line vertical" hidden></div>
+
+    </div>
+
+    <!-- Floating Fullscreen Exit Option (Only shown in Fullscreen mode) -->
+    <button id="fullscreen-exit-toast" class="fullscreen-exit-toast" hidden>
+      Exit Fullscreen [Esc]
+    </button>
+
+  </div>
+
+  <!-- Calibration Objects Reference -->
+  <div style="margin-bottom: 40px;" class="fade-up stagger-2">
+    <h2 class="text-display-xs" style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">Quick Calibration Reference</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">
+      Use any of these common objects to calibrate the ruler to your screen.
+    </p>
+    <div class="calib-ref-grid">
+      {[
+        { icon: '💳', name: 'Credit / Debit Card', width: '85.6 mm', height: '53.98 mm', note: 'ISO/IEC 7810 standard' },
+        { icon: '🪙', name: 'US Quarter (25¢)', width: '24.26 mm diameter', height: '—', note: 'Minted since 1965' },
+        { icon: '📄', name: 'A4 Paper', width: '210 mm', height: '297 mm', note: 'ISO 216 standard' },
+        { icon: '📏', name: 'US Letter Paper', width: '215.9 mm', height: '279.4 mm', note: 'ANSI/ASME Y14.1' },
+        { icon: '🪙', name: 'US Penny (1¢)', width: '19.05 mm diameter', height: '—', note: 'Standard US coinage' },
+        { icon: '📱', name: 'iPhone 15', width: '71.5 mm', height: '147.6 mm', note: 'Apple standard size' },
+      ].map(item => (
+        <div class="calib-ref-card">
+          <span style="font-size: 24px;">{item.icon}</span>
+          <div>
+            <div style="font-size: 13.5px; font-weight: 600; color: var(--color-ink);">{item.name}</div>
+            <div style="font-size: 12.5px; color: var(--color-body); margin-top: 2px;">W: {item.width}</div>
+            {item.height !== '—' && <div style="font-size: 12.5px; color: var(--color-body);">H: {item.height}</div>}
+            <div style="font-size: 11px; color: var(--color-muted); margin-top: 3px; font-family: var(--font-mono);">{item.note}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div style="margin-top: 48px;" class="prose-section fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 20px;">The Complete Guide to Online Rulers & Screen Measurement</h2>
+
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      An <strong>online ruler</strong> is a digital measurement tool that displays a to-scale ruler directly on your screen, letting you measure physical objects placed against your monitor. Unlike downloading software, a <strong>free online ruler</strong> works instantly in any browser. Our <strong>screen ruler online</strong> auto-detects your device's DPI (dots per inch) so measurements are accurate from the moment you open the page.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">How Does an Online Ruler Work?</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      Every screen has a pixel density measured in DPI (dots per inch) or PPI (pixels per inch). By knowing how many pixels equal one inch, we can draw a ruler at exactly the right scale. Our <strong>ruler online</strong> reads your screen's reported DPI, then calculates the exact pixel spacing for each centimeter or inch mark. On a standard 96 DPI monitor, one inch = 96 pixels. On a 4K Retina display, the DPI can exceed 200, so the spacing is different. This is why calibration matters — a <strong>cm ruler online</strong> that uses a wrong DPI value will show incorrect measurements.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Centimeters, Millimeters, or Inches — Which to Use?</h3>
+    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--color-body); line-height: 26px; font-size: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Centimeters (cm):</strong> Best for general measurements like paper size, phone dimensions, or fabric. Our <strong>online ruler cm</strong> is the most commonly used mode worldwide.</li>
+      <li><strong>Millimeters (mm):</strong> Precise engineering and crafting measurements. Use the <strong>mm ruler</strong> mode for jewelry, electronics, or technical drawings where sub-centimeter accuracy matters.</li>
+      <li><strong>Inches (in):</strong> Standard in the US for construction, printing, and everyday use. The <strong>inch ruler online</strong> mode shows 1/16 inch subdivisions for fine measurement.</li>
+      <li><strong>Pixels (px):</strong> Excellent for web designers, developers, and graphics editors. Measuring pixel dimensions directly on the screen makes checking layouts fast and simple.</li>
+    </ul>
+
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Calibrating Your Screen Ruler</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      For maximum accuracy, calibrate using an object with a known physical size. A standard credit card is the most convenient — it measures exactly 85.6mm (3.37 inches) wide per the ISO/IEC 7810 standard. Place the card against your screen, open the Calibrate panel, select "Credit Card", and drag the slider until the ruler width matches your card exactly. Your DPI setting is saved in your browser for all future visits.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top: 48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top: 1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`ruler-faq-${i}`} id={`ruler-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`ruler-faq-${i}`} role="region" aria-labelledby={`ruler-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  /* ─── Ruler Wrapper & Layout ─── */
+  .ruler-fullscreen-wrapper {
+    position: relative;
+    width: 100%;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+  }
+
+  /* HTML5 Fullscreen Target styling */
+  .ruler-fullscreen-wrapper:fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    border-radius: 0;
+    border: none;
+    background: var(--color-canvas);
+  }
+
+  /* ─── Floating Toolbar ─── */
+  .ruler-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 18px;
+    background: color-mix(in srgb, var(--color-canvas-soft-2) 90%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--color-hairline);
+    z-index: 100;
+  }
+  .toolbar-left, .toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .toolbar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-ink);
+    letter-spacing: -0.2px;
+  }
+  .divider {
+    width: 1px;
+    height: 20px;
+    background: var(--color-hairline-strong);
+    opacity: 0.5;
+  }
+
+  /* Button Groups */
+  .btn-group {
+    display: inline-flex;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    padding: 2.5px;
+    gap: 1px;
+  }
+  .tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-body);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.1s ease;
+  }
+  .tool-btn:hover {
+    color: var(--color-ink);
+    background: var(--color-canvas-soft-2);
+  }
+  .tool-btn.active {
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  .tool-btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .tool-btn-action:hover {
+    background: var(--color-canvas-soft-2);
+    border-color: var(--color-hairline-strong);
+  }
+
+  /* ─── Calibration dropdown ─── */
+  .ruler-cal-panel {
+    background: var(--color-canvas-soft);
+    border-bottom: 1px solid var(--color-hairline);
+    animation: slideDown 0.2s ease-out;
+    z-index: 90;
+  }
+  @keyframes slideDown {
+    from { transform: translateY(-10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .cal-panel-inner {
+    padding: 20px;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .cal-panel-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-ink);
+    margin-bottom: 4px;
+  }
+  .cal-panel-text {
+    font-size: 12.5px;
+    color: var(--color-body);
+    margin-bottom: 16px;
+    line-height: 1.45;
+  }
+
+  /* Presets */
+  .cal-presets {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .preset-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+  }
+  .preset-btn:hover {
+    border-color: var(--color-link);
+    background: var(--color-canvas-soft-2);
+  }
+  .preset-btn.active {
+    border-color: var(--color-link);
+    background: var(--color-canvas);
+    box-shadow: 0 0 0 2px var(--color-link-bg);
+  }
+  .preset-icon {
+    font-size: 22px;
+  }
+  .preset-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .preset-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .preset-desc {
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+
+  /* Slider group */
+  .cal-slider-group {
+    margin-bottom: 20px;
+  }
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 6px;
+  }
+  .dpi-slider {
+    width: 100%;
+    accent-color: var(--color-link);
+    cursor: pointer;
+  }
+  .slider-endpoints {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--color-muted);
+    margin-top: 4px;
+  }
+  .cal-panel-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* ─── Active Ruler Workspace ─── */
+  .ruler-workspace {
+    position: relative;
+    flex: 1;
+    min-height: 480px;
+    background: var(--color-canvas);
+    cursor: crosshair;
+    overflow: hidden;
+  }
+  #ruler-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ─── Coordinates tracking tooltip ─── */
+  .coords-tooltip {
+    position: absolute;
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    pointer-events: none;
+    z-index: 50;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--color-hairline-strong);
+    transform: translate(12px, 12px);
+  }
+
+  /* ─── Crosshairs ─── */
+  .crosshair-line {
+    position: absolute;
+    background: var(--color-link);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 40;
+  }
+  .crosshair-line.horizontal {
+    width: 100%;
+    height: 1px;
+    left: 0;
+  }
+  .crosshair-line.vertical {
+    width: 1px;
+    height: 100%;
+    top: 0;
+  }
+
+  /* ─── Exit Toast ─── */
+  .fullscreen-exit-toast {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-size: 12.5px;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  /* ─── Presets Ref grid ─── */
+  .calib-ref-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .calib-ref-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--color-canvas-soft-2);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+  .prose-section { padding: 32px; background: var(--color-canvas); border-radius: var(--radius-lg); border: 1px solid var(--color-hairline); }
+
+  /* Responsive styling */
+  @media (max-width: 991px) {
+    .calib-ref-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .toolbar-title { display: none; }
+    .divider { display: none; }
+    .ruler-toolbar { padding: 8px 10px; }
+    .calib-ref-grid { grid-template-columns: 1fr; }
+    .cal-presets { flex-direction: column; }
+  }
+</style>
+
+<script>
+  // ─── STAGE 1: STATE MANAGEMENT ─────────────────────────────────────────────
+  type Unit = 'cm' | 'mm' | 'in' | 'px';
+  type AlignMode = 'corner' | 'horizontal' | 'vertical' | 'foursided';
+
+  let currentUnit: Unit = 'cm';
+  let alignMode: AlignMode = 'corner';
+  let dpi = 96;
+
+  // DPI Loader/Saver
+  function detectDPI(): number {
+    const testDiv = document.createElement('div');
+    testDiv.style.cssText = 'width:1in;height:1in;position:absolute;left:-100%;top:-100%;visibility:hidden';
+    document.body.appendChild(testDiv);
+    const offset = testDiv.offsetWidth;
+    document.body.removeChild(testDiv);
+    const dpr = window.devicePixelRatio || 1;
+    return (offset * dpr) > 40 ? (offset * dpr) : 96;
+  }
+
+  function loadDPI(): number {
+    const saved = localStorage.getItem('ruler_dpi');
+    if (saved) {
+      const val = parseFloat(saved);
+      if (val >= 60 && val <= 400) return val;
+    }
+    return detectDPI();
+  }
+
+  dpi = loadDPI();
+
+  // ─── STAGE 2: DOM REGISTRY ─────────────────────────────────────────────────
+  const wrapper = document.getElementById('ruler-fullscreen-wrapper') as HTMLElement;
+  const workspace = document.getElementById('ruler-workspace') as HTMLElement;
+  const canvas = document.getElementById('ruler-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  
+  // Controls
+  const alignButtons = document.querySelectorAll('.tool-btn[data-align]');
+  const unitButtons = document.querySelectorAll('.tool-btn[data-unit]');
+  const calBtn = document.getElementById('ruler-cal-btn') as HTMLButtonElement;
+  const calPanel = document.getElementById('ruler-cal-panel') as HTMLElement;
+  const dpiSlider = document.getElementById('ruler-dpi-slider') as HTMLInputElement;
+  const dpiLabel = document.getElementById('dpi-value-label') as HTMLElement;
+  const presetButtons = document.querySelectorAll('.preset-btn[data-mm]');
+  const saveCalBtn = document.getElementById('ruler-cal-save') as HTMLButtonElement;
+  const resetCalBtn = document.getElementById('ruler-cal-reset') as HTMLButtonElement;
+  const fsBtn = document.getElementById('ruler-fs-btn') as HTMLButtonElement;
+  const themeBtn = document.getElementById('ruler-theme-btn') as HTMLButtonElement;
+  const fsExitToast = document.getElementById('fullscreen-exit-toast') as HTMLButtonElement;
+
+  // Hover tracker
+  const tooltip = document.getElementById('coords-tooltip') as HTMLElement;
+  const crosshairH = document.getElementById('crosshair-h') as HTMLElement;
+  const crosshairV = document.getElementById('crosshair-v') as HTMLElement;
+
+  // ─── STAGE 3: INTERACTIVE CONTROLS ─────────────────────────────────────────
+
+  // Alignment Selector
+  alignButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      alignButtons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      alignMode = (btn as HTMLElement).dataset.align as AlignMode;
+      drawRuler();
+    });
+  });
+
+  // Unit Selector
+  unitButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      unitButtons.forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+      currentUnit = (btn as HTMLElement).dataset.unit as Unit;
+      drawRuler();
+    });
+  });
+
+  // Toggle Calibration panel
+  calBtn.addEventListener('click', () => {
+    const isHidden = calPanel.hidden;
+    calPanel.hidden = !isHidden;
+    if (isHidden) {
+      dpiSlider.value = String(dpi);
+      dpiLabel.textContent = Math.round(dpi) + ' DPI';
+    }
+  });
+
+  // DPI Slider changes
+  dpiSlider.addEventListener('input', () => {
+    dpi = parseFloat(dpiSlider.value);
+    dpiLabel.textContent = Math.round(dpi) + ' DPI';
+    drawRuler(); // live update
+  });
+
+  // Preset calibrations
+  presetButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      presetButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mmWidth = parseFloat((btn as HTMLElement).dataset.mm || '85.6');
+      
+      // Compute matching DPI based on physical size and screen size
+      // We estimate a default standard screen physical size width to snap to credit card dimensions
+      // Typically, credit card is 85.6mm, which fits nicely on screen
+      // If we assume a default base pixel ratio
+      const standardPx = 323; // credit card pixel width preset
+      const calculatedDpi = (standardPx / mmWidth) * 25.4;
+      dpi = Math.min(400, Math.max(60, calculatedDpi));
+      
+      dpiSlider.value = String(dpi);
+      dpiLabel.textContent = Math.round(dpi) + ' DPI';
+      drawRuler();
+    });
+  });
+
+  // Save Calibrations
+  saveCalBtn.addEventListener('click', () => {
+    localStorage.setItem('ruler_dpi', String(dpi));
+    calPanel.hidden = true;
+    const orig = saveCalBtn.textContent;
+    saveCalBtn.textContent = '✓ Saved!';
+    setTimeout(() => { saveCalBtn.textContent = orig; }, 1200);
+  });
+
+  // Reset Calibrations
+  resetCalBtn.addEventListener('click', () => {
+    localStorage.removeItem('ruler_dpi');
+    dpi = detectDPI();
+    dpiSlider.value = String(dpi);
+    dpiLabel.textContent = Math.round(dpi) + ' DPI';
+    calPanel.hidden = true;
+    drawRuler();
+  });
+
+  // Fullscreen Handler
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      wrapper.requestFullscreen().catch(err => {
+        console.error('Fullscreen request failed:', err);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  fsBtn.addEventListener('click', toggleFullscreen);
+  fsExitToast.addEventListener('click', () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    const isFS = !!document.fullscreenElement;
+    fsExitToast.hidden = !isFS;
+    fsBtn.setAttribute('title', isFS ? 'Exit Full Screen' : 'Toggle Full Screen');
+    
+    // Auto adjust canvas sizing
+    setTimeout(() => {
+      resizeCanvas();
+    }, 100);
+  });
+
+  // Theme Toggler
+  themeBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    // Tweak local body theme icons if needed
+    requestAnimationFrame(() => {
+      drawRuler();
+    });
+  });
+
+  // Watch for global page theme changes (to repaint canvas)
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.attributeName === 'data-theme') {
+        requestAnimationFrame(() => {
+          drawRuler();
+        });
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+
+  // ─── STAGE 4: COORDINATE TRACKING & CROSSHAIRS ─────────────────────────────
+  
+  function getPixelsPerUnit(): number {
+    if (currentUnit === 'in') return dpi;
+    if (currentUnit === 'cm') return dpi / 2.54;
+    if (currentUnit === 'mm') return dpi / 25.4;
+    return 1; // px
+  }
+
+  function formatCoord(pxValue: number): string {
+    const ppu = getPixelsPerUnit();
+    const val = pxValue / ppu;
+    if (currentUnit === 'px') return Math.round(val) + ' px';
+    if (currentUnit === 'mm') return Math.round(val) + ' mm';
+    if (currentUnit === 'in') return val.toFixed(2) + ' in';
+    return val.toFixed(1) + ' cm';
+  }
+
+  workspace.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Show coordinates tooltip
+    tooltip.hidden = false;
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+    tooltip.textContent = `x: ${formatCoord(x)}  y: ${formatCoord(y)}`;
+
+    // Show/position crosshairs
+    crosshairH.hidden = false;
+    crosshairH.style.top = y + 'px';
+    crosshairV.hidden = false;
+    crosshairV.style.left = x + 'px';
+  });
+
+  workspace.addEventListener('mouseleave', () => {
+    tooltip.hidden = true;
+    crosshairH.hidden = true;
+    crosshairV.hidden = true;
+  });
+
+  workspace.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.touches[0].clientX - rect.left;
+      const y = e.touches[0].clientY - rect.top;
+
+      tooltip.hidden = false;
+      // Offset slightly upwards on touch to not be covered by finger
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = (y - 50) + 'px';
+      tooltip.textContent = `x: ${formatCoord(x)}  y: ${formatCoord(y)}`;
+
+      crosshairH.hidden = false;
+      crosshairH.style.top = y + 'px';
+      crosshairV.hidden = false;
+      crosshairV.style.left = x + 'px';
+    }
+  }, { passive: true });
+
+  workspace.addEventListener('touchend', () => {
+    tooltip.hidden = true;
+    crosshairH.hidden = true;
+    crosshairV.hidden = true;
+  });
+
+
+  // ─── STAGE 5: RULER CANVAS RENDERER ────────────────────────────────────────
+  function drawRuler() {
+    const W = canvas.width;
+    const H = canvas.height;
+    
+    // Scale adapt
+    const dpr = window.devicePixelRatio || 1;
+    const cw = W / dpr;
+    const ch = H / dpr;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Resolve color variables dynamically
+    const cs = getComputedStyle(document.documentElement);
+    const bgColor = cs.getPropertyValue('--color-canvas').trim() || '#ffffff';
+    const inkColor = cs.getPropertyValue('--color-ink').trim() || '#171717';
+    const hairColor = cs.getPropertyValue('--color-hairline').trim() || '#e5e7eb';
+    const accentColor = cs.getPropertyValue('--color-link').trim() || '#0070f3';
+
+    // Canvas Background
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, cw, ch);
+
+    const RULER_THICKNESS = 48; // tick section height
+    const ppu = getPixelsPerUnit();
+
+    // Determine which sides have active rulers
+    const showLeft = alignMode === 'corner' || alignMode === 'vertical' || alignMode === 'foursided';
+    const showBottom = alignMode === 'corner' || alignMode === 'foursided';
+    const showTop = alignMode === 'horizontal' || alignMode === 'foursided';
+    const showRight = alignMode === 'foursided';
+
+    // Setup text fonts
+    ctx.font = '10px -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    ctx.fillStyle = inkColor;
+
+    // Helper functions to draw ticks
+    function getSubdivisions(): number {
+      if (currentUnit === 'in') return 16;
+      if (currentUnit === 'px') return 10;
+      return 10; // cm or mm
+    }
+
+    const sub = getSubdivisions();
+    const tickGap = ppu / sub;
+
+    // 1. Draw HORIZONTAL Ticks (Top and/or Bottom)
+    if (showTop || showBottom) {
+      const steps = Math.ceil(cw / tickGap);
+      
+      for (let i = 0; i <= steps; i++) {
+        const x = i * tickGap;
+        if (x > cw) break;
+
+        const isMajor = i % sub === 0;
+        const isMid = sub >= 10 && i % (sub / 2) === 0;
+
+        let tickLen = 8;
+        let lw = 0.8;
+        let color = hairColor;
+
+        if (isMajor) {
+          tickLen = 22;
+          lw = 1.4;
+          color = inkColor;
+        } else if (isMid) {
+          tickLen = 14;
+          lw = 1.0;
+          color = inkColor;
+        }
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lw;
+
+        // Top ruler ticks
+        if (showTop) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, tickLen);
+          ctx.stroke();
+
+          // Labels
+          if (isMajor && i > 0) {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            const label = String(i / sub);
+            ctx.fillText(label, x, 24);
+          }
+        }
+
+        // Bottom ruler ticks
+        if (showBottom) {
+          ctx.beginPath();
+          ctx.moveTo(x, ch);
+          ctx.lineTo(x, ch - tickLen);
+          ctx.stroke();
+
+          // Labels
+          if (isMajor && i > 0) {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            const label = String(i / sub);
+            ctx.fillText(label, x, ch - 24);
+          }
+        }
+      }
+    }
+
+    // 2. Draw VERTICAL Ticks (Left and/or Right)
+    if (showLeft || showRight) {
+      const steps = Math.ceil(ch / tickGap);
+
+      for (let i = 0; i <= steps; i++) {
+        const y = i * tickGap;
+        if (y > ch) break;
+
+        const isMajor = i % sub === 0;
+        const isMid = sub >= 10 && i % (sub / 2) === 0;
+
+        let tickLen = 8;
+        let lw = 0.8;
+        let color = hairColor;
+
+        if (isMajor) {
+          tickLen = 22;
+          lw = 1.4;
+          color = inkColor;
+        } else if (isMid) {
+          tickLen = 14;
+          lw = 1.0;
+          color = inkColor;
+        }
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = lw;
+
+        // Left ruler ticks
+        if (showLeft) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(tickLen, y);
+          ctx.stroke();
+
+          // Labels
+          if (isMajor && i > 0) {
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            const label = String(i / sub);
+            ctx.fillText(label, 24, y);
+          }
+        }
+
+        // Right ruler ticks
+        if (showRight) {
+          ctx.beginPath();
+          ctx.moveTo(cw, y);
+          ctx.lineTo(cw - tickLen, y);
+          ctx.stroke();
+
+          // Labels
+          if (isMajor && i > 0) {
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            const label = String(i / sub);
+            ctx.fillText(label, cw - 24, y);
+          }
+        }
+      }
+    }
+
+    // Draw Corner Axis Borders
+    ctx.strokeStyle = hairColor;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (showTop) { ctx.moveTo(0, RULER_THICKNESS); ctx.lineTo(cw, RULER_THICKNESS); }
+    if (showBottom) { ctx.moveTo(0, ch - RULER_THICKNESS); ctx.lineTo(cw, ch - RULER_THICKNESS); }
+    if (showLeft) { ctx.moveTo(RULER_THICKNESS, 0); ctx.lineTo(RULER_THICKNESS, ch); }
+    if (showRight) { ctx.moveTo(cw - RULER_THICKNESS, 0); ctx.lineTo(cw - RULER_THICKNESS, ch); }
+    ctx.stroke();
+  }
+
+  // ─── STAGE 6: CANVAS RESIZING ──────────────────────────────────────────────
+  function resizeCanvas() {
+    const rect = workspace.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    
+    // Scale context
+    ctx.scale(dpr, dpr);
+    
+    drawRuler();
+  }
+
+  window.addEventListener('resize', () => {
+    resizeCanvas();
+  });
+
+  // Init canvas size
+  requestAnimationFrame(() => {
+    resizeCanvas();
+  });
+
+  // ─── STAGE 7: FAQ ACCORDION ────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

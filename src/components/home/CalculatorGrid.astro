@@ -27,6 +27,19 @@ const calculators = [
     icon: '💰',
     desc: 'Calculate the perfect tip and split bills with ease.',
   },
+  {
+    name: 'Online Ruler',
+    href: '/online-ruler',
+    icon: '📏',
+    desc: 'Measure physical objects on your screen in cm, mm, or inches with easy calibration.',
+  },
+  {
+    name: 'Mortgage Calculator',
+    href: '/mortgage-calculator',
+    icon: '🏠',
+    desc: 'Calculate monthly payments, property taxes, insurance, and extra principal payoffs.',
+    badge: 'New',
+  },
 ];
 ---
 
@@ -57,8 +70,8 @@ const calculators = [
   .section-header { margin-bottom: 48px; }
   .calcs-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
   @media (max-width: 1023px) { .calcs-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 599px) { .calcs-grid { grid-template-columns: 1fr; } }

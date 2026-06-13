@@ -1,0 +1,566 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is an aspect ratio?', a: 'An aspect ratio is the proportional relationship between the width and height of an image, video, or screen. It is written as width:height (e.g. 16:9). A 16:9 ratio means for every 16 units of width, there are 9 units of height. Aspect ratios are used in video production, photography, web design, and social media to ensure content displays correctly without stretching or cropping.' },
+  { q: 'What is the most common aspect ratio?', a: '16:9 is the most common aspect ratio today, used by YouTube, most TVs, monitors, and smartphones in landscape mode. 4:3 was the standard before widescreen. 1:1 (square) is popular on Instagram. 9:16 (vertical) is used for TikTok, Instagram Reels, and YouTube Shorts. 21:9 is used for ultrawide monitors and cinematic content.' },
+  { q: 'How do I calculate aspect ratio from width and height?', a: 'To calculate the aspect ratio, divide both the width and height by their Greatest Common Divisor (GCD). For example, 1920×1080: GCD is 120, so 1920÷120 = 16 and 1080÷120 = 9, giving 16:9. Our calculator does this automatically — just enter your width and height.' },
+  { q: 'How do I resize an image while keeping the aspect ratio?', a: 'Enter your original width and height, then enter the new width or height you want. Our calculator will automatically calculate the other dimension to maintain the exact aspect ratio. This prevents distortion and stretching.' },
+  { q: 'What aspect ratio should I use for YouTube?', a: 'YouTube recommends 16:9 (1920×1080 for Full HD, 3840×2160 for 4K, 1280×720 for HD). YouTube Shorts use 9:16. If you upload a video with a different ratio, YouTube adds black bars (letterboxing or pillarboxing) to fit the 16:9 player.' },
+  { q: 'What aspect ratio is best for Instagram?', a: 'Instagram supports multiple ratios: 1:1 (square, 1080×1080) for feed posts, 4:5 (portrait, 1080×1350) for maximum screen coverage in feed, 1.91:1 (landscape, 1080×566) for horizontal photos, and 9:16 (1080×1920) for Stories and Reels.' },
+  { q: 'What is the difference between 16:9 and 16:10?', a: '16:9 is the standard widescreen ratio used by most TVs, monitors, and video content. 16:10 is slightly taller, commonly used in older laptops and some professional monitors. It provides more vertical space for reading and productivity. At 1920px wide: 16:9 = 1080px tall, 16:10 = 1200px tall.' },
+  { q: 'What does letterboxing and pillarboxing mean?', a: 'Letterboxing adds black horizontal bars (top and bottom) when content is wider than the screen — common when watching 21:9 movies on a 16:9 TV. Pillarboxing adds black vertical bars (left and right) when content is narrower — common when watching 4:3 content on a 16:9 screen.' },
+  { q: 'What aspect ratio do iPhones use?', a: 'Modern iPhones (iPhone X and later) use approximately 19.5:9 (2532×1170 for iPhone 14). Older iPhones used 16:9. The tall screen ratio means content designed for 16:9 will have letterboxing. For iPhone wallpapers and apps, design for the native resolution of the specific model.' },
+  { q: 'How do I find the aspect ratio of a video or image?', a: 'Right-click the file and check Properties (Windows) or Get Info (Mac) to see width × height in pixels. Then use our calculator to convert those pixel dimensions into the simplified aspect ratio. For example, 2560×1440 → 16:9.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Aspect Ratio Calculator',
+    description: 'Free aspect ratio calculator. Calculate, convert and resize aspect ratios for video, photo, and screen dimensions. Supports 16:9, 4:3, 1:1, 9:16 and any custom ratio.',
+    url: '/aspect-ratio-calculator',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure on your screen' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💵', desc: 'Calculate & split tips' },
+  { name: 'What Is My IP', href: '/what-is-my-ip', icon: '🌐', desc: 'Find your IP address' },
+];
+
+const commonRatios = [
+  { label: '16:9', w: 16, h: 9, desc: 'HD Video / YouTube / Most TVs' },
+  { label: '4:3', w: 4, h: 3, desc: 'Classic TV / Old Monitors' },
+  { label: '1:1', w: 1, h: 1, desc: 'Square / Instagram' },
+  { label: '9:16', w: 9, h: 16, desc: 'Vertical / TikTok / Reels' },
+  { label: '21:9', w: 21, h: 9, desc: 'Ultrawide / Cinema' },
+  { label: '4:5', w: 4, h: 5, desc: 'Instagram Portrait Feed' },
+  { label: '3:2', w: 3, h: 2, desc: 'DSLR / 35mm Film' },
+  { label: '2:1', w: 2, h: 1, desc: 'Panoramic / Twitter Header' },
+];
+---
+
+<CalculatorLayout
+  title="Aspect Ratio Calculator — Resize & Convert Any Ratio (16:9, 4:3, 1:1)"
+  description="Free aspect ratio calculator. Calculate aspect ratio from width and height, resize images keeping ratio, convert between 16:9, 4:3, 1:1, 9:16, and any custom ratio. Perfect for video, photo, and web design."
+  canonical="/aspect-ratio-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Aspect Ratio Calculator', url: '/aspect-ratio-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Design Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Aspect Ratio Calculator</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Calculate, convert, and resize aspect ratios for video, images, and screens. Get the exact width or height you need without distortion.
+    </p>
+  </div>
+
+  <!-- SECTION 1: Calculate ratio from dimensions -->
+  <div style="margin-bottom: 24px;" class="fade-up stagger-1">
+    <h2 style="color: var(--color-ink); margin-bottom: 6px; font-size: 22px; font-weight: 600;">Calculate Aspect Ratio</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 0;">Enter width and height to find the simplified aspect ratio.</p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom: 40px;">
+    <div class="ar-input-row">
+      <div class="ar-field">
+        <label for="calc-width" class="label">Width (px)</label>
+        <input type="number" id="calc-width" class="input-base input-lg" placeholder="e.g. 1920" min="1" step="1" aria-label="Width in pixels" />
+      </div>
+      <div class="ar-times" aria-hidden="true">×</div>
+      <div class="ar-field">
+        <label for="calc-height" class="label">Height (px)</label>
+        <input type="number" id="calc-height" class="input-base input-lg" placeholder="e.g. 1080" min="1" step="1" aria-label="Height in pixels" />
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button id="calc-ratio-btn" class="btn-primary" style="flex:1;">Calculate Ratio</button>
+      <button id="clear-ratio-btn" class="btn-secondary">Clear</button>
+    </div>
+
+    <div id="ratio-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="ratio-error-msg"></span>
+    </div>
+
+    <div id="ratio-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:24px 0;"></div>
+
+      <!-- Visual preview -->
+      <div class="ratio-preview-wrap">
+        <div class="ratio-preview-box" id="ratio-preview-box" aria-hidden="true">
+          <span class="ratio-preview-label" id="ratio-preview-label">16:9</span>
+        </div>
+      </div>
+
+      <div class="result-panel" style="margin-top:20px;">
+        <div class="result-row">
+          <span class="result-row-label">📐 Aspect Ratio</span>
+          <span class="result-row-value" id="res-ratio" style="font-size:20px;font-weight:700;color:var(--color-link);">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">📏 Decimal Ratio</span>
+          <span class="result-row-value" id="res-decimal">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">🔢 GCD</span>
+          <span class="result-row-value" id="res-gcd">—</span>
+        </div>
+        <div class="result-row" style="border-bottom:none;">
+          <span class="result-row-label">📷 Common Match</span>
+          <span class="result-row-value" id="res-common">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Resize keeping ratio -->
+  <div style="margin-bottom: 24px;" class="fade-up stagger-1">
+    <h2 style="color: var(--color-ink); margin-bottom: 6px; font-size: 22px; font-weight: 600;">Resize Keeping Aspect Ratio</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 0;">Enter original dimensions and one new dimension — we calculate the other.</p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom: 40px;">
+    <div class="calc-form">
+      <div>
+        <label class="label" style="margin-bottom:10px;">Original Size</label>
+        <div class="ar-input-row">
+          <div class="ar-field">
+            <input type="number" id="orig-w" class="input-base" placeholder="Original Width" min="1" aria-label="Original width" />
+          </div>
+          <div class="ar-times" aria-hidden="true">×</div>
+          <div class="ar-field">
+            <input type="number" id="orig-h" class="input-base" placeholder="Original Height" min="1" aria-label="Original height" />
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="label" style="margin-bottom:10px;">New Size — fill one, we calculate the other</label>
+        <div class="ar-input-row">
+          <div class="ar-field">
+            <input type="number" id="new-w" class="input-base" placeholder="New Width" min="1" aria-label="New width" />
+          </div>
+          <div class="ar-times" aria-hidden="true">×</div>
+          <div class="ar-field">
+            <input type="number" id="new-h" class="input-base" placeholder="New Height" min="1" aria-label="New height" />
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;">
+        <button id="calc-resize-btn" class="btn-primary" style="flex:1;">Calculate Missing Dimension</button>
+        <button id="clear-resize-btn" class="btn-secondary">Clear</button>
+      </div>
+    </div>
+
+    <div id="resize-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="resize-error-msg"></span>
+    </div>
+
+    <div id="resize-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:24px 0;"></div>
+      <div class="resize-result-hero">
+        <div class="resize-val-box">
+          <div class="resize-val" id="resize-w-out">—</div>
+          <div class="resize-val-label">Width</div>
+        </div>
+        <div class="resize-x">×</div>
+        <div class="resize-val-box">
+          <div class="resize-val" id="resize-h-out">—</div>
+          <div class="resize-val-label">Height</div>
+        </div>
+      </div>
+      <div class="result-panel" style="margin-top:16px;">
+        <div class="result-row">
+          <span class="result-row-label">📐 Aspect Ratio</span>
+          <span class="result-row-value" id="resize-ratio-out" style="font-weight:700;color:var(--color-link);">—</span>
+        </div>
+        <div class="result-row" style="border-bottom:none;">
+          <span class="result-row-label">🔢 Scale Factor</span>
+          <span class="result-row-value" id="resize-scale-out">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Common ratio presets -->
+  <div style="margin-bottom: 24px;" class="fade-up stagger-1">
+    <h2 style="color: var(--color-ink); margin-bottom: 6px; font-size: 22px; font-weight: 600;">Common Aspect Ratios</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">Click any ratio to pre-fill the calculator.</p>
+  </div>
+
+  <div class="ratio-presets fade-up stagger-1" style="margin-bottom:40px;">
+    {commonRatios.map(r => (
+      <button class="ratio-preset-btn" data-w={r.w} data-h={r.h} aria-label={`Use ${r.label} ratio — ${r.desc}`}>
+        <div class="preset-ratio-visual" style={`aspect-ratio:${r.w}/${r.h};max-width:${Math.min(r.w/r.h*40,60)}px;`} aria-hidden="true"></div>
+        <div class="preset-ratio-label">{r.label}</div>
+        <div class="preset-ratio-desc">{r.desc}</div>
+      </button>
+    ))}
+  </div>
+
+  <!-- Platform reference table -->
+  <div style="margin-bottom:40px;" class="fade-up">
+    <h2 style="color: var(--color-ink); margin-bottom: 8px; font-size: 22px; font-weight: 600;">Platform Size Reference</h2>
+    <p class="text-body-sm" style="color: var(--color-body); margin-bottom: 16px;">Recommended dimensions for major platforms.</p>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Platform</th>
+            <th style="padding:12px 16px;">Format</th>
+            <th style="padding:12px 16px;">Ratio</th>
+            <th style="padding:12px 16px;">Recommended Size</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['YouTube', 'Video', '16:9', '1920×1080 (1080p) or 3840×2160 (4K)'],
+            ['YouTube', 'Shorts', '9:16', '1080×1920'],
+            ['YouTube', 'Thumbnail', '16:9', '1280×720 (min)'],
+            ['Instagram', 'Feed Square', '1:1', '1080×1080'],
+            ['Instagram', 'Feed Portrait', '4:5', '1080×1350'],
+            ['Instagram', 'Stories / Reels', '9:16', '1080×1920'],
+            ['TikTok', 'Video', '9:16', '1080×1920'],
+            ['Twitter/X', 'Post Image', '16:9', '1200×675'],
+            ['Twitter/X', 'Header', '3:1', '1500×500'],
+            ['Facebook', 'Post', '1.91:1', '1200×628'],
+            ['LinkedIn', 'Post', '1.91:1', '1200×628'],
+            ['Zoom / Video Call', 'Background', '16:9', '1920×1080'],
+            ['Full HD Monitor', 'Screen', '16:9', '1920×1080'],
+            ['4K Monitor', 'Screen', '16:9', '3840×2160'],
+            ['iPad', 'Screen', '4:3', '2048×1536'],
+          ].map(([platform, format, ratio, size]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:12px 16px;font-weight:500;">{platform}</td>
+              <td style="padding:12px 16px;color:var(--color-muted);">{format}</td>
+              <td style="padding:12px 16px;"><span class="ratio-badge">{ratio}</span></td>
+              <td style="padding:12px 16px;font-family:var(--font-mono);font-size:13px;">{size}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Complete Guide to Aspect Ratios</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      An <strong>aspect ratio</strong> defines the proportional relationship between a frame's width and height. Whether you're editing video, designing social media graphics, or building a website, understanding aspect ratios ensures your content displays correctly on every screen without unwanted cropping or stretching. Our <strong>aspect ratio calculator</strong> lets you instantly find the ratio from any pixel dimensions, or resize to a new size while keeping the ratio locked.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">How to Calculate Aspect Ratio</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The aspect ratio of any rectangle is found by dividing both dimensions by their <strong>Greatest Common Divisor (GCD)</strong> — the largest number that divides both exactly. For example, 1920×1080: the GCD of 1920 and 1080 is 120. So 1920÷120=16 and 1080÷120=9, giving <strong>16:9</strong>. For 2560×1080: GCD is 40, giving 64:27 — a common ultrawide monitor ratio. This calculator handles the math instantly for any dimensions you enter.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Resizing Images Without Distortion</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      To resize an image while maintaining its aspect ratio, use the proportion formula: <strong>new height = (new width × original height) ÷ original width</strong>. For example, resizing a 1920×1080 image to 800px wide: new height = (800 × 1080) ÷ 1920 = 450px. The resized image is 800×450 — still 16:9. Our resize calculator automates this for any combination of dimensions.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Letterboxing vs Pillarboxing vs Cropping</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      When content doesn't match the display ratio, there are three ways to handle it: <strong>Letterboxing</strong> adds black bars top and bottom (e.g. watching 21:9 film on 16:9 TV). <strong>Pillarboxing</strong> adds black bars on sides (e.g. watching 4:3 content on 16:9). <strong>Cropping</strong> cuts off edges to fill the frame. For professional results, always create content at the target platform's native ratio.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`ar-faq-${i}`} id={`ar-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`ar-faq-${i}`} role="region" aria-labelledby={`ar-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .calc-form { display:flex;flex-direction:column;gap:20px; }
+  .ar-input-row { display:flex;align-items:center;gap:12px; }
+  .ar-field { flex:1;min-width:0; }
+  .ar-times { font-size:22px;font-weight:300;color:var(--color-muted);flex-shrink:0;padding-top:4px; }
+
+  .results-divider { height:1px;background:var(--color-hairline); }
+  .result-row { display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--color-hairline); }
+  .result-row-label { font-size:14px;color:var(--color-body); }
+  .result-row-value { font-size:14px;font-weight:600;color:var(--color-ink); }
+
+  .calc-error { display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error); }
+
+  /* Ratio visual preview */
+  .ratio-preview-wrap { display:flex;align-items:center;justify-content:center;padding:24px 0 8px; }
+  .ratio-preview-box {
+    background: linear-gradient(135deg, var(--color-canvas-soft-2) 0%, var(--color-canvas) 100%);
+    border: 2px solid var(--color-link);
+    border-radius: var(--radius-md);
+    display:flex;align-items:center;justify-content:center;
+    transition: all 0.3s ease;
+    min-width: 60px;
+    min-height: 40px;
+    max-width: 240px;
+    max-height: 180px;
+  }
+  .ratio-preview-label { font-size:15px;font-weight:700;color:var(--color-link);font-family:var(--font-mono); }
+
+  /* Resize result hero */
+  .resize-result-hero {
+    display:flex;align-items:center;justify-content:center;gap:16px;
+    padding:28px 16px;
+    background:var(--color-canvas-soft-2);
+    border-radius:var(--radius-lg);
+    border:1px solid var(--color-hairline);
+  }
+  .resize-val-box { text-align:center; }
+  .resize-val { font-size:clamp(28px,5vw,48px);font-weight:700;color:var(--color-ink);letter-spacing:-1px;font-family:var(--font-mono); }
+  .resize-val-label { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-muted);font-family:var(--font-mono);margin-top:4px; }
+  .resize-x { font-size:32px;font-weight:300;color:var(--color-muted); }
+
+  /* Common ratio presets */
+  .ratio-presets { display:grid;grid-template-columns:repeat(4,1fr);gap:10px; }
+  .ratio-preset-btn {
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    padding:14px 10px;
+    border:1px solid var(--color-hairline);
+    border-radius:var(--radius-lg);
+    background:var(--color-canvas-soft-2);
+    cursor:pointer;
+    transition:all 0.15s ease;
+    text-align:center;
+  }
+  .ratio-preset-btn:hover { border-color:var(--color-link);background:var(--color-canvas); }
+  .ratio-preset-btn.active { border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px var(--color-link-soft,rgba(99,102,241,0.1)); }
+  .preset-ratio-visual {
+    background:var(--color-link);
+    border-radius:3px;
+    min-width:20px;
+    min-height:14px;
+    opacity:0.15;
+    width:100%;
+  }
+  .preset-ratio-label { font-size:14px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono); }
+  .preset-ratio-desc { font-size:11px;color:var(--color-muted);line-height:1.4; }
+
+  /* Ratio badge in table */
+  .ratio-badge {
+    display:inline-block;
+    padding:2px 8px;
+    background:var(--color-canvas-soft-2);
+    border:1px solid var(--color-hairline);
+    border-radius:99px;
+    font-size:12px;
+    font-weight:600;
+    font-family:var(--font-mono);
+    color:var(--color-ink);
+  }
+
+  .prose-section { padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline); }
+
+  @media (max-width: 640px) {
+    .ratio-presets { grid-template-columns:repeat(2,1fr); }
+    .ar-input-row { gap:8px; }
+    .ar-times { font-size:18px; }
+    .resize-result-hero { gap:10px;padding:20px 12px; }
+    .resize-x { font-size:24px; }
+    .prose-section { padding:20px 16px; }
+  }
+  @media (max-width: 400px) {
+    .ratio-presets { grid-template-columns:repeat(2,1fr); }
+  }
+</style>
+
+<script>
+  // ─── GCD ─────────────────────────────────────────────────────────────────────
+  function gcd(a: number, b: number): number {
+    return b === 0 ? a : gcd(b, a % b);
+  }
+
+  function simplifyRatio(w: number, h: number): [number, number, number] {
+    const g = gcd(Math.round(w), Math.round(h));
+    return [Math.round(w) / g, Math.round(h) / g, g];
+  }
+
+  function decimalRatio(w: number, h: number): string {
+    return (w / h).toFixed(4);
+  }
+
+  const knownRatios: Record<string, string> = {
+    '16:9': 'HD Widescreen (TV, YouTube, most monitors)',
+    '4:3': 'Classic TV / VGA Monitor',
+    '1:1': 'Square (Instagram, profile photos)',
+    '9:16': 'Vertical (TikTok, Stories, Reels)',
+    '21:9': 'Ultrawide / Cinemascope',
+    '4:5': 'Instagram Portrait Feed',
+    '3:2': 'DSLR / 35mm Film',
+    '2:1': 'Panoramic / Twitter Header',
+    '5:4': 'Old Monitor (1280×1024)',
+    '16:10': 'Laptop Widescreen',
+    '3:4': 'Portrait Classic',
+    '2:3': 'Portrait 35mm',
+  };
+
+  // ─── Section 1: Calculate Ratio ──────────────────────────────────────────────
+  const wInput = document.getElementById('calc-width') as HTMLInputElement;
+  const hInput = document.getElementById('calc-height') as HTMLInputElement;
+  const calcBtn = document.getElementById('calc-ratio-btn') as HTMLButtonElement;
+  const clearBtn = document.getElementById('clear-ratio-btn') as HTMLButtonElement;
+  const ratioResults = document.getElementById('ratio-results') as HTMLElement;
+  const ratioError = document.getElementById('ratio-error') as HTMLElement;
+  const ratioErrorMsg = document.getElementById('ratio-error-msg') as HTMLElement;
+
+  function showRatioError(msg: string) {
+    ratioErrorMsg.textContent = msg;
+    ratioError.hidden = false;
+    ratioResults.hidden = true;
+  }
+
+  function calculateRatio() {
+    ratioError.hidden = true;
+    const w = parseFloat(wInput.value);
+    const h = parseFloat(hInput.value);
+    if (!w || !h || w <= 0 || h <= 0) {
+      showRatioError('Please enter valid width and height values greater than zero.');
+      return;
+    }
+
+    const [rw, rh, g] = simplifyRatio(w, h);
+    const ratioStr = `${rw}:${rh}`;
+    const decimal = decimalRatio(w, h);
+    const knownMatch = knownRatios[ratioStr] || '—';
+
+    (document.getElementById('res-ratio') as HTMLElement).textContent = ratioStr;
+    (document.getElementById('res-decimal') as HTMLElement).textContent = decimal + ':1';
+    (document.getElementById('res-gcd') as HTMLElement).textContent = String(g);
+    (document.getElementById('res-common') as HTMLElement).textContent = knownMatch;
+
+    // Visual preview
+    const preview = document.getElementById('ratio-preview-box') as HTMLElement;
+    const previewLabel = document.getElementById('ratio-preview-label') as HTMLElement;
+    const maxW = 220, maxH = 160;
+    const scale = Math.min(maxW / rw, maxH / rh);
+    const pvW = Math.max(60, Math.round(rw * scale));
+    const pvH = Math.max(40, Math.round(rh * scale));
+    preview.style.width = pvW + 'px';
+    preview.style.height = pvH + 'px';
+    previewLabel.textContent = ratioStr;
+
+    ratioResults.hidden = false;
+  }
+
+  calcBtn.addEventListener('click', calculateRatio);
+  wInput.addEventListener('keydown', e => { if (e.key === 'Enter') calculateRatio(); });
+  hInput.addEventListener('keydown', e => { if (e.key === 'Enter') calculateRatio(); });
+
+  clearBtn.addEventListener('click', () => {
+    wInput.value = '';
+    hInput.value = '';
+    ratioResults.hidden = true;
+    ratioError.hidden = true;
+  });
+
+  // ─── Section 2: Resize ───────────────────────────────────────────────────────
+  const origW = document.getElementById('orig-w') as HTMLInputElement;
+  const origH = document.getElementById('orig-h') as HTMLInputElement;
+  const newW = document.getElementById('new-w') as HTMLInputElement;
+  const newH = document.getElementById('new-h') as HTMLInputElement;
+  const resizeBtn = document.getElementById('calc-resize-btn') as HTMLButtonElement;
+  const clearResizeBtn = document.getElementById('clear-resize-btn') as HTMLButtonElement;
+  const resizeResults = document.getElementById('resize-results') as HTMLElement;
+  const resizeError = document.getElementById('resize-error') as HTMLElement;
+  const resizeErrorMsg = document.getElementById('resize-error-msg') as HTMLElement;
+
+  function showResizeError(msg: string) {
+    resizeErrorMsg.textContent = msg;
+    resizeError.hidden = false;
+    resizeResults.hidden = true;
+  }
+
+  function calculateResize() {
+    resizeError.hidden = true;
+    const ow = parseFloat(origW.value);
+    const oh = parseFloat(origH.value);
+    const nw = parseFloat(newW.value);
+    const nh = parseFloat(newH.value);
+
+    if (!ow || !oh || ow <= 0 || oh <= 0) {
+      showResizeError('Please enter valid original width and height.');
+      return;
+    }
+    if ((!nw && !nh) || (nw > 0 && nh > 0)) {
+      showResizeError('Enter either a new width or a new height (not both, not neither).');
+      return;
+    }
+
+    let finalW: number, finalH: number;
+    let scale: number;
+
+    if (nw > 0) {
+      finalW = nw;
+      finalH = Math.round((nw * oh) / ow);
+      scale = nw / ow;
+    } else {
+      finalH = nh;
+      finalW = Math.round((nh * ow) / oh);
+      scale = nh / oh;
+    }
+
+    const [rw, rh] = simplifyRatio(finalW, finalH);
+
+    (document.getElementById('resize-w-out') as HTMLElement).textContent = finalW.toLocaleString();
+    (document.getElementById('resize-h-out') as HTMLElement).textContent = finalH.toLocaleString();
+    (document.getElementById('resize-ratio-out') as HTMLElement).textContent = `${rw}:${rh}`;
+    (document.getElementById('resize-scale-out') as HTMLElement).textContent = `${(scale * 100).toFixed(1)}% of original`;
+
+    resizeResults.hidden = false;
+  }
+
+  resizeBtn.addEventListener('click', calculateResize);
+  clearResizeBtn.addEventListener('click', () => {
+    [origW, origH, newW, newH].forEach(i => i.value = '');
+    resizeResults.hidden = true;
+    resizeError.hidden = true;
+  });
+
+  // ─── Preset buttons ──────────────────────────────────────────────────────────
+  document.querySelectorAll('.ratio-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const w = (btn as HTMLElement).dataset.w!;
+      const h = (btn as HTMLElement).dataset.h!;
+      wInput.value = w;
+      hInput.value = h;
+      document.querySelectorAll('.ratio-preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      calculateRatio();
+      document.getElementById('calc-ratio-btn')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+  });
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>
