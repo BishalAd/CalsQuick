@@ -728,11 +728,93 @@ const relatedCalcs = [
     };
   }
 
-  // ─── Fetch IPv4 via ipinfo ──────────────────────────────────────────────────
-  async function fetchIPv4(): Promise<IPData> {
-    const res = await fetch('https://ipinfo.io/json?token=');
-    if (!res.ok) throw new Error('ipinfo failed');
-    return res.json();
+  // ─── Fetch IP data via multiple fallbacks (to bypass blocklists & rate limits) ───
+  async function fetchIPData(): Promise<IPData> {
+    // 1. Try ipinfo.io
+    try {
+      const res = await fetch('https://ipinfo.io/json');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.ip) return data;
+      }
+    } catch (e) {
+      console.warn('ipinfo.io failed, trying freeipapi.com...', e);
+    }
+
+    // 2. Try freeipapi.com (resilient fallback, no token needed)
+    try {
+      const res = await fetch('https://freeipapi.com/api/json');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.ipAddress) {
+          return {
+            ip: data.ipAddress,
+            city: data.cityName || '',
+            region: data.regionName || '',
+            country: data.countryCode || '',
+            country_name: data.countryName || '',
+            org: data.isp || data.asName || '—',
+            timezone: data.timeZone || '—',
+            loc: data.latitude && data.longitude ? `${data.latitude},${data.longitude}` : undefined,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('freeipapi.com failed, trying ipapi.co...', e);
+    }
+
+    // 3. Try ipapi.co (another fallback, no token needed)
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.ip) {
+          return {
+            ip: data.ip,
+            city: data.city || '',
+            region: data.region || '',
+            country: data.country || '',
+            country_name: data.country_name || '',
+            org: data.org || '—',
+            timezone: data.timezone || '—',
+            loc: data.latitude && data.longitude ? `${data.latitude},${data.longitude}` : undefined,
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('ipapi.co failed, trying /cdn-cgi/trace...', e);
+    }
+
+    // 4. Try same-origin /cdn-cgi/trace (never blocked by adblockers on Cloudflare deployments)
+    try {
+      const res = await fetch('/cdn-cgi/trace');
+      if (res.ok) {
+        const text = await res.text();
+        const lines = text.split('\n');
+        let ip = '';
+        let loc = '';
+        for (const line of lines) {
+          if (line.startsWith('ip=')) ip = line.substring(3).trim();
+          if (line.startsWith('loc=')) loc = line.substring(4).trim();
+        }
+        if (ip) {
+          return {
+            ip,
+            country: loc,
+            country_name: loc === 'NP' ? 'Nepal' : loc,
+            org: 'Cloudflare Network',
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('/cdn-cgi/trace failed, trying ipify.org...', e);
+    }
+
+    // 5. Absolute fallback: ipify (only IP, no geo)
+    const res = await fetch('https://api.ipify.org?format=json');
+    if (!res.ok) throw new Error('All IP services failed');
+    const { ip } = await res.json();
+    return { ip } as IPData;
   }
 
   // ─── Fetch IPv6 via ipify ──────────────────────────────────────────────────
@@ -812,25 +894,18 @@ const relatedCalcs = [
     errorEl.hidden = true;
 
     try {
-      // Fetch IPv4 data + IPv6 in parallel
+      // Fetch IP data + IPv6 in parallel
       const [ipData, ipv6] = await Promise.all([
-        fetchIPv4(),
+        fetchIPData(),
         fetchIPv6(),
       ]);
 
       if (ipv6) ipData.ipv6 = ipv6;
       render(ipData);
     } catch (err) {
-      // Fallback: try ipify
-      try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        const { ip } = await res.json();
-        render({ ip } as IPData);
-      } catch {
-        loading.hidden = true;
-        errorEl.hidden = false;
-        errorMsg.textContent = 'Unable to detect your IP address. Please check your connection and try again.';
-      }
+      loading.hidden = true;
+      errorEl.hidden = false;
+      errorMsg.textContent = 'Unable to detect your IP address. Please check your connection and try again.';
     }
   }
 

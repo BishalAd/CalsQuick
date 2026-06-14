@@ -1,0 +1,711 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How do I calculate how much concrete I need?', a: 'To calculate concrete volume: multiply Length × Width × Depth (thickness) to get the volume in cubic units. For example, a 4m × 3m × 0.1m slab = 1.2 cubic meters. Always add 5–10% extra for waste, spillage, and uneven subgrades. Our calculator handles slabs, footings, columns, steps, and round shapes automatically.' },
+  { q: 'What is the standard concrete mix ratio?', a: 'The most common mix ratio for general construction is 1:2:3 (1 part cement : 2 parts sand : 3 parts aggregate/gravel) by volume, which gives approximately M20 grade concrete (20 MPa compressive strength). For heavy structural work: 1:1.5:3 (M25). For paths and slabs: 1:2:4 (M15). For foundations in Nepal: M20 is the standard minimum per NBC code.' },
+  { q: 'How many bags of cement do I need per cubic meter of concrete?', a: 'For a standard 1:2:3 mix: approximately 6.3 bags of 50kg cement per cubic meter of concrete. For 1:1.5:3 mix: about 8 bags per cubic meter. For 1:2:4 mix: about 5 bags per cubic meter. Our calculator shows exact cement bags based on your chosen mix ratio and total concrete volume.' },
+  { q: 'What is M10, M15, M20, M25 concrete grade?', a: 'M refers to Mix and the number is the characteristic compressive strength in N/mm² (MPa) after 28 days. M10 (1:3:6): plain concrete, non-structural. M15 (1:2:4): paths, floor slabs, light structures. M20 (1:1.5:3): general RCC slabs, beams, columns — minimum for residential buildings. M25 (1:1:2): heavy structures, commercial buildings. M30+: bridges, high-rise buildings.' },
+  { q: 'How do I calculate concrete for a slab?', a: 'Concrete for slab = Length × Width × Thickness. Example: 5m × 4m slab, 150mm thick: 5 × 4 × 0.15 = 3.0 cubic meters. Add 5% waste = 3.15 cubic meters. At 6.3 bags per m³: 3.15 × 6.3 = 20 bags of cement. Multiply cement bags by 2 for sand and by 3 for gravel in a 1:2:3 mix.' },
+  { q: 'How many cubic feet are in a cubic meter of concrete?', a: '1 cubic meter = 35.315 cubic feet. So a 3 cubic meter concrete pour = 3 × 35.315 = 105.94 cubic feet. Ready-mix concrete is typically ordered in cubic meters (m³) in Nepal and India, or cubic yards in the USA (1 cubic yard = 27 cubic feet = 0.765 cubic meters).' },
+  { q: 'What is the weight of concrete per cubic meter?', a: 'Normal weight (reinforced) concrete weighs approximately 2,400 kg per cubic meter (2.4 tonnes/m³). Lightweight concrete: 1,400–1,900 kg/m³. Heavyweight concrete: 3,000–4,000 kg/m³. For structural design, concrete dead load is typically assumed at 24 kN/m³ (2,400 kg/m³). This is important for calculating structural loads on foundations and beams.' },
+  { q: 'How much does ready-mix concrete cost in Nepal?', a: 'Ready-mix concrete (RMC) prices in Nepal vary by grade, location, and supplier. As of recent data, M20 RMC typically costs Rs. 8,000–12,000 per cubic meter in Kathmandu Valley, depending on the plant and delivery distance. M25 costs approximately Rs. 10,000–14,000/m³. Self-mixing on-site is cheaper but less consistent in quality for large volumes.' },
+  { q: 'What water-cement ratio should I use?', a: 'The water-cement (W/C) ratio critically affects concrete strength. Lower W/C = stronger concrete. Recommended ratios: M15: 0.50–0.60, M20: 0.45–0.55, M25: 0.40–0.50, M30: 0.35–0.45. Never exceed 0.65 for structural concrete. Use only clean, potable water — impurities reduce strength. Reduce W/C further in hot climates where water evaporates quickly.' },
+  { q: 'How long does concrete take to cure?', a: 'Concrete reaches approximately 70% of its design strength in 7 days and 99% in 28 days. Minimum curing times: remove formwork from columns and walls after 2–3 days, slabs after 7–14 days (depending on span), beams after 14 days. Always keep concrete moist for at least 7 days by covering with wet burlap or polythene sheeting — this is especially critical in Nepal\'s hot or dry seasons.' },
+  { q: 'How do I calculate concrete for a round column or circular slab?', a: 'Volume of a cylinder = π × r² × h, where r is radius and h is height. For a 300mm diameter, 3m tall column: r = 0.15m, volume = 3.14159 × 0.15² × 3 = 3.14159 × 0.0225 × 3 = 0.212 m³. For a circular slab with 2m diameter and 150mm thickness: r = 1m, volume = 3.14159 × 1² × 0.15 = 0.471 m³. Our calculator handles all circular shapes automatically.' },
+  { q: 'How much sand and gravel (aggregate) do I need per cubic meter?', a: 'For 1:2:3 mix per 1 cubic meter of concrete: Cement = 6.3 bags (315 kg), Sand = 0.44 m³ (640 kg approximately), Gravel/Aggregate = 0.88 m³ (1280 kg approximately), Water = 140–160 liters. Dry materials are approximately 30–35% more than wet concrete volume due to voids and compaction. The total dry mix volume ≈ 1.54 × wet concrete volume.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Concrete Calculator',
+    description: 'Free concrete calculator. Calculate cement, sand, and aggregate quantities for slabs, footings, columns, steps, and round shapes. Supports M10, M15, M20, M25 grades and custom mix ratios.',
+    url: '/concrete-calculator',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Loan EMI Calculator', href: '/loan-emi-calculator', icon: '🏦', desc: 'Calculate loan installments' },
+  { name: 'Aspect Ratio Calculator', href: '/aspect-ratio-calculator', icon: '📐', desc: 'Calculate aspect ratios' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure on your screen' },
+];
+
+const shapeTypes = [
+  { key:'slab',     icon:'⬜', label:'Slab / Floor' },
+  { key:'footing',  icon:'🟫', label:'Footing / Wall' },
+  { key:'column',   icon:'🏛️', label:'Column' },
+  { key:'round',    icon:'⭕', label:'Round / Cylinder' },
+  { key:'steps',    icon:'🪜', label:'Steps / Stairs' },
+];
+
+const mixPresets = [
+  { key:'M10', label:'M10 (1:3:6)', c:1, s:3, a:6, strength:'10 MPa' },
+  { key:'M15', label:'M15 (1:2:4)', c:1, s:2, a:4, strength:'15 MPa' },
+  { key:'M20', label:'M20 (1:1.5:3)', c:1, s:1.5, a:3, strength:'20 MPa' },
+  { key:'M25', label:'M25 (1:1:2)', c:1, s:1, a:2, strength:'25 MPa' },
+  { key:'custom', label:'Custom Ratio', c:1, s:2, a:3, strength:'—' },
+];
+---
+
+<CalculatorLayout
+  title="Concrete Calculator — Cement, Sand & Aggregate for Slab, Column, Footing"
+  description="Free concrete calculator for slabs, footings, columns, walls, steps and round shapes. Calculate exact cement bags, sand, and gravel quantities. Supports M10, M15, M20, M25 grades and custom mix ratios. Includes cost estimation."
+  canonical="/concrete-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Concrete Calculator', url: '/concrete-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Construction Tools</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Concrete Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Calculate the exact amount of cement, sand, and aggregate for any concrete pour. Supports slabs, footings, columns, round shapes, and steps. Includes material quantities, bag counts, and cost estimates.
+    </p>
+  </div>
+
+  <!-- MAIN CALCULATOR -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom:40px;">
+
+    <!-- Shape selector -->
+    <div style="margin-bottom:20px;">
+      <label class="label" style="margin-bottom:10px;">Structure Type</label>
+      <div class="shape-grid" role="group" aria-label="Select structure type">
+        {shapeTypes.map((s, i) => (
+          <button class={`shape-btn ${i===0?'active':''}`} data-shape={s.key} aria-pressed={i===0?'true':'false'}>
+            <span class="shape-icon">{s.icon}</span>
+            <span class="shape-label">{s.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Dimension inputs (dynamic) -->
+    <div id="dim-slab" class="dim-section">
+      <h3 class="dim-title">Slab / Floor Dimensions</h3>
+      <div class="dim-grid">
+        <div><label class="label">Length</label><div class="input-unit-row"><input type="number" id="slab-length" class="input-base" placeholder="e.g. 5" min="0.1" step="0.01" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">Width</label><div class="input-unit-row"><input type="number" id="slab-width" class="input-base" placeholder="e.g. 4" min="0.1" step="0.01" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">Thickness</label><div class="input-unit-row"><input type="number" id="slab-thick" class="input-base" placeholder="e.g. 150" min="50" step="5" /><span class="dim-unit">mm</span></div></div>
+      </div>
+    </div>
+
+    <div id="dim-footing" class="dim-section" hidden>
+      <h3 class="dim-title">Footing / Wall Dimensions</h3>
+      <div class="dim-grid">
+        <div><label class="label">Length</label><div class="input-unit-row"><input type="number" id="foot-length" class="input-base" placeholder="e.g. 6" min="0.1" step="0.01" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">Width</label><div class="input-unit-row"><input type="number" id="foot-width" class="input-base" placeholder="e.g. 0.6" min="0.1" step="0.01" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">Depth / Height</label><div class="input-unit-row"><input type="number" id="foot-depth" class="input-base" placeholder="e.g. 0.45" min="0.1" step="0.01" /><span class="dim-unit">m</span></div></div>
+      </div>
+    </div>
+
+    <div id="dim-column" class="dim-section" hidden>
+      <h3 class="dim-title">Column Dimensions</h3>
+      <div class="dim-grid">
+        <div><label class="label">Width</label><div class="input-unit-row"><input type="number" id="col-width" class="input-base" placeholder="e.g. 300" min="100" step="5" /><span class="dim-unit">mm</span></div></div>
+        <div><label class="label">Depth</label><div class="input-unit-row"><input type="number" id="col-depth" class="input-base" placeholder="e.g. 300" min="100" step="5" /><span class="dim-unit">mm</span></div></div>
+        <div><label class="label">Height</label><div class="input-unit-row"><input type="number" id="col-height" class="input-base" placeholder="e.g. 3" min="0.5" step="0.1" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">No. of Columns</label><input type="number" id="col-count" class="input-base" placeholder="e.g. 4" min="1" step="1" value="1" /></div>
+      </div>
+    </div>
+
+    <div id="dim-round" class="dim-section" hidden>
+      <h3 class="dim-title">Round / Cylindrical Dimensions</h3>
+      <div class="dim-grid">
+        <div><label class="label">Diameter</label><div class="input-unit-row"><input type="number" id="round-diam" class="input-base" placeholder="e.g. 500" min="50" step="5" /><span class="dim-unit">mm</span></div></div>
+        <div><label class="label">Height / Depth</label><div class="input-unit-row"><input type="number" id="round-height" class="input-base" placeholder="e.g. 3" min="0.1" step="0.1" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">No. of Units</label><input type="number" id="round-count" class="input-base" placeholder="e.g. 1" min="1" step="1" value="1" /></div>
+      </div>
+    </div>
+
+    <div id="dim-steps" class="dim-section" hidden>
+      <h3 class="dim-title">Steps / Staircase Dimensions</h3>
+      <div class="dim-grid">
+        <div><label class="label">Run (tread depth)</label><div class="input-unit-row"><input type="number" id="step-run" class="input-base" placeholder="e.g. 300" min="100" step="5" /><span class="dim-unit">mm</span></div></div>
+        <div><label class="label">Rise (step height)</label><div class="input-unit-row"><input type="number" id="step-rise" class="input-base" placeholder="e.g. 150" min="50" step="5" /><span class="dim-unit">mm</span></div></div>
+        <div><label class="label">Width</label><div class="input-unit-row"><input type="number" id="step-width" class="input-base" placeholder="e.g. 1.2" min="0.3" step="0.1" /><span class="dim-unit">m</span></div></div>
+        <div><label class="label">Number of Steps</label><input type="number" id="step-count" class="input-base" placeholder="e.g. 10" min="1" step="1" /></div>
+      </div>
+    </div>
+
+    <!-- Unit system -->
+    <div style="margin-top:16px;">
+      <label class="label" style="margin-bottom:6px;">Dimension Unit System</label>
+      <div class="seg-ctrl" role="group" aria-label="Unit system" style="width:fit-content;">
+        <button class="seg-btn active" data-dimunit="metric" aria-pressed="true">Metric (m/mm)</button>
+        <button class="seg-btn" data-dimunit="imperial" aria-pressed="false">Imperial (ft/in)</button>
+      </div>
+      <div id="imperial-note" hidden style="font-size:12px;color:var(--color-muted);margin-top:4px;">Enter lengths in feet and thicknesses in inches when using imperial.</div>
+    </div>
+
+    <!-- Waste allowance -->
+    <div style="margin-top:16px;">
+      <label for="waste-pct" class="label">Waste Allowance <span style="font-size:11px;font-weight:400;color:var(--color-muted);">(recommended 5–10%)</span></label>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <input type="range" id="waste-slider" min="0" max="25" step="1" value="10" style="flex:1;min-width:120px;accent-color:var(--color-link);" aria-label="Waste percentage" />
+        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+          <input type="number" id="waste-pct" class="input-base" value="10" min="0" max="25" step="1" style="width:60px;text-align:center;" aria-label="Waste percentage value" />
+          <span style="font-size:13px;color:var(--color-muted);">%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mix ratio -->
+    <div style="margin-top:16px;">
+      <label class="label" style="margin-bottom:10px;">Concrete Grade / Mix Ratio</label>
+      <div class="mix-presets" role="group" aria-label="Select concrete grade">
+        {mixPresets.map((m, i) => (
+          <button class={`mix-btn ${i===2?'active':''}`} data-mix={m.key} aria-pressed={i===2?'true':'false'}>
+            <div class="mix-grade">{m.key}</div>
+            <div class="mix-ratio">{m.label.split('(')[1]?.replace(')','') || 'Custom'}</div>
+            <div class="mix-strength">{m.strength}</div>
+          </button>
+        ))}
+      </div>
+      <!-- Custom mix inputs -->
+      <div id="custom-mix-inputs" hidden style="margin-top:12px;">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <span style="font-size:13px;color:var(--color-body);">Cement : Sand : Aggregate</span>
+          <input type="number" id="custom-c" class="input-base" value="1" min="1" max="5" step="0.5" style="width:60px;text-align:center;" aria-label="Cement ratio" />
+          <span style="color:var(--color-muted);">:</span>
+          <input type="number" id="custom-s" class="input-base" value="2" min="1" max="10" step="0.5" style="width:60px;text-align:center;" aria-label="Sand ratio" />
+          <span style="color:var(--color-muted);">:</span>
+          <input type="number" id="custom-a" class="input-base" value="3" min="1" max="10" step="0.5" style="width:60px;text-align:center;" aria-label="Aggregate ratio" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Cost per bag (optional) -->
+    <div style="margin-top:16px;">
+      <label for="cement-cost" class="label">
+        Cement Price per 50kg Bag <span style="font-size:11px;font-weight:400;color:var(--color-muted);">(optional — for cost estimate)</span>
+      </label>
+      <div style="position:relative;display:flex;align-items:center;">
+        <span style="position:absolute;left:12px;font-size:13px;color:var(--color-muted);font-weight:600;z-index:1;">Rs.</span>
+        <input type="number" id="cement-cost" class="input-base input-lg"
+          placeholder="e.g. 900" min="0" step="10" style="padding-left:40px;"
+          aria-label="Cement cost per bag" />
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:20px;">
+      <button id="calc-concrete-btn" class="btn-primary" style="flex:1;">Calculate Concrete</button>
+      <button id="clear-concrete-btn" class="btn-secondary">Reset</button>
+    </div>
+
+    <div id="concrete-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="concrete-error-msg"></span>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="concrete-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:28px 0;"></div>
+
+      <!-- Volume hero -->
+      <div class="concrete-hero">
+        <div class="con-hero-item">
+          <div class="con-hero-label">Concrete Volume (net)</div>
+          <div class="con-hero-value" id="res-vol-net">—</div>
+          <div class="con-hero-sub" id="res-vol-net-ft">—</div>
+        </div>
+        <div class="con-hero-divider" aria-hidden="true"></div>
+        <div class="con-hero-item con-hero-accent">
+          <div class="con-hero-label">With Waste (<span id="waste-pct-display">10</span>%)</div>
+          <div class="con-hero-value" id="res-vol-total">—</div>
+          <div class="con-hero-sub" id="res-vol-total-ft">—</div>
+        </div>
+        <div class="con-hero-divider" aria-hidden="true"></div>
+        <div class="con-hero-item">
+          <div class="con-hero-label">Concrete Weight</div>
+          <div class="con-hero-value" id="res-weight">—</div>
+          <div class="con-hero-sub">at 2,400 kg/m³</div>
+        </div>
+      </div>
+
+      <!-- Material quantities -->
+      <div style="margin-top:20px;">
+        <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:12px;">Material Quantities Required</h3>
+        <div class="material-grid">
+          <div class="material-card mat-cement">
+            <div class="mat-icon">🏗️</div>
+            <div class="mat-label">Cement</div>
+            <div class="mat-value" id="mat-cement-bags">—</div>
+            <div class="mat-sub" id="mat-cement-kg">— kg</div>
+          </div>
+          <div class="material-card mat-sand">
+            <div class="mat-icon">🏖️</div>
+            <div class="mat-label">Sand (Fine Aggregate)</div>
+            <div class="mat-value" id="mat-sand-m3">—</div>
+            <div class="mat-sub" id="mat-sand-kg">— kg</div>
+          </div>
+          <div class="material-card mat-agg">
+            <div class="mat-icon">🪨</div>
+            <div class="mat-label">Aggregate (Gravel)</div>
+            <div class="mat-value" id="mat-agg-m3">—</div>
+            <div class="mat-sub" id="mat-agg-kg">— kg</div>
+          </div>
+          <div class="material-card mat-water">
+            <div class="mat-icon">💧</div>
+            <div class="mat-label">Water (W/C 0.5)</div>
+            <div class="mat-value" id="mat-water-l">—</div>
+            <div class="mat-sub">liters</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mix ratio bar -->
+      <div class="mix-bar-wrap" style="margin-top:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--color-ink);margin-bottom:8px;" id="mix-bar-label">Mix Ratio Breakdown (1:2:3)</div>
+        <div class="mix-bar-track">
+          <div class="mix-bar-c" id="mix-bar-c-fill" title="Cement"></div>
+          <div class="mix-bar-s" id="mix-bar-s-fill" title="Sand"></div>
+          <div class="mix-bar-a" id="mix-bar-a-fill" title="Aggregate"></div>
+        </div>
+        <div class="mix-bar-legend">
+          <span><span class="leg-dot leg-c"></span>Cement</span>
+          <span><span class="leg-dot leg-s"></span>Sand</span>
+          <span><span class="leg-dot leg-a"></span>Aggregate</span>
+        </div>
+      </div>
+
+      <!-- Per-unit breakdown table -->
+      <div style="margin-top:20px;">
+        <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:10px;">Detailed Breakdown per m³</h3>
+        <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);">
+            <thead>
+              <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+                <th style="padding:11px 14px;text-align:left;">Material</th>
+                <th style="padding:11px 14px;text-align:right;">Per m³</th>
+                <th style="padding:11px 14px;text-align:right;">Total</th>
+              </tr>
+            </thead>
+            <tbody id="detail-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Cost estimate -->
+      <div id="cost-section" hidden style="margin-top:20px;">
+        <div class="cost-card">
+          <div class="cost-header">
+            <span style="font-size:20px;">💰</span>
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--color-ink);">Estimated Cement Cost</div>
+              <div style="font-size:12px;color:var(--color-muted);">Based on cement price entered</div>
+            </div>
+            <div class="cost-value" id="res-cost">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ready mix note -->
+      <div style="padding:14px 16px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);border:1px solid var(--color-hairline);margin-top:16px;">
+        <p class="text-body-sm" style="color:var(--color-body);line-height:1.5;margin:0;">
+          💡 <strong>Pro Tip:</strong> For volumes over 5 m³, consider ready-mix concrete (RMC) for consistent quality and faster placement. For smaller pours, self-mixing is cost-effective. Always order 5–10% extra to account for spillage and uneven subgrade.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grade reference table -->
+  <div style="margin-bottom:40px;" class="fade-up">
+    <h2 style="color:var(--color-ink);margin-bottom:8px;font-size:22px;font-weight:600;">Concrete Grade & Mix Ratio Reference</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Standard concrete grades and their applications in construction.</p>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 14px;">Grade</th>
+            <th style="padding:12px 14px;">Mix Ratio (C:S:A)</th>
+            <th style="padding:12px 14px;">Strength</th>
+            <th style="padding:12px 14px;">W/C Ratio</th>
+            <th style="padding:12px 14px;">Application</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['M7.5',  '1:4:8',    '7.5 MPa',  '0.60+',   'Blinding/leveling, non-structural fills'],
+            ['M10',   '1:3:6',    '10 MPa',   '0.55–0.65','Paths, non-structural concrete, blinding'],
+            ['M15',   '1:2:4',    '15 MPa',   '0.50–0.60','Light structures, paths, floor slabs'],
+            ['M20',   '1:1.5:3',  '20 MPa',   '0.45–0.55','Slabs, beams, columns — standard residential RCC'],
+            ['M25',   '1:1:2',    '25 MPa',   '0.40–0.50','Heavy structures, commercial buildings'],
+            ['M30',   'Design mix','30 MPa',   '0.35–0.45','Bridges, pre-stressed concrete, high-rise'],
+            ['M35+',  'Design mix','35+ MPa',  '< 0.40',   'Bridges, dams, special structures'],
+          ].map(row => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:11px 14px;font-weight:700;font-family:var(--font-mono);color:var(--color-link);">{row[0]}</td>
+              <td style="padding:11px 14px;font-family:var(--font-mono);">{row[1]}</td>
+              <td style="padding:11px 14px;font-weight:600;">{row[2]}</td>
+              <td style="padding:11px 14px;color:var(--color-muted);">{row[3]}</td>
+              <td style="padding:11px 14px;font-size:13px;">{row[4]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Concrete Calculation Guide: Mix, Volume & Materials</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Accurate <strong>concrete calculation</strong> is critical to avoid waste, cost overruns, and structural deficiencies. Whether you're building a house foundation, a floor slab, or concrete columns, knowing the exact volume of concrete and the quantities of cement, sand, and aggregate allows you to plan materials, schedule delivery, and control costs before construction begins.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">How to Calculate Dry Material Quantities</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Concrete volume shrinks when wet — dry materials have voids between particles. The dry volume of materials needed is approximately <strong>1.54× the wet concrete volume</strong> (some engineers use 1.57). For a 1:2:3 mix, the total ratio sum is 1+2+3=6 parts. Cement = (1/6) × 1.54 = 0.257 m³ per m³ of concrete = approximately 6.3 × 50kg bags. Sand = (2/6) × 1.54 = 0.513 m³. Aggregate = (3/6) × 1.54 = 0.77 m³.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Concrete Construction Standards in Nepal</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Nepal Building Code (NBC) requires a minimum M20 grade concrete for reinforced concrete (RCC) structural elements in residential buildings — slabs, beams, and columns. M15 is acceptable for plain concrete (PCC) blinding layers. The Department of Urban Development and Building Construction (DUDBC) enforces these standards. Post-earthquake construction guidelines (post-2015 Gorkha earthquake) additionally require proper mix design, water-cement ratio control, and minimum 28-day compressive strength testing for structures in seismic zones.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Curing and Quality Control</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Proper curing is as important as the mix ratio. <strong>Water curing</strong> for minimum 7–14 days dramatically increases final strength. In Nepal's hot Terai climate, concrete can dry too fast — cover fresh concrete with wet hessian or polythene sheeting immediately. Never add extra water to concrete after mixing to make it more workable — this raises the water-cement ratio and significantly reduces strength. Use plasticizers (admixtures) instead if workability is needed.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`con-faq-${i}`} id={`con-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`con-faq-${i}`} role="region" aria-labelledby={`con-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .results-divider{height:1px;background:var(--color-hairline);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .seg-ctrl{display:flex;gap:3px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);padding:3px;}
+  .seg-btn{padding:7px 14px;font-size:13px;font-weight:500;border:none;background:transparent;color:var(--color-body);border-radius:calc(var(--radius-md)-2px);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+  .seg-btn:hover{background:var(--color-canvas);color:var(--color-ink);}
+  .seg-btn.active{background:var(--color-canvas);color:var(--color-ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+
+  /* Shape selector */
+  .shape-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;}
+  .shape-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;}
+  .shape-btn:hover{border-color:var(--color-link);background:var(--color-canvas);}
+  .shape-btn.active{border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.12);}
+  .shape-icon{font-size:22px;}
+  .shape-label{font-size:11px;font-weight:600;color:var(--color-ink);text-align:center;line-height:1.3;}
+
+  /* Dimension inputs */
+  .dim-section{background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);padding:16px 16px 12px;}
+  .dim-title{font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:12px;}
+  .dim-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .input-unit-row{display:flex;align-items:center;gap:6px;margin-top:4px;}
+  .input-unit-row .input-base{flex:1;}
+  .dim-unit{font-size:12px;font-weight:600;color:var(--color-muted);flex-shrink:0;min-width:28px;}
+
+  /* Mix presets */
+  .mix-presets{display:flex;gap:8px;flex-wrap:wrap;}
+  .mix-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 14px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;min-width:80px;}
+  .mix-btn:hover{border-color:var(--color-link);}
+  .mix-btn.active{border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.1);}
+  .mix-grade{font-size:14px;font-weight:700;color:var(--color-link);font-family:var(--font-mono);}
+  .mix-ratio{font-size:11px;color:var(--color-body);}
+  .mix-strength{font-size:10px;color:var(--color-muted);}
+
+  /* Concrete hero */
+  .concrete-hero{display:flex;align-items:stretch;gap:0;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);overflow:hidden;flex-wrap:wrap;}
+  .con-hero-item{flex:1;min-width:120px;padding:20px 16px;text-align:center;}
+  .con-hero-accent{background:var(--color-link);color:#fff;}
+  .con-hero-accent .con-hero-label,.con-hero-accent .con-hero-sub{color:rgba(255,255,255,0.8);}
+  .con-hero-accent .con-hero-value{color:#fff;}
+  .con-hero-divider{width:1px;background:var(--color-hairline);flex-shrink:0;}
+  .con-hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:6px;}
+  .con-hero-value{font-size:clamp(22px,4vw,36px);font-weight:700;color:var(--color-ink);letter-spacing:-1px;font-family:var(--font-mono);line-height:1.1;}
+  .con-hero-sub{font-size:12px;color:var(--color-muted);margin-top:4px;}
+
+  /* Material cards */
+  .material-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .material-card{padding:16px 12px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);text-align:center;}
+  .mat-icon{font-size:22px;margin-bottom:6px;}
+  .mat-label{font-size:11px;font-weight:600;color:var(--color-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+  .mat-value{font-size:18px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+  .mat-sub{font-size:12px;color:var(--color-muted);margin-top:2px;font-family:var(--font-mono);}
+  .mat-cement{border-top:3px solid #6366f1;}
+  .mat-sand{border-top:3px solid #f59e0b;}
+  .mat-agg{border-top:3px solid #6b7280;}
+  .mat-water{border-top:3px solid #3b82f6;}
+
+  /* Mix bar */
+  .mix-bar-wrap{padding:14px 16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .mix-bar-track{display:flex;height:16px;border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .mix-bar-c{background:#6366f1;transition:width 0.4s;}
+  .mix-bar-s{background:#f59e0b;transition:width 0.4s;}
+  .mix-bar-a{background:#9ca3af;transition:width 0.4s;}
+  .mix-bar-legend{display:flex;gap:16px;font-size:12px;color:var(--color-body);}
+  .leg-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;}
+  .leg-c{background:#6366f1;}.leg-s{background:#f59e0b;}.leg-a{background:#9ca3af;}
+
+  /* Cost card */
+  .cost-card{padding:16px 18px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .cost-header{display:flex;align-items:center;gap:12px;}
+  .cost-value{font-size:22px;font-weight:700;color:var(--color-link);font-family:var(--font-mono);margin-left:auto;}
+
+  @media(max-width:720px){
+    .shape-grid{grid-template-columns:repeat(3,1fr);}
+    .dim-grid{grid-template-columns:1fr 1fr;}
+    .material-grid{grid-template-columns:repeat(2,1fr);}
+    .concrete-hero{flex-direction:column;}
+    .con-hero-divider{width:100%;height:1px;}
+    .prose-section{padding:20px 16px;}
+  }
+  @media(max-width:480px){
+    .shape-grid{grid-template-columns:repeat(2,1fr);}
+    .dim-grid{grid-template-columns:1fr;}
+    .material-grid{grid-template-columns:1fr 1fr;}
+    .mix-presets{gap:6px;}
+    .mix-btn{min-width:60px;padding:8px 10px;}
+  }
+</style>
+
+<script>
+  // ── State ────────────────────────────────────────────────────────────────────
+  let shape = 'slab';
+  let dimUnit = 'metric';
+  let activeMix = 'M20';
+  const mixData: Record<string, {c:number;s:number;a:number}> = {
+    M10:{c:1,s:3,a:6}, M15:{c:1,s:2,a:4}, M20:{c:1,s:1.5,a:3},
+    M25:{c:1,s:1,a:2}, custom:{c:1,s:2,a:3},
+  };
+
+  // ── Shape selector ───────────────────────────────────────────────────────────
+  document.querySelectorAll('.shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      shape = (btn as HTMLElement).dataset.shape!;
+      document.querySelectorAll('.shape-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+      document.querySelectorAll('.dim-section').forEach(s => ((s as HTMLElement).hidden = true));
+      (document.getElementById('dim-'+shape) as HTMLElement).hidden = false;
+    });
+  });
+
+  // ── Dim unit ─────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.seg-btn[data-dimunit]').forEach(b => {
+    b.addEventListener('click', () => {
+      dimUnit = (b as HTMLElement).dataset.dimunit!;
+      document.querySelectorAll('.seg-btn[data-dimunit]').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+      (document.getElementById('imperial-note') as HTMLElement).hidden = dimUnit !== 'imperial';
+    });
+  });
+
+  // ── Waste slider ─────────────────────────────────────────────────────────────
+  const wasteSlider = document.getElementById('waste-slider') as HTMLInputElement;
+  const wastePct = document.getElementById('waste-pct') as HTMLInputElement;
+  wasteSlider.addEventListener('input', () => { wastePct.value = wasteSlider.value; });
+  wastePct.addEventListener('input', () => { wasteSlider.value = wastePct.value; });
+
+  // ── Mix presets ───────────────────────────────────────────────────────────────
+  document.querySelectorAll('.mix-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeMix = (btn as HTMLElement).dataset.mix!;
+      document.querySelectorAll('.mix-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+      (document.getElementById('custom-mix-inputs') as HTMLElement).hidden = activeMix !== 'custom';
+    });
+  });
+
+  // ── Volume calculation ───────────────────────────────────────────────────────
+  function getVolume(): number | null {
+    const toM = (val: string, unit: 'mm'|'m'|'ft'|'in') => {
+      const n = parseFloat(val);
+      if (isNaN(n) || n <= 0) return null;
+      if (unit === 'mm') return n / 1000;
+      if (unit === 'm') return n;
+      if (unit === 'ft') return n * 0.3048;
+      if (unit === 'in') return n * 0.0254;
+      return n;
+    };
+
+    // imperial adjustment: treat "m" inputs as feet, "mm" as inches
+    const mUnit: 'm'|'ft' = dimUnit === 'imperial' ? 'ft' : 'm';
+    const mmUnit: 'mm'|'in' = dimUnit === 'imperial' ? 'in' : 'mm';
+
+    if (shape === 'slab') {
+      const l = toM((document.getElementById('slab-length') as HTMLInputElement).value, mUnit);
+      const w = toM((document.getElementById('slab-width') as HTMLInputElement).value, mUnit);
+      const t = toM((document.getElementById('slab-thick') as HTMLInputElement).value, mmUnit);
+      if (!l || !w || !t) return null;
+      return l * w * t;
+    }
+    if (shape === 'footing') {
+      const l = toM((document.getElementById('foot-length') as HTMLInputElement).value, mUnit);
+      const w = toM((document.getElementById('foot-width') as HTMLInputElement).value, mUnit);
+      const d = toM((document.getElementById('foot-depth') as HTMLInputElement).value, mUnit);
+      if (!l || !w || !d) return null;
+      return l * w * d;
+    }
+    if (shape === 'column') {
+      const w = toM((document.getElementById('col-width') as HTMLInputElement).value, mmUnit);
+      const d = toM((document.getElementById('col-depth') as HTMLInputElement).value, mmUnit);
+      const h = toM((document.getElementById('col-height') as HTMLInputElement).value, mUnit);
+      const n = parseFloat((document.getElementById('col-count') as HTMLInputElement).value) || 1;
+      if (!w || !d || !h) return null;
+      return w * d * h * n;
+    }
+    if (shape === 'round') {
+      const diam = toM((document.getElementById('round-diam') as HTMLInputElement).value, mmUnit);
+      const h = toM((document.getElementById('round-height') as HTMLInputElement).value, mUnit);
+      const n = parseFloat((document.getElementById('round-count') as HTMLInputElement).value) || 1;
+      if (!diam || !h) return null;
+      const r = diam / 2;
+      return Math.PI * r * r * h * n;
+    }
+    if (shape === 'steps') {
+      const run = toM((document.getElementById('step-run') as HTMLInputElement).value, mmUnit);
+      const rise = toM((document.getElementById('step-rise') as HTMLInputElement).value, mmUnit);
+      const w = toM((document.getElementById('step-width') as HTMLInputElement).value, mUnit);
+      const n = parseFloat((document.getElementById('step-count') as HTMLInputElement).value);
+      if (!run || !rise || !w || !n) return null;
+      // Volume of steps = triangle approach: 0.5 × run × rise × n × width × (n+1)/n
+      // More accurate: sum of rectangular blocks
+      let vol = 0;
+      for (let i = 1; i <= n; i++) { vol += run * (rise * i) * w; }
+      return vol;
+    }
+    return null;
+  }
+
+  document.getElementById('calc-concrete-btn')!.addEventListener('click', () => {
+    const errorEl = document.getElementById('concrete-error') as HTMLElement;
+    const resultsEl = document.getElementById('concrete-results') as HTMLElement;
+    errorEl.hidden = true;
+
+    const volNet = getVolume();
+    if (volNet === null || volNet <= 0) {
+      document.getElementById('concrete-error-msg')!.textContent = 'Please fill in all dimension fields with valid positive values.';
+      errorEl.hidden = false; return;
+    }
+
+    const waste = parseFloat(wastePct.value) / 100 || 0.10;
+    const volTotal = volNet * (1 + waste);
+    const weightKg = volTotal * 2400;
+
+    // Get mix ratios
+    let mix = mixData[activeMix] || mixData['M20'];
+    if (activeMix === 'custom') {
+      const c = parseFloat((document.getElementById('custom-c') as HTMLInputElement).value) || 1;
+      const s = parseFloat((document.getElementById('custom-s') as HTMLInputElement).value) || 2;
+      const a = parseFloat((document.getElementById('custom-a') as HTMLInputElement).value) || 3;
+      mix = {c, s, a};
+      mixData['custom'] = mix;
+    }
+
+    const total = mix.c + mix.s + mix.a;
+    const DRY_FACTOR = 1.54;
+
+    // Per m³
+    const cementM3perM3 = (mix.c / total) * DRY_FACTOR;
+    const sandM3perM3   = (mix.s / total) * DRY_FACTOR;
+    const aggM3perM3    = (mix.a / total) * DRY_FACTOR;
+    const CEMENT_BAG_VOL = 0.035; // m³ per 50kg bag
+    const cementBagsPerM3 = cementM3perM3 / CEMENT_BAG_VOL;
+
+    // Totals
+    const cBags = cementBagsPerM3 * volTotal;
+    const cKg = cBags * 50;
+    const sM3 = sandM3perM3 * volTotal;
+    const aM3 = aggM3perM3 * volTotal;
+    const waterL = (cKg * 0.5); // W/C = 0.5
+
+    const fmt1 = (n: number) => n.toFixed(2);
+    const fmt0 = (n: number) => Math.round(n).toLocaleString();
+
+    // Hero
+    (document.getElementById('res-vol-net') as HTMLElement).textContent = fmt1(volNet) + ' m³';
+    (document.getElementById('res-vol-net-ft') as HTMLElement).textContent = fmt1(volNet * 35.315) + ' ft³';
+    (document.getElementById('res-vol-total') as HTMLElement).textContent = fmt1(volTotal) + ' m³';
+    (document.getElementById('res-vol-total-ft') as HTMLElement).textContent = fmt1(volTotal * 35.315) + ' ft³';
+    (document.getElementById('res-weight') as HTMLElement).textContent = fmt0(weightKg) + ' kg';
+    (document.getElementById('waste-pct-display') as HTMLElement).textContent = Math.round(waste * 100) + '';
+
+    // Materials
+    (document.getElementById('mat-cement-bags') as HTMLElement).textContent = fmt1(cBags) + ' bags';
+    (document.getElementById('mat-cement-kg') as HTMLElement).textContent = fmt0(cKg) + ' kg';
+    (document.getElementById('mat-sand-m3') as HTMLElement).textContent = fmt1(sM3) + ' m³';
+    (document.getElementById('mat-sand-kg') as HTMLElement).textContent = fmt0(sM3 * 1500) + ' kg';
+    (document.getElementById('mat-agg-m3') as HTMLElement).textContent = fmt1(aM3) + ' m³';
+    (document.getElementById('mat-agg-kg') as HTMLElement).textContent = fmt0(aM3 * 1550) + ' kg';
+    (document.getElementById('mat-water-l') as HTMLElement).textContent = fmt0(waterL) + ' L';
+
+    // Mix bar
+    const cPct = (mix.c / total * 100).toFixed(1);
+    const sPct = (mix.s / total * 100).toFixed(1);
+    const aPct = (mix.a / total * 100).toFixed(1);
+    (document.getElementById('mix-bar-c-fill') as HTMLElement).style.width = cPct + '%';
+    (document.getElementById('mix-bar-s-fill') as HTMLElement).style.width = sPct + '%';
+    (document.getElementById('mix-bar-a-fill') as HTMLElement).style.width = aPct + '%';
+    (document.getElementById('mix-bar-label') as HTMLElement).textContent = `Mix Ratio ${mix.c}:${mix.s}:${mix.a} — Cement ${cPct}% · Sand ${sPct}% · Aggregate ${aPct}%`;
+
+    // Detail table
+    const tbody = document.getElementById('detail-table-body') as HTMLElement;
+    tbody.innerHTML = '';
+    [
+      ['🏗️ Cement', fmt1(cementBagsPerM3)+' bags ('+fmt1(cementM3perM3)+' m³)', fmt1(cBags)+' bags ('+fmt0(cKg)+' kg)'],
+      ['🏖️ Sand', fmt1(sandM3perM3)+' m³', fmt1(sM3)+' m³ ('+fmt0(sM3*1500)+' kg)'],
+      ['🪨 Aggregate', fmt1(aggM3perM3)+' m³', fmt1(aM3)+' m³ ('+fmt0(aM3*1550)+' kg)'],
+      ['💧 Water (W/C 0.5)', fmt0(cKg/2*10/10)+' L (per m³ of cement)', fmt0(waterL)+' L'],
+    ].forEach(([mat, per, tot]) => {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--color-hairline)';
+      tr.innerHTML = `<td style="padding:10px 14px;font-weight:500;">${mat}</td><td style="padding:10px 14px;text-align:right;font-family:var(--font-mono);">${per}</td><td style="padding:10px 14px;text-align:right;font-family:var(--font-mono);font-weight:600;color:var(--color-link);">${tot}</td>`;
+      tbody.appendChild(tr);
+    });
+
+    // Cost
+    const costPerBag = parseFloat((document.getElementById('cement-cost') as HTMLInputElement).value);
+    const costSection = document.getElementById('cost-section') as HTMLElement;
+    if (!isNaN(costPerBag) && costPerBag > 0) {
+      const totalCost = Math.round(cBags * costPerBag);
+      (document.getElementById('res-cost') as HTMLElement).textContent = 'Rs. ' + totalCost.toLocaleString();
+      costSection.hidden = false;
+    } else {
+      costSection.hidden = true;
+    }
+
+    resultsEl.hidden = false;
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  document.getElementById('clear-concrete-btn')!.addEventListener('click', () => {
+    document.querySelectorAll('.dim-section input').forEach(i => (i as HTMLInputElement).value = '');
+    (document.getElementById('waste-pct') as HTMLInputElement).value = '10';
+    (document.getElementById('waste-slider') as HTMLInputElement).value = '10';
+    (document.getElementById('cement-cost') as HTMLInputElement).value = '';
+    (document.getElementById('concrete-results') as HTMLElement).hidden = true;
+    (document.getElementById('concrete-error') as HTMLElement).hidden = true;
+  });
+
+  // FAQ
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

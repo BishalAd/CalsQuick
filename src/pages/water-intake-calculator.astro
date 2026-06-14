@@ -1,0 +1,968 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How much water should I drink a day?', a: 'The general recommendation is 8 cups (2 liters) per day — the "8×8 rule." However, your actual needs depend on weight, age, gender, activity level, climate, and health status. Our calculator personalizes this for you. The National Academies of Sciences recommends 3.7 liters (125 oz) total daily fluid for men and 2.7 liters (91 oz) for women — including water from food.' },
+  { q: 'How is daily water intake calculated by body weight?', a: 'The most common formula is: drink 35 ml of water per kilogram of body weight (or 0.5 oz per pound). For a 70 kg person: 70 × 35 = 2,450 ml (about 2.45 liters) per day. This is your baseline before adding extra for exercise, heat, or health conditions. Our calculator uses this formula plus adjustments for your activity level, climate, and individual factors.' },
+  { q: 'How much extra water do I need when I exercise?', a: 'For moderate exercise (30–60 minutes), add 400–600 ml (14–20 oz) extra. For intense exercise (1–2 hours), add 600–1,000 ml extra. For endurance sports (marathon, cycling 3+ hours), add 1,000–2,000 ml or more. A practical rule: drink 500–600 ml 2 hours before exercise, 150–250 ml every 15–20 minutes during, and 500 ml for every pound lost after exercise.' },
+  { q: 'How much water should pregnant women drink?', a: 'Pregnant women need about 2.3 liters (77 oz) of total fluid per day — roughly 300 ml more than normal. This supports increased blood volume, amniotic fluid, and fetal development. The exact amount depends on weight, activity, and climate. Breastfeeding women need even more — about 3.1 liters (104 oz) per day, as breast milk is approximately 87% water.' },
+  { q: 'Does coffee, tea, and juice count toward my daily water intake?', a: 'Yes. All beverages count toward hydration, including coffee and tea. Despite the mild diuretic effect of caffeine, research shows that caffeinated drinks still provide net hydration. Sodas, juices, and milk also contribute. However, water is the healthiest source — zero calories, no sugar, no additives. Food also provides about 20% of daily water intake (fruits and vegetables are 80–95% water).' },
+  { q: 'How much water should I drink to lose weight?', a: 'Drinking water before meals can reduce calorie intake. Studies show drinking 500 ml (17 oz) of water 30 minutes before meals boosts metabolism by 24–30% for 60–90 minutes. For weight loss, drinking 1–2 glasses of water before each meal is recommended. Cold water may slightly increase calorie burn as your body warms it to body temperature. Total water goal for weight loss is typically 2–3 liters per day.' },
+  { q: 'How do hot weather and high temperatures affect water needs?', a: 'In hot weather (above 30°C/86°F), you can lose 1–2 liters of water per hour through sweat. You need 500–1,000 ml extra per day for every 10°C above the comfortable range. In very hot or humid climates (like South Asian summers), daily water needs can reach 4–5 liters. Add extra water if you spend time outdoors, work in heat, or live in tropical climates like Nepal or India.' },
+  { q: 'How much water do children and kids need per day?', a: 'Children\'s water needs by age: 1–3 years: 1.3 liters/day, 4–8 years: 1.7 liters/day, 9–13 years boys: 2.4 liters/day, 9–13 years girls: 2.1 liters/day, 14–18 years boys: 3.3 liters/day, 14–18 years girls: 2.3 liters/day. Kids are more prone to dehydration because they have a higher surface-area-to-body-mass ratio and may not recognize thirst until already dehydrated.' },
+  { q: 'What are signs of dehydration?', a: 'Mild dehydration (1–2% body weight lost): thirst, dry mouth, slightly dark urine, headache, reduced concentration. Moderate dehydration (3–5%): significantly reduced urine output, dizziness, fatigue, muscle cramps, dry skin. Severe dehydration (>5%): rapid heartbeat, sunken eyes, confusion, inability to stand. A practical check: your urine should be pale yellow. Dark yellow or amber urine means you need more water.' },
+  { q: 'Can you drink too much water?', a: 'Yes. Overhydration (hyponatremia) occurs when you drink excessive water, diluting sodium levels in your blood. This is rare and mainly affects endurance athletes who drink only water without electrolytes during long events. Symptoms include nausea, headache, confusion, and in extreme cases, seizures. For most healthy people, kidneys can process about 800–1,000 ml per hour — so drinking far beyond your calculated need is unnecessary.' },
+  { q: 'How much water should seniors (elderly) drink per day?', a: 'Seniors (65+) need 1.7–2.0 liters per day. Older adults are at higher dehydration risk because: thirst sensation decreases with age, kidney efficiency declines, some medications increase fluid loss, and mobility issues may reduce drinking frequency. Caregivers should monitor fluid intake for elderly individuals, especially in hot weather or illness.' },
+  { q: 'How does creatine supplementation affect water needs?', a: 'Creatine draws water into muscle cells, which increases your body\'s total water requirement. When taking creatine (especially during loading phase: 20g/day for 5–7 days), drink an extra 500–1,000 ml of water per day. During the maintenance phase (3–5g/day), add 250–500 ml extra. Well-hydrated muscles also respond better to creatine, and adequate water helps prevent kidney strain.' },
+  { q: 'How much water should pets (dogs and cats) drink?', a: 'Dogs: approximately 50–60 ml of water per kg of body weight per day. A 10 kg dog needs about 500–600 ml daily. Active or hot-weather dogs need more. Cats: approximately 40–60 ml per kg per day, though cats get much of their water from wet food. Dry-food-only cats need more fresh water. Signs of pet dehydration: skin tenting, dry gums, sunken eyes.' },
+  { q: 'What is the best time to drink water during the day?', a: 'Morning: 400–500 ml upon waking rehydrates after 7–8 hours of sleep. Before meals: 500 ml about 30 minutes before each meal aids digestion and reduces appetite. Before/during/after exercise: follow the exercise hydration protocol. Before bed: 200–300 ml helps prevent nighttime dehydration without disrupting sleep with bathroom trips. Spread intake throughout the day rather than drinking large amounts at once.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Water Intake Calculator',
+    description: 'Free personalized water intake calculator. Find out how much water you should drink based on weight, age, gender, activity level, climate, and health conditions including pregnancy, breastfeeding, and creatine use.',
+    url: '/water-intake-calculator',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Check your body mass index' },
+  { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🔥', desc: 'Find your daily calorie needs' },
+  { name: 'GPA Calculator', href: '/gpa-calculator', icon: '🎓', desc: 'Calculate your GPA' },
+];
+---
+
+<CalculatorLayout
+  title="Water Intake Calculator — How Much Water Should I Drink a Day?"
+  description="Free personalized water intake calculator. Calculate exactly how much water you should drink daily based on your weight, age, gender, activity level, climate, pregnancy, breastfeeding, and fitness goals including creatine use."
+  canonical="/water-intake-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Water Intake Calculator', url: '/water-intake-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Health Tools</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Water Intake Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Find out exactly how much water you should drink per day based on your weight, activity level, climate, and personal health factors. Personalized for men, women, kids, athletes, and more.
+    </p>
+  </div>
+
+  <!-- MAIN CALCULATOR -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom:40px;">
+    <div class="calc-form">
+
+      <!-- Row 1: Weight + Unit -->
+      <div class="field-group">
+        <div class="field-main">
+          <label for="weight-input" class="label">Body Weight</label>
+          <input type="number" id="weight-input" class="input-base input-lg"
+            placeholder="e.g. 70" min="10" max="300" step="0.5"
+            aria-label="Your body weight" />
+        </div>
+        <div class="field-unit">
+          <label class="label" style="margin-bottom:6px;">Unit</label>
+          <div class="unit-toggle" role="group" aria-label="Weight unit">
+            <button class="unit-btn active" data-unit="kg" aria-pressed="true">kg</button>
+            <button class="unit-btn" data-unit="lb" aria-pressed="false">lb</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Age + Gender -->
+      <div class="two-col">
+        <div>
+          <label for="age-input" class="label">Age (years)</label>
+          <input type="number" id="age-input" class="input-base input-lg"
+            placeholder="e.g. 25" min="1" max="120" step="1"
+            aria-label="Your age in years" />
+        </div>
+        <div>
+          <label class="label" style="margin-bottom:6px;">Gender</label>
+          <div class="unit-toggle wide" role="group" aria-label="Select gender">
+            <button class="unit-btn active" data-gender="male" aria-pressed="true">♂ Male</button>
+            <button class="unit-btn" data-gender="female" aria-pressed="false">♀ Female</button>
+            <button class="unit-btn" data-gender="child" aria-pressed="false">👶 Child</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Level -->
+      <div>
+        <label class="label" style="margin-bottom:10px;">Activity Level</label>
+        <div class="activity-grid" role="group" aria-label="Select activity level">
+          {[
+            { key:'sedentary',    icon:'🪑', label:'Sedentary',    desc:'Little or no exercise' },
+            { key:'light',        icon:'🚶', label:'Lightly Active', desc:'Light exercise 1–3 days/week' },
+            { key:'moderate',     icon:'🏃', label:'Moderate',     desc:'Moderate exercise 3–5 days' },
+            { key:'active',       icon:'💪', label:'Very Active',  desc:'Hard exercise 6–7 days' },
+            { key:'athlete',      icon:'🏋️', label:'Athlete',      desc:'Intense daily training' },
+          ].map(a => (
+            <button class={`activity-btn ${a.key==='sedentary'?'active':''}`} data-activity={a.key} aria-pressed={a.key==='sedentary'?'true':'false'}>
+              <span class="act-icon">{a.icon}</span>
+              <span class="act-label">{a.label}</span>
+              <span class="act-desc">{a.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Climate -->
+      <div>
+        <label class="label" style="margin-bottom:10px;">Climate / Environment</label>
+        <div class="climate-grid" role="group" aria-label="Select climate">
+          {[
+            { key:'cold',     icon:'❄️', label:'Cold',     desc:'< 15°C / < 59°F' },
+            { key:'moderate', icon:'🌤️', label:'Moderate', desc:'15–25°C / 59–77°F' },
+            { key:'warm',     icon:'☀️', label:'Warm',     desc:'25–35°C / 77–95°F' },
+            { key:'hot',      icon:'🔥', label:'Very Hot', desc:'> 35°C / > 95°F' },
+          ].map(c => (
+            <button class={`climate-btn ${c.key==='moderate'?'active':''}`} data-climate={c.key} aria-pressed={c.key==='moderate'?'true':'false'}>
+              <span class="clim-icon">{c.icon}</span>
+              <span class="clim-label">{c.label}</span>
+              <span class="clim-desc">{c.desc}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Special conditions -->
+      <div>
+        <label class="label" style="margin-bottom:10px;">Special Conditions <span style="font-size:11px;font-weight:400;color:var(--color-muted);">(select all that apply)</span></label>
+        <div class="conditions-grid">
+          {[
+            { key:'pregnant',      icon:'🤰', label:'Pregnant' },
+            { key:'breastfeeding', icon:'👶', label:'Breastfeeding' },
+            { key:'creatine',      icon:'💊', label:'Taking Creatine' },
+            { key:'keto',          icon:'🥑', label:'Keto / Low Carb' },
+            { key:'kidney',        icon:'🫘', label:'Kidney Stones' },
+            { key:'caffeine',      icon:'☕', label:'High Caffeine' },
+          ].map(c => (
+            <button class="condition-btn" data-condition={c.key} role="checkbox" aria-checked="false">
+              <span>{c.icon}</span>
+              <span class="cond-label">{c.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Exercise duration -->
+      <div id="exercise-section">
+        <label for="exercise-min" class="label">Daily Exercise Duration <span style="font-size:11px;font-weight:400;color:var(--color-muted);">(minutes)</span></label>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <input type="range" id="exercise-slider" min="0" max="240" step="5" value="0"
+            style="flex:1;min-width:160px;accent-color:var(--color-link);"
+            aria-label="Exercise duration in minutes" />
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+            <input type="number" id="exercise-min" class="input-base" value="0" min="0" max="360" step="5"
+              style="width:72px;text-align:center;" aria-label="Exercise minutes" />
+            <span style="font-size:13px;color:var(--color-muted);">min</span>
+          </div>
+        </div>
+        <div class="exercise-presets" style="margin-top:8px;">
+          {[0,15,30,45,60,90,120].map(m => (
+            <button class={`ex-preset-btn ${m===0?'active':''}`} data-min={m} aria-label={`${m} minutes`}>{m} min</button>
+          ))}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button id="calc-water-btn" class="btn-primary" style="flex:1;">Calculate My Water Intake</button>
+        <button id="clear-water-btn" class="btn-secondary">Reset</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="water-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="water-error-msg"></span>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="water-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:28px 0;"></div>
+
+      <!-- Hero -->
+      <div class="water-hero">
+        <div class="water-drop-wrap" aria-hidden="true">
+          <svg class="water-drop-svg" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M40 5 C40 5 8 45 8 65 C8 83.5 22.7 98 40 98 C57.3 98 72 83.5 72 65 C72 45 40 5 40 5Z" fill="var(--color-link)" opacity="0.15" stroke="var(--color-link)" stroke-width="2"/>
+            <clipPath id="waterClip">
+              <path d="M40 5 C40 5 8 45 8 65 C8 83.5 22.7 98 40 98 C57.3 98 72 83.5 72 65 C72 45 40 5 40 5Z"/>
+            </clipPath>
+            <rect id="water-fill-rect" x="8" y="60" width="64" height="40" fill="var(--color-link)" opacity="0.6" clip-path="url(#waterClip)">
+              <animate attributeName="y" dur="1s" fill="freeze" id="water-fill-anim"/>
+            </rect>
+            <text id="drop-pct-text" x="40" y="70" text-anchor="middle" font-size="14" font-weight="700" fill="var(--color-ink)" font-family="system-ui"></text>
+          </svg>
+        </div>
+        <div class="water-hero-text">
+          <div class="water-hero-label">Your Daily Water Goal</div>
+          <div class="water-hero-value" id="res-water-liters">— L</div>
+          <div class="water-hero-sub" id="res-water-oz">— oz / — cups</div>
+          <div class="water-hero-badge" id="res-water-badge">Personalized for you</div>
+        </div>
+      </div>
+
+      <!-- Stats grid -->
+      <div class="water-stats-grid" style="margin-top:20px;">
+        <div class="water-stat">
+          <div class="wstat-icon">⚖️</div>
+          <div class="wstat-label">Base (weight)</div>
+          <div class="wstat-value" id="stat-base">—</div>
+        </div>
+        <div class="water-stat">
+          <div class="wstat-icon">🏃</div>
+          <div class="wstat-label">Exercise extra</div>
+          <div class="wstat-value" id="stat-exercise">—</div>
+        </div>
+        <div class="water-stat">
+          <div class="wstat-icon">🌡️</div>
+          <div class="wstat-label">Climate extra</div>
+          <div class="wstat-value" id="stat-climate">—</div>
+        </div>
+        <div class="water-stat">
+          <div class="wstat-icon">⚕️</div>
+          <div class="wstat-label">Conditions extra</div>
+          <div class="wstat-value" id="stat-conditions">—</div>
+        </div>
+      </div>
+
+      <!-- Glass tracker -->
+      <div class="glass-tracker" style="margin-top:20px;">
+        <div class="glass-tracker-header">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--color-ink);">Daily Glass Tracker</div>
+            <div style="font-size:12px;color:var(--color-muted);margin-top:2px;">Each glass = 250 ml. Tap to track.</div>
+          </div>
+          <div class="glass-tracker-count" id="glass-count-display">0 / 0 glasses</div>
+        </div>
+        <div class="glasses-grid" id="glasses-grid" aria-label="Water glass tracker"></div>
+        <div class="glass-progress-bar" style="margin-top:12px;">
+          <div class="glass-progress-fill" id="glass-progress-fill" style="width:0%;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;">
+          <span style="font-size:12px;color:var(--color-muted);" id="glass-ml-display">0 ml consumed</span>
+          <button id="reset-glasses-btn" style="font-size:11px;color:var(--color-muted);background:none;border:none;cursor:pointer;text-decoration:underline;">Reset</button>
+        </div>
+      </div>
+
+      <!-- Schedule -->
+      <div style="margin-top:20px;">
+        <h3 style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:10px;">Recommended Drinking Schedule</h3>
+        <div class="schedule-list" id="schedule-list"></div>
+      </div>
+
+      <!-- Urine colour guide -->
+      <div class="urine-guide" style="margin-top:20px;">
+        <div style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:10px;">💧 Hydration Check: Urine Colour Guide</div>
+        <div class="urine-scale">
+          {[
+            { color:'#FFF9C4', label:'Very Pale', status:'Overhydrated', emoji:'😅' },
+            { color:'#FFF176', label:'Pale Yellow', status:'Well Hydrated ✅', emoji:'😊' },
+            { color:'#FFD54F', label:'Yellow',     status:'Normal',      emoji:'🙂' },
+            { color:'#FFB300', label:'Dark Yellow', status:'Drink More', emoji:'😐' },
+            { color:'#E65100', label:'Amber',      status:'Dehydrated',  emoji:'😟' },
+            { color:'#4E342E', label:'Brown',      status:'Very Dehydrated — Drink Now!', emoji:'🚨' },
+          ].map(u => (
+            <div class="urine-item">
+              <div class="urine-swatch" style={`background:${u.color};`} aria-hidden="true"></div>
+              <div class="urine-label">{u.label}</div>
+              <div class="urine-status">{u.emoji} {u.status}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Tips -->
+      <div style="padding:14px 16px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);border:1px solid var(--color-hairline);margin-top:16px;">
+        <p class="text-body-sm" style="color:var(--color-body);line-height:1.5;margin:0;" id="water-tip-text">
+          💡 <strong>Tip:</strong> Spread your water intake throughout the day. Drinking large amounts at once is less effective and can strain your kidneys.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PET WATER CALCULATOR -->
+  <div style="margin-bottom:40px;" class="fade-up stagger-1">
+    <h2 style="color:var(--color-ink);margin-bottom:8px;font-size:22px;font-weight:600;">🐾 Pet Water Intake Calculator</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Calculate your pet's daily water requirement based on weight and species.</p>
+    <div class="calc-panel">
+      <div class="two-col">
+        <div>
+          <label for="pet-weight" class="label">Pet Weight (kg)</label>
+          <input type="number" id="pet-weight" class="input-base input-lg"
+            placeholder="e.g. 10" min="0.1" max="100" step="0.1"
+            aria-label="Pet weight in kg" />
+        </div>
+        <div>
+          <label class="label" style="margin-bottom:6px;">Pet Type</label>
+          <div class="unit-toggle wide" role="group" aria-label="Select pet type">
+            <button class="unit-btn active" data-pet="dog" aria-pressed="true">🐕 Dog</button>
+            <button class="unit-btn" data-pet="cat" aria-pressed="false">🐈 Cat</button>
+            <button class="unit-btn" data-pet="puppy" aria-pressed="false">🐶 Puppy</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button id="calc-pet-btn" class="btn-primary" style="flex:1;">Calculate Pet Water Needs</button>
+        <button id="clear-pet-btn" class="btn-secondary">Clear</button>
+      </div>
+      <div id="pet-error" class="calc-error" role="alert" aria-live="polite" hidden>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <span id="pet-error-msg"></span>
+      </div>
+      <div id="pet-results" hidden aria-live="polite" style="margin-top:20px;">
+        <div class="results-divider" style="margin:0 0 20px;"></div>
+        <div class="pet-result-hero">
+          <div class="pet-icon-big" id="pet-icon-display">🐕</div>
+          <div>
+            <div class="water-hero-label">Daily Water Requirement</div>
+            <div class="water-hero-value" id="pet-res-ml">— ml</div>
+            <div class="water-hero-sub" id="pet-res-cups">— cups per day</div>
+          </div>
+        </div>
+        <div class="result-panel" style="margin-top:16px;">
+          <div class="result-row">
+            <span class="result-row-label">📏 Pet Weight</span>
+            <span class="result-row-value" id="pet-weight-display">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-row-label">💧 Minimum Daily Water</span>
+            <span class="result-row-value" id="pet-min">—</span>
+          </div>
+          <div class="result-row">
+            <span class="result-row-label">💧 Maximum Daily Water</span>
+            <span class="result-row-value" id="pet-max">—</span>
+          </div>
+          <div class="result-row" style="border-bottom:none;">
+            <span class="result-row-label">⚠️ Dehydration Signs</span>
+            <span class="result-row-value" id="pet-dehy">—</span>
+          </div>
+        </div>
+        <div style="padding:12px 14px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:12px;font-size:13px;color:var(--color-body);line-height:1.5;" id="pet-tip-text"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WATER FACTS REFERENCE -->
+  <div style="margin-bottom:40px;" class="fade-up">
+    <h2 style="color:var(--color-ink);margin-bottom:8px;font-size:22px;font-weight:600;">Hydration Reference by Category</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Official recommended daily fluid intake from the National Academies of Sciences.</p>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Category</th>
+            <th style="padding:12px 16px;">Daily Total Fluid</th>
+            <th style="padding:12px 16px;">Water Only</th>
+            <th style="padding:12px 16px;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Male adults (19+)',     '3.7 L (125 oz)', '~2.6 L',   'Includes all beverages + food water'],
+            ['Female adults (19+)',   '2.7 L (91 oz)',  '~1.8 L',   'Non-pregnant, non-breastfeeding'],
+            ['Pregnant women',        '3.0 L (101 oz)', '~2.3 L',   '+300 ml above normal baseline'],
+            ['Breastfeeding women',   '3.8 L (128 oz)', '~3.1 L',   '+700–1000 ml above normal'],
+            ['Boys 14–18 years',      '3.3 L (112 oz)', '~2.6 L',   'Higher due to rapid growth'],
+            ['Girls 14–18 years',     '2.3 L (78 oz)',  '~1.8 L',   'Increases with activity level'],
+            ['Children 9–13 years',   '1.6–2.1 L',      '~1.2–1.6 L', 'Varies by gender and activity'],
+            ['Children 4–8 years',    '1.7 L (57 oz)',  '~1.2 L',   'Includes juice, milk'],
+            ['Toddlers 1–3 years',    '1.3 L (44 oz)',  '~0.9 L',   'Mostly from milk and formula'],
+            ['Athletes',              '3.5–5+ L',       '3–4+ L',   'Depends on intensity & climate'],
+            ['Hot climate workers',   '4–6 L',          '3.5–5 L',  'Up to 10L in extreme heat work'],
+          ].map(row => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:11px 16px;font-weight:500;">{row[0]}</td>
+              <td style="padding:11px 16px;font-family:var(--font-mono);font-weight:600;color:var(--color-link);">{row[1]}</td>
+              <td style="padding:11px 16px;font-family:var(--font-mono);">{row[2]}</td>
+              <td style="padding:11px 16px;color:var(--color-muted);font-size:13px;">{row[3]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--color-muted);margin-top:8px;">Source: National Academies of Sciences, Engineering, and Medicine (2004 Dietary Reference Intakes)</p>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">How Much Water Should You Drink Per Day?</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The popular "8 glasses a day" rule is a useful starting point, but your actual <strong>daily water intake</strong> should be personalized. Your kidneys can excrete 800–1,000 ml of water per hour, but your body also continuously loses water through breathing, sweating, and urine. A <strong>hydration calculator</strong> based on body weight, activity level, and climate gives a far more accurate target than any one-size-fits-all recommendation.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">The Science Behind Water Intake Calculations</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The most evidence-based formula for baseline <strong>water intake based on body weight</strong> is 35 ml per kilogram (or ~0.5 oz per pound). For a 70 kg person, that's 2,450 ml — about 2.45 liters. This baseline is then adjusted upward for: physical activity (sweat loss), hot or humid climate, pregnancy or breastfeeding, certain medications, high protein or high-fiber diets, and caffeine or alcohol consumption. Our <strong>fluid intake calculator</strong> applies all these adjustments.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Hydration for Athletes and Exercise</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Athletes and active individuals need significantly more water than sedentary people. During intense exercise, you can lose 1–2.5 liters of sweat per hour depending on temperature and exertion. The <strong>American College of Sports Medicine</strong> recommends: 400–600 ml of fluid 2 hours before exercise, 150–250 ml every 15–20 minutes during exercise, and replacing 150% of fluid lost (weigh yourself before and after — each 0.5 kg lost ≈ 500 ml of water) after exercise.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Water Intake for Weight Loss</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Drinking water before meals is one of the most evidence-backed strategies for weight management. A 2010 study in Obesity found that adults who drank 500 ml of water before each meal lost 44% more weight over 12 weeks than those who didn't. Water also temporarily increases metabolic rate by 24–30% for 60–90 minutes. For <strong>weight loss hydration</strong>, aim for 2–3 liters daily and drink a large glass 20–30 minutes before each meal.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Hydration in Hot Climates (Nepal, India, South Asia)</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      In tropical climates like the Terai region of Nepal or Indian plains, summer temperatures regularly exceed 35–40°C. At these temperatures, sweat loss can reach 1–2 liters per hour during outdoor activity. The daily <strong>water requirement in hot weather</strong> for a moderately active person can easily reach 4–5 liters. Electrolyte replacement (sodium, potassium) is equally important alongside hydration in extreme heat to prevent hyponatremia.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`w-faq-${i}`} id={`w-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`w-faq-${i}`} role="region" aria-labelledby={`w-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .calc-form { display:flex;flex-direction:column;gap:20px; }
+  .results-divider { height:1px;background:var(--color-hairline); }
+  .result-row { display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--color-hairline); }
+  .result-row-label { font-size:14px;color:var(--color-body); }
+  .result-row-value { font-size:14px;font-weight:600;color:var(--color-ink); }
+  .calc-error { display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error); }
+  .prose-section { padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline); }
+
+  /* ── Unit toggle ── */
+  .unit-toggle { display:flex;gap:4px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);padding:3px; }
+  .unit-toggle.wide { flex-wrap:wrap; }
+  .unit-btn { padding:7px 14px;font-size:13px;font-weight:500;border:none;background:transparent;color:var(--color-body);border-radius:calc(var(--radius-md) - 2px);cursor:pointer;transition:all 0.15s;white-space:nowrap; }
+  .unit-btn:hover { background:var(--color-canvas);color:var(--color-ink); }
+  .unit-btn.active { background:var(--color-canvas);color:var(--color-ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+
+  /* ── Field groups ── */
+  .field-group { display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap; }
+  .field-main { flex:1;min-width:140px; }
+  .field-unit { flex-shrink:0; }
+  .two-col { display:grid;grid-template-columns:1fr 1fr;gap:16px; }
+
+  /* ── Activity grid ── */
+  .activity-grid { display:grid;grid-template-columns:repeat(5,1fr);gap:8px; }
+  .activity-btn {
+    display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;
+    border:1px solid var(--color-hairline);border-radius:var(--radius-lg);
+    background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;text-align:center;
+  }
+  .activity-btn:hover { border-color:var(--color-link);background:var(--color-canvas); }
+  .activity-btn.active { border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.12); }
+  .act-icon { font-size:20px; }
+  .act-label { font-size:12px;font-weight:600;color:var(--color-ink); }
+  .act-desc { font-size:10px;color:var(--color-muted);line-height:1.3; }
+
+  /* ── Climate grid ── */
+  .climate-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:8px; }
+  .climate-btn {
+    display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;
+    border:1px solid var(--color-hairline);border-radius:var(--radius-lg);
+    background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;text-align:center;
+  }
+  .climate-btn:hover { border-color:var(--color-link);background:var(--color-canvas); }
+  .climate-btn.active { border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.12); }
+  .clim-icon { font-size:20px; }
+  .clim-label { font-size:12px;font-weight:600;color:var(--color-ink); }
+  .clim-desc { font-size:10px;color:var(--color-muted); }
+
+  /* ── Conditions ── */
+  .conditions-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+  .condition-btn {
+    display:flex;align-items:center;gap:8px;padding:10px 12px;
+    border:1px solid var(--color-hairline);border-radius:var(--radius-md);
+    background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;
+    font-size:13px;
+  }
+  .condition-btn:hover { border-color:var(--color-link);background:var(--color-canvas); }
+  .condition-btn.active { border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.12); }
+  .cond-label { font-size:12px;font-weight:500;color:var(--color-ink); }
+
+  /* ── Exercise presets ── */
+  .exercise-presets { display:flex;gap:6px;flex-wrap:wrap; }
+  .ex-preset-btn { padding:4px 10px;font-size:12px;font-weight:500;border:1px solid var(--color-hairline);border-radius:99px;background:var(--color-canvas-soft-2);color:var(--color-body);cursor:pointer;transition:all 0.15s; }
+  .ex-preset-btn:hover { border-color:var(--color-link);color:var(--color-link); }
+  .ex-preset-btn.active { border-color:var(--color-link);background:var(--color-link);color:#fff; }
+
+  /* ── Water hero ── */
+  .water-hero { display:flex;align-items:center;gap:24px;padding:28px 24px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg); }
+  .water-drop-wrap { flex-shrink:0;width:80px; }
+  .water-drop-svg { width:80px;height:100px; }
+  .water-hero-text { flex:1; }
+  .water-hero-label { font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:6px; }
+  .water-hero-value { font-size:clamp(36px,6vw,64px);font-weight:700;color:var(--color-ink);letter-spacing:-2px;line-height:1;font-family:var(--font-mono); }
+  .water-hero-sub { font-size:14px;color:var(--color-muted);margin-top:6px; }
+  .water-hero-badge { display:inline-block;margin-top:10px;padding:3px 12px;background:var(--color-link);color:#fff;border-radius:99px;font-size:12px;font-weight:500; }
+
+  /* ── Water stats ── */
+  .water-stats-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:10px; }
+  .water-stat { padding:12px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);text-align:center; }
+  .wstat-icon { font-size:18px;margin-bottom:4px; }
+  .wstat-label { font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:4px; }
+  .wstat-value { font-size:14px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono); }
+
+  /* ── Glass tracker ── */
+  .glass-tracker { padding:16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg); }
+  .glass-tracker-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:6px; }
+  .glass-tracker-count { font-size:13px;font-weight:600;color:var(--color-link);font-family:var(--font-mono); }
+  .glasses-grid { display:flex;flex-wrap:wrap;gap:8px; }
+  .glass-item { font-size:24px;cursor:pointer;opacity:0.25;transition:all 0.15s;filter:grayscale(1);user-select:none;line-height:1; }
+  .glass-item.filled { opacity:1;filter:none; }
+  .glass-item:hover { transform:scale(1.15); }
+  .glass-progress-bar { height:8px;background:var(--color-hairline);border-radius:99px;overflow:hidden; }
+  .glass-progress-fill { height:100%;background:var(--color-link);border-radius:99px;transition:width 0.4s ease; }
+
+  /* ── Schedule ── */
+  .schedule-list { display:flex;flex-direction:column;gap:6px; }
+  .schedule-item { display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md); }
+  .sched-time { font-size:13px;font-weight:600;color:var(--color-ink);font-family:var(--font-mono);min-width:64px; }
+  .sched-amount { font-size:13px;color:var(--color-link);font-weight:600;font-family:var(--font-mono);min-width:56px; }
+  .sched-note { font-size:12px;color:var(--color-muted);flex:1; }
+
+  /* ── Urine guide ── */
+  .urine-guide { padding:16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg); }
+  .urine-scale { display:grid;grid-template-columns:repeat(6,1fr);gap:8px; }
+  .urine-item { display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center; }
+  .urine-swatch { width:36px;height:36px;border-radius:50%;border:2px solid var(--color-hairline); }
+  .urine-label { font-size:11px;font-weight:600;color:var(--color-ink); }
+  .urine-status { font-size:10px;color:var(--color-muted);line-height:1.3; }
+
+  /* ── Pet result ── */
+  .pet-result-hero { display:flex;align-items:center;gap:16px;padding:20px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg); }
+  .pet-icon-big { font-size:48px; }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .activity-grid { grid-template-columns:repeat(3,1fr); }
+    .climate-grid { grid-template-columns:repeat(2,1fr); }
+    .conditions-grid { grid-template-columns:repeat(2,1fr); }
+    .water-stats-grid { grid-template-columns:repeat(2,1fr); }
+    .urine-scale { grid-template-columns:repeat(3,1fr); }
+    .water-hero { flex-direction:column;align-items:flex-start;gap:16px;padding:20px 16px; }
+    .prose-section { padding:20px 16px; }
+  }
+  @media (max-width: 500px) {
+    .two-col { grid-template-columns:1fr; }
+    .activity-grid { grid-template-columns:repeat(2,1fr); }
+    .urine-scale { grid-template-columns:repeat(2,1fr); }
+    .water-stats-grid { grid-template-columns:repeat(2,1fr); }
+    .conditions-grid { grid-template-columns:1fr 1fr; }
+    .field-group { flex-direction:column;align-items:stretch; }
+  }
+</style>
+
+<script>
+  // ════════════════════════════════════════════
+  // STATE
+  // ════════════════════════════════════════════
+  let weightUnit: 'kg' | 'lb' = 'kg';
+  let gender: 'male' | 'female' | 'child' = 'male';
+  let activity: string = 'sedentary';
+  let climate: string = 'moderate';
+  let conditions: Set<string> = new Set();
+  let petType: string = 'dog';
+  let glassesTotal = 0;
+  let glassesFilled = 0;
+
+  // ════════════════════════════════════════════
+  // UNIT TOGGLES
+  // ════════════════════════════════════════════
+  document.querySelectorAll('.unit-btn[data-unit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      weightUnit = (btn as HTMLElement).dataset.unit as 'kg' | 'lb';
+      document.querySelectorAll('.unit-btn[data-unit]').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  document.querySelectorAll('.unit-btn[data-gender]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      gender = (btn as HTMLElement).dataset.gender as any;
+      document.querySelectorAll('.unit-btn[data-gender]').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  document.querySelectorAll('.activity-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activity = (btn as HTMLElement).dataset.activity!;
+      document.querySelectorAll('.activity-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  document.querySelectorAll('.climate-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      climate = (btn as HTMLElement).dataset.climate!;
+      document.querySelectorAll('.climate-btn').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  document.querySelectorAll('.condition-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = (btn as HTMLElement).dataset.condition!;
+      if (conditions.has(key)) {
+        conditions.delete(key);
+        btn.classList.remove('active');
+        btn.setAttribute('aria-checked', 'false');
+      } else {
+        conditions.add(key);
+        btn.classList.add('active');
+        btn.setAttribute('aria-checked', 'true');
+      }
+    });
+  });
+
+  // Exercise slider sync
+  const exSlider = document.getElementById('exercise-slider') as HTMLInputElement;
+  const exInput = document.getElementById('exercise-min') as HTMLInputElement;
+  exSlider.addEventListener('input', () => {
+    exInput.value = exSlider.value;
+    updateExPresets(parseInt(exSlider.value));
+  });
+  exInput.addEventListener('input', () => {
+    exSlider.value = exInput.value;
+    updateExPresets(parseInt(exInput.value));
+  });
+
+  function updateExPresets(val: number) {
+    document.querySelectorAll('.ex-preset-btn').forEach(b => {
+      const bVal = parseInt((b as HTMLElement).dataset.min!);
+      b.classList.toggle('active', bVal === val);
+    });
+  }
+
+  document.querySelectorAll('.ex-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const m = parseInt((btn as HTMLElement).dataset.min!);
+      exInput.value = String(m);
+      exSlider.value = String(m);
+      updateExPresets(m);
+    });
+  });
+
+  // Pet type
+  document.querySelectorAll('.unit-btn[data-pet]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      petType = (btn as HTMLElement).dataset.pet!;
+      document.querySelectorAll('.unit-btn[data-pet]').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
+      btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
+    });
+  });
+
+  // ════════════════════════════════════════════
+  // CALCULATION
+  // ════════════════════════════════════════════
+  function calcWaterIntake() {
+    const errorEl = document.getElementById('water-error') as HTMLElement;
+    const resultsEl = document.getElementById('water-results') as HTMLElement;
+    errorEl.hidden = true;
+
+    const weightRaw = parseFloat((document.getElementById('weight-input') as HTMLInputElement).value);
+    const age = parseFloat((document.getElementById('age-input') as HTMLInputElement).value);
+    const exerciseMins = parseFloat(exInput.value) || 0;
+
+    if (!weightRaw || weightRaw <= 0) {
+      document.getElementById('water-error-msg')!.textContent = 'Please enter your body weight.';
+      errorEl.hidden = false; return;
+    }
+    if (!age || age <= 0 || age > 120) {
+      document.getElementById('water-error-msg')!.textContent = 'Please enter a valid age (1–120).';
+      errorEl.hidden = false; return;
+    }
+
+    // Convert to kg
+    const weightKg = weightUnit === 'lb' ? weightRaw / 2.205 : weightRaw;
+
+    // ── BASE: 35ml/kg, adjust for gender
+    let baseMl = weightKg * 35;
+    if (gender === 'male') baseMl *= 1.05;
+    else if (gender === 'female') baseMl *= 0.95;
+    else if (gender === 'child') baseMl = weightKg * 40; // kids need more per kg
+
+    // Age adjustment
+    if (age >= 65) baseMl *= 0.9; // seniors need less but are at higher risk
+    else if (age < 14) baseMl = weightKg * 40;
+
+    // ── ACTIVITY multiplier (extra ml)
+    const activityExtra: Record<string, number> = {
+      sedentary: 0, light: 250, moderate: 500, active: 750, athlete: 1000,
+    };
+    const exerciseExtra = (exerciseMins / 60) * 600; // ~600ml per hour of exercise
+    const totalExtraExercise = (activityExtra[activity] || 0) + exerciseExtra;
+
+    // ── CLIMATE extra
+    const climateExtra: Record<string, number> = {
+      cold: -200, moderate: 0, warm: 400, hot: 800,
+    };
+    const extraClimate = climateExtra[climate] || 0;
+
+    // ── CONDITIONS extra
+    let extraConditions = 0;
+    if (conditions.has('pregnant')) extraConditions += 300;
+    if (conditions.has('breastfeeding')) extraConditions += 700;
+    if (conditions.has('creatine')) extraConditions += 500;
+    if (conditions.has('keto')) extraConditions += 400;
+    if (conditions.has('kidney')) extraConditions += 500;
+    if (conditions.has('caffeine')) extraConditions += 200;
+
+    const totalMl = Math.round(baseMl + totalExtraExercise + extraClimate + extraConditions);
+    const totalL = (totalMl / 1000).toFixed(2);
+    const totalOz = Math.round(totalMl / 29.574);
+    const totalCups = Math.round(totalMl / 250);
+
+    // ── Update hero
+    (document.getElementById('res-water-liters') as HTMLElement).textContent = totalL + ' L';
+    (document.getElementById('res-water-oz') as HTMLElement).textContent = `${totalOz} oz / ${totalCups} cups`;
+
+    const badges: Record<string, string> = {
+      male: 'Personalized for men', female: 'Personalized for women', child: 'Personalized for children'
+    };
+    (document.getElementById('res-water-badge') as HTMLElement).textContent = badges[gender] || 'Personalized for you';
+
+    // Stats
+    (document.getElementById('stat-base') as HTMLElement).textContent = Math.round(baseMl) + ' ml';
+    (document.getElementById('stat-exercise') as HTMLElement).textContent = '+' + Math.round(totalExtraExercise) + ' ml';
+    (document.getElementById('stat-climate') as HTMLElement).textContent = (extraClimate >= 0 ? '+' : '') + extraClimate + ' ml';
+    (document.getElementById('stat-conditions') as HTMLElement).textContent = '+' + extraConditions + ' ml';
+
+    // Drop animation
+    const pct = Math.min((totalMl / 4000) * 100, 100);
+    const fillY = 98 - (90 * pct / 100);
+    const rect = document.getElementById('water-fill-rect');
+    const anim = document.getElementById('water-fill-anim');
+    const txt = document.getElementById('drop-pct-text');
+    if (rect && anim && txt) {
+      anim.setAttribute('from', '98');
+      anim.setAttribute('to', String(fillY));
+      rect.setAttribute('y', String(fillY));
+      txt.textContent = Math.round(pct) + '%';
+    }
+
+    // Glass tracker
+    glassesTotal = totalCups;
+    glassesFilled = 0;
+    buildGlassTracker(totalCups);
+
+    // Schedule
+    buildSchedule(totalMl, exerciseMins > 0);
+
+    // Tip
+    let tip = '💡 <strong>Tip:</strong> ';
+    if (conditions.has('creatine')) tip += 'You\'re taking creatine — extra water is essential as creatine draws water into muscles. Distribute intake evenly across the day.';
+    else if (conditions.has('pregnant')) tip += 'During pregnancy, adequate hydration supports amniotic fluid and nutrient delivery. Carry a water bottle at all times.';
+    else if (conditions.has('breastfeeding')) tip += 'Breast milk is ~87% water. Drink a glass of water every time you nurse to stay ahead of your hydration needs.';
+    else if (climate === 'hot') tip += 'In hot weather, sip water every 15–20 minutes even if you don\'t feel thirsty. By the time you\'re thirsty, you may already be 1–2% dehydrated.';
+    else if (activity === 'athlete') tip += 'Weigh yourself before and after workouts — each 0.5 kg (1 lb) lost = 500 ml of water to replace. Also replenish electrolytes for long sessions.';
+    else tip += 'Spread intake evenly throughout the day. Keep a water bottle visible as a reminder. Morning (after waking) and before meals are the most impactful times to drink.';
+    (document.getElementById('water-tip-text') as HTMLElement).innerHTML = tip;
+
+    resultsEl.hidden = false;
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // ── Glass Tracker ─────────────────────────────────────────────────────────
+  function buildGlassTracker(total: number) {
+    const grid = document.getElementById('glasses-grid') as HTMLElement;
+    grid.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const el = document.createElement('span');
+      el.className = 'glass-item';
+      el.textContent = '🥛';
+      el.setAttribute('aria-label', `Glass ${i + 1}`);
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.addEventListener('click', () => toggleGlass(el, i));
+      el.addEventListener('keydown', (e) => { if ((e as KeyboardEvent).key === 'Enter') toggleGlass(el, i); });
+      grid.appendChild(el);
+    }
+    updateGlassCount();
+  }
+
+  function toggleGlass(el: Element, idx: number) {
+    const isFilled = el.classList.contains('filled');
+    const glasses = document.querySelectorAll('.glass-item');
+    // Fill all up to this index, or unfill from this index
+    if (!isFilled) {
+      for (let i = 0; i <= idx; i++) glasses[i].classList.add('filled');
+      glassesFilled = idx + 1;
+    } else {
+      for (let i = idx; i < glasses.length; i++) glasses[i].classList.remove('filled');
+      glassesFilled = idx;
+    }
+    updateGlassCount();
+  }
+
+  function updateGlassCount() {
+    const ml = glassesFilled * 250;
+    (document.getElementById('glass-count-display') as HTMLElement).textContent = `${glassesFilled} / ${glassesTotal} glasses`;
+    (document.getElementById('glass-ml-display') as HTMLElement).textContent = `${ml} ml consumed`;
+    const pct = glassesTotal > 0 ? (glassesFilled / glassesTotal) * 100 : 0;
+    (document.getElementById('glass-progress-fill') as HTMLElement).style.width = pct + '%';
+  }
+
+  document.getElementById('reset-glasses-btn')!.addEventListener('click', () => {
+    glassesFilled = 0;
+    document.querySelectorAll('.glass-item').forEach(g => g.classList.remove('filled'));
+    updateGlassCount();
+  });
+
+  // ── Schedule ──────────────────────────────────────────────────────────────
+  function buildSchedule(totalMl: number, hasExercise: boolean) {
+    const list = document.getElementById('schedule-list') as HTMLElement;
+    const slots = [
+      { time: '7:00 AM',  pct: 0.10, note: 'Wake up — rehydrate after sleep' },
+      { time: '9:00 AM',  pct: 0.10, note: 'Morning — before or with breakfast' },
+      { time: '11:00 AM', pct: 0.10, note: 'Mid-morning — keep energy up' },
+      { time: '12:30 PM', pct: 0.10, note: 'Before lunch — helps digestion' },
+      { time: '2:00 PM',  pct: 0.10, note: 'Early afternoon — beat the slump' },
+      { time: '4:00 PM',  pct: 0.10, note: 'Afternoon — refuel before evening' },
+      { time: hasExercise ? '5:30 PM' : '6:00 PM', pct: hasExercise ? 0.20 : 0.10, note: hasExercise ? '🏃 Before/during/after exercise' : 'Before dinner' },
+      { time: '8:00 PM',  pct: 0.10, note: 'Evening — gentle wind-down' },
+      { time: '10:00 PM', pct: 0.10, note: 'Before bed — small amount only' },
+    ];
+
+    list.innerHTML = '';
+    slots.forEach(s => {
+      const ml = Math.round(totalMl * s.pct);
+      const item = document.createElement('div');
+      item.className = 'schedule-item';
+      item.innerHTML = `
+        <span class="sched-time">${s.time}</span>
+        <span class="sched-amount">${ml} ml</span>
+        <span class="sched-note">${s.note}</span>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  // ════════════════════════════════════════════
+  // PET CALCULATOR
+  // ════════════════════════════════════════════
+  document.getElementById('calc-pet-btn')!.addEventListener('click', () => {
+    const errorEl = document.getElementById('pet-error') as HTMLElement;
+    const resultsEl = document.getElementById('pet-results') as HTMLElement;
+    errorEl.hidden = true;
+
+    const pw = parseFloat((document.getElementById('pet-weight') as HTMLInputElement).value);
+    if (!pw || pw <= 0) {
+      document.getElementById('pet-error-msg')!.textContent = 'Please enter your pet\'s weight in kg.';
+      errorEl.hidden = false; return;
+    }
+
+    let minMl: number, maxMl: number, icon: string, dehy: string, tip: string;
+
+    if (petType === 'cat') {
+      minMl = pw * 40; maxMl = pw * 60;
+      icon = '🐈';
+      dehy = 'Skin tenting, dry gums, sunken eyes';
+      tip = '🐈 Cats often get water from wet food. If feeding dry food only, increase fresh water availability and consider a water fountain — cats prefer running water.';
+    } else if (petType === 'puppy') {
+      minMl = pw * 70; maxMl = pw * 100;
+      icon = '🐶';
+      dehy = 'Lethargy, dry gums, loss of skin elasticity';
+      tip = '🐶 Puppies need more water per kg than adult dogs due to rapid growth. Ensure fresh water is always available, especially after play and feeding.';
+    } else {
+      minMl = pw * 50; maxMl = pw * 60;
+      icon = '🐕';
+      dehy = 'Lethargy, dry/tacky gums, reduced skin elasticity, sunken eyes';
+      tip = '🐕 Active or larger dogs in hot weather may need up to 80–100 ml/kg. Monitor water bowl — if it\'s always empty, increase the amount offered.';
+    }
+
+    const midMl = Math.round((minMl + maxMl) / 2);
+    const cups = (midMl / 250).toFixed(1);
+
+    (document.getElementById('pet-icon-display') as HTMLElement).textContent = icon;
+    (document.getElementById('pet-res-ml') as HTMLElement).textContent = `${midMl} ml`;
+    (document.getElementById('pet-res-cups') as HTMLElement).textContent = `${cups} cups`;
+    (document.getElementById('pet-weight-display') as HTMLElement).textContent = pw + ' kg';
+    (document.getElementById('pet-min') as HTMLElement).textContent = Math.round(minMl) + ' ml/day';
+    (document.getElementById('pet-max') as HTMLElement).textContent = Math.round(maxMl) + ' ml/day';
+    (document.getElementById('pet-dehy') as HTMLElement).textContent = dehy;
+    (document.getElementById('pet-tip-text') as HTMLElement).textContent = tip;
+
+    resultsEl.hidden = false;
+  });
+
+  document.getElementById('clear-pet-btn')!.addEventListener('click', () => {
+    (document.getElementById('pet-weight') as HTMLInputElement).value = '';
+    (document.getElementById('pet-results') as HTMLElement).hidden = true;
+    (document.getElementById('pet-error') as HTMLElement).hidden = true;
+  });
+
+  // ════════════════════════════════════════════
+  // MAIN BUTTON + CLEAR
+  // ════════════════════════════════════════════
+  document.getElementById('calc-water-btn')!.addEventListener('click', calcWaterIntake);
+  (document.getElementById('weight-input') as HTMLInputElement).addEventListener('keydown', e => {
+    if ((e as KeyboardEvent).key === 'Enter') calcWaterIntake();
+  });
+
+  document.getElementById('clear-water-btn')!.addEventListener('click', () => {
+    (document.getElementById('weight-input') as HTMLInputElement).value = '';
+    (document.getElementById('age-input') as HTMLInputElement).value = '';
+    exInput.value = '0';
+    exSlider.value = '0';
+    updateExPresets(0);
+    conditions.clear();
+    document.querySelectorAll('.condition-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-checked', 'false');
+    });
+    (document.getElementById('water-results') as HTMLElement).hidden = true;
+    (document.getElementById('water-error') as HTMLElement).hidden = true;
+  });
+
+  // ════════════════════════════════════════════
+  // FAQ
+  // ════════════════════════════════════════════
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>
