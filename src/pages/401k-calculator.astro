@@ -1,0 +1,350 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is a 401(k) and how does it work?', a: 'A 401(k) is an employer-sponsored retirement savings plan that allows you to contribute pre-tax or after-tax (Roth) dollars from your paycheck. Contributions grow tax-deferred until withdrawal. Many employers match a portion of your contributions — this is essentially free money. For 2024, the contribution limit is $23,000 ($30,500 if age 50+).' },
+  { q: 'How much should I contribute to my 401(k)?', a: 'Contribute at least enough to get the full employer match — otherwise you are leaving free money on the table. After that, aim for 10-15% of your gross income. If that is not feasible, start with what you can and increase by 1% each year. Max out at $23,000/year ($30,500 if 50+) if possible.' },
+  { q: 'What is a 401(k) employer match and how does it work?', a: 'The most common match formula is 50% of your contributions up to 6% of salary. If you earn $60,000 and contribute 6% ($3,600), your employer adds $1,800 (50% match). Some employers offer 100% match up to 3-5%. This is free, guaranteed return on your money — never leave it unclaimed.' },
+  { q: 'What is the difference between a Traditional and Roth 401(k)?', a: 'Traditional 401(k): contributions are pre-tax (reduce taxable income now), withdrawals are taxed as ordinary income in retirement. Roth 401(k): contributions are after-tax (no tax break now), but qualified withdrawals are completely tax-free. Choose Traditional if you expect to be in a lower tax bracket in retirement; choose Roth if you expect to be in a higher bracket.' },
+  { q: 'What are the 401(k) contribution limits for 2024 and 2025?', a: '2024 limits: $23,000 for under 50, $30,500 for 50+ (catch-up). 2025 limits: $23,500 for under 50, $31,000 for 50+ (catch-up of $7,500). These limits apply to your combined Traditional and Roth 401(k) contributions. Employer match does not count toward your limit.' },
+  { q: 'What happens if I withdraw from my 401(k) early?', a: 'Withdrawals before age 59½ are subject to a 10% IRS early withdrawal penalty PLUS ordinary income tax. On a $50,000 withdrawal in the 24% tax bracket, you would owe $12,000 in tax + $5,000 penalty = $17,000 total. Exceptions exist for hardship, disability, and substantially equal periodic payments under Rule 72(t).' },
+  { q: 'Should I roll over my 401(k) when I change jobs?', a: 'You have four options: leave it with the old employer, roll it to your new employer\'s 401(k), roll it into an IRA, or cash it out. Cashing out is almost always a mistake due to taxes and penalties. Rolling into an IRA gives you more investment options and lower fees. Rolling into a new 401(k) preserves the ability to take penalty-free withdrawals at 55 (if you leave that job at 55+).' },
+  { q: 'What is the average 401(k) balance by age?', a: 'According to Vanguard and Fidelity data: Under 25: $6,200; 25-34: $37,200; 35-44: $97,000; 45-54: $179,000; 55-64: $256,000; 65+: $279,000. However, averages are skewed by high earners — median balances are approximately 60-70% lower. The most important factor is consistency: contribute steadily for 30+ years.' },
+  { q: 'How does a 401(k) loan work?', a: 'You can borrow up to 50% of your vested balance or $50,000, whichever is less. You repay with interest (usually prime + 1%) to your own account over 5 years. While the interest goes back to you, you lose market growth on the borrowed amount. If you leave your job, the loan becomes due immediately — unpaid balances are treated as taxable distributions with penalties.' },
+  { q: 'What is vesting in a 401(k)?', a: 'Your contributions are always 100% vested (they belong to you). Employer match contributions may have a vesting schedule: cliff vesting (0% until 3 years, then 100%) or graded vesting (20% per year over 5 years). Always check your plan\'s vesting schedule — if you leave before fully vested, you forfeit the unvested employer contributions.' },
+  { q: 'What fees should I look for in my 401(k)?', a: 'Common fees: expense ratios on funds (look for under 0.20%), administrative fees ($20-50/year), and advisory fees (if managed). A 1% fee difference might sound small but compounds dramatically: $100,000 invested for 30 years at 7% with 0.15% fees grows to $733,000; with 1.15% fees, only $547,000 — a difference of $186,000.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: '401(k) Calculator', description: 'Free 401(k) retirement calculator. Project your retirement savings with employer match, contribution limits, catch-up contributions, and compound growth. Compare Traditional vs Roth 401(k), understand vesting, and plan your retirement income.', url: '/401k-calculator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Compound Interest Calculator', href: '/compound-interest-calculator', icon: '📈', desc: 'Investment growth projections' },
+  { name: 'Annuity Calculator', href: '/annuity-calculator', icon: '💰', desc: 'Retirement income planning' },
+  { name: 'Credit Card Payoff', href: '/credit-card-payoff-calculator', icon: '💳', desc: 'Eliminate debt to save more' },
+];
+
+// 2024-2025 limits
+const limits2024 = { under50: 23000, over50: 30500, catchUp: 7500 };
+const limits2025 = { under50: 23500, over50: 31000, catchUp: 7500 };
+---
+
+<CalculatorLayout
+  title="401(k) Calculator — Retirement Savings, Employer Match & Growth Projection"
+  description="Free 401(k) calculator. Project your retirement savings with employer match, contribution limits, catch-up contributions, and compound growth. Includes Traditional vs Roth comparison, early withdrawal analysis, and comprehensive retirement planning guide."
+  canonical="/401k-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: '401(k) Calculator', url: '/401k-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Retirement Planning</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">401(k) Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Project your 401(k) balance at retirement. Factor in employer match, annual contribution limits, catch-up contributions, and decades of compound growth. Plan your retirement with confidence.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1">
+    <div class="calc-form">
+      <div class="two-col">
+        <div><label for="k-age" class="label">Current Age</label><input type="number" id="k-age" class="input-base input-lg" placeholder="e.g. 30" min="18" max="70" /></div>
+        <div><label for="k-retire-age" class="label">Retirement Age</label><input type="number" id="k-retire-age" class="input-base input-lg" placeholder="e.g. 65" min="50" max="75" value="65" /></div>
+      </div>
+      <div class="two-col">
+        <div><label for="k-salary" class="label">Annual Salary ($)</label><input type="number" id="k-salary" class="input-base input-lg" placeholder="e.g. 60000" /></div>
+        <div><label for="k-balance" class="label">Current 401(k) Balance ($)</label><input type="number" id="k-balance" class="input-base input-lg" placeholder="e.g. 25000" value="0" /></div>
+      </div>
+      <div class="two-col">
+        <div><label for="k-contrib" class="label">Your Contribution (%)</label><input type="number" id="k-contrib" class="input-base input-lg" placeholder="e.g. 10" min="0" max="100" value="10" /></div>
+        <div><label for="k-match-pct" class="label">Employer Match (%)</label><input type="number" id="k-match-pct" class="input-base input-lg" placeholder="e.g. 50" min="0" max="100" value="50" /></div>
+      </div>
+      <div class="two-col">
+        <div><label for="k-match-limit" class="label">Match Up To (% of Salary)</label><input type="number" id="k-match-limit" class="input-base input-lg" placeholder="e.g. 6" min="0" max="100" value="6" /></div>
+        <div><label for="k-return" class="label">Expected Annual Return (%)</label><input type="number" id="k-return" class="input-base input-lg" placeholder="e.g. 7" min="1" max="20" value="7" /></div>
+      </div>
+
+      <!-- Advanced options -->
+      <div>
+        <button class="adv-toggle" id="adv-toggle" onclick="(document.getElementById('adv-opts') as HTMLElement).hidden=!(document.getElementById('adv-opts') as HTMLElement).hidden;this.classList.toggle('open');">
+          Advanced Options ▸
+        </button>
+        <div id="adv-opts" style="margin-top:12px;" hidden>
+          <div class="two-col">
+            <div><label class="label">Annual Salary Increase (%)</label><input type="number" id="k-raise" class="input-base input-lg" placeholder="e.g. 2" min="0" max="10" value="2" /></div>
+            <div><label class="label">Catch-Up Age</label><select id="k-catchup" class="input-base input-lg"><option value="50" selected>50 (2024-2025)</option><option value="none">No catch-up</option></select></div>
+          </div>
+          <div style="margin-top:8px;">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:var(--color-body);">
+              <input type="checkbox" id="k-roth" style="accent-color:var(--color-link);" /> Roth 401(k) (contributions are after-tax)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;">
+        <button id="calc-401k-btn" class="btn-primary" style="flex:1;">Calculate Retirement Savings</button>
+        <button id="reset-401k-btn" class="btn-secondary">Clear</button>
+      </div>
+    </div>
+
+    <div id="k-error" class="calc-error" role="alert" hidden><span id="k-error-msg"></span></div>
+
+    <div id="k-results" hidden aria-live="polite" style="margin-top:24px;">
+      <div class="results-divider"></div>
+      <div class="k-hero">
+        <div class="k-hero-value" id="k-total">—</div>
+        <div class="k-hero-label">Projected 401(k) Balance at Retirement</div>
+      </div>
+      <div class="k-stats">
+        <div class="k-stat"><div class="ks-label">Your Contributions</div><div class="ks-value" id="k-your">—</div></div>
+        <div class="k-stat"><div class="ks-label">Employer Match</div><div class="ks-value" id="k-match">—</div></div>
+        <div class="k-stat"><div class="ks-label">Investment Earnings</div><div class="ks-value" id="k-earnings">—</div></div>
+        <div class="k-stat"><div class="ks-label">Monthly at Retirement</div><div class="ks-value" id="k-monthly">—</div></div>
+      </div>
+      <div class="k-bar-wrap">
+        <div class="k-bar"><div class="k-bar-your" id="k-bar-your"></div><div class="k-bar-match" id="k-bar-match"></div><div class="k-bar-earn" id="k-bar-earn"></div></div>
+        <div class="k-bar-legend">
+          <span><span class="k-dot" style="background:var(--color-ink);"></span>Your Contributions</span>
+          <span><span class="k-dot" style="background:var(--color-link);"></span>Employer Match</span>
+          <span><span class="k-dot" style="background:var(--color-success);"></span>Earnings</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEEP CONTENT -->
+  <div class="content-section fade-up" style="margin-top:56px;">
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">What Is a 401(k)?</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        A <strong>401(k)</strong> is an employer-sponsored retirement savings plan named after section 401(k) of the Internal Revenue Code. It allows employees to contribute a portion of their pre-tax salary (Traditional 401k) or after-tax salary (Roth 401k) into investment accounts. Contributions grow tax-deferred, and many employers match a percentage of employee contributions — effectively giving you free money toward retirement. As of 2024, over 70 million Americans participate in 401(k) plans, with total assets exceeding $7 trillion.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">2024-2025 401(k) Contribution Limits</h3>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--color-canvas-soft-2);"><th style="padding:12px;">Category</th><th style="padding:12px;">2024 Limit</th><th style="padding:12px;">2025 Limit</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:12px;font-weight:600;">Under Age 50</td><td style="padding:12px;font-family:var(--font-mono);">$23,000</td><td style="padding:12px;font-family:var(--font-mono);">$23,500</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Age 50+ (Catch-Up)</td><td style="padding:12px;font-family:var(--font-mono);">$30,500</td><td style="padding:12px;font-family:var(--font-mono);">$31,000</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Catch-Up Amount</td><td style="padding:12px;font-family:var(--font-mono);">$7,500</td><td style="padding:12px;font-family:var(--font-mono);">$7,500</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Total (Employee + Employer)</td><td style="padding:12px;font-family:var(--font-mono);">$69,000</td><td style="padding:12px;font-family:var(--font-mono);">$70,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Understanding Employer Match: Free Money You Should Never Leave Behind</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        The employer match is the single most powerful feature of a 401(k). It is a guaranteed, immediate return on your money. The most common formula: <strong>50% match on the first 6% of salary</strong>. Here is what that means in practice:
+      </p>
+      <div class="formula-box">
+        <strong>If you earn $60,000 and contribute 6% ($3,600):</strong><br/>
+        Employer matches 50% = $1,800 free money<br/>
+        Total annual contribution: $5,400<br/>
+        Effective immediate return: 50% on your $3,600
+      </div>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:12px;">
+        Over 30 years at 7% return, that $1,800/year employer match alone grows to approximately <strong>$170,000</strong>. This is why financial advisors universally say: contribute at least enough to get the full match. It is the closest thing to a guaranteed 50-100% return you will ever see.
+      </p>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Traditional 401(k) vs Roth 401(k): Which Should You Choose?</h2>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--color-canvas-soft-2);"><th style="padding:12px;">Feature</th><th style="padding:12px;">Traditional 401(k)</th><th style="padding:12px;">Roth 401(k)</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:12px;font-weight:600;">Tax Treatment Now</td><td style="padding:12px;">Pre-tax — reduces taxable income</td><td style="padding:12px;">After-tax — no immediate tax benefit</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Tax Treatment at Withdrawal</td><td style="padding:12px;">Fully taxable as ordinary income</td><td style="padding:12px;">100% tax-free (if qualified)</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Required Minimum Distributions</td><td style="padding:12px;">Yes, starting at age 73</td><td style="padding:12px;">No RMDs during lifetime (as of 2024)</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Best For</td><td style="padding:12px;">High earners who expect lower tax bracket in retirement</td><td style="padding:12px;">Young savers and those expecting higher tax bracket in retirement</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Income Limits</td><td style="padding:12px;">None</td><td style="padding:12px;">None (unlike Roth IRA)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:16px;">
+        <strong>General rule of thumb:</strong> If you are in the 12% or 22% tax bracket and young (under 40), the Roth 401(k) is often better because decades of tax-free growth outweigh the upfront tax savings. If you are in the 32%+ bracket, Traditional is usually better because you save significantly on taxes now and will likely be in a lower bracket in retirement. Many advisors recommend diversifying — contribute to both if your plan allows it.
+      </p>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">The Power of Starting Early: Compound Growth Over Decades</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        The single most important factor in 401(k) success is <strong>time</strong>. Even modest contributions, sustained over decades, grow into substantial sums through compound interest:
+      </p>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--color-canvas-soft-2);"><th style="padding:12px;">Starting Age</th><th style="padding:12px;">Monthly Contribution</th><th style="padding:12px;">Balance at 65 (7% return)</th><th style="padding:12px;">Total Invested</th><th style="padding:12px;">Earnings</th></tr></thead>
+          <tbody>
+            <tr><td style="padding:12px;font-weight:600;">25</td><td style="padding:12px;">$500</td><td style="padding:12px;font-family:var(--font-mono);">$1,200,000</td><td style="padding:12px;">$240,000</td><td style="padding:12px;color:var(--color-success);">$960,000</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">35</td><td style="padding:12px;">$500</td><td style="padding:12px;font-family:var(--font-mono);">$567,000</td><td style="padding:12px;">$180,000</td><td style="padding:12px;color:var(--color-success);">$387,000</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">45</td><td style="padding:12px;">$500</td><td style="padding:12px;font-family:var(--font-mono);">$247,000</td><td style="padding:12px;">$120,000</td><td style="padding:12px;color:var(--color-success);">$127,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:16px;">
+        Starting at 25 vs 35 means nearly <strong>double the retirement balance</strong> with the same monthly contribution. Those 10 extra years of compound growth are worth over $600,000.
+      </p>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">401(k) Early Withdrawal: The Cost of Accessing Your Money Early</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        Withdrawing from your 401(k) before age 59½ triggers a <strong>10% penalty</strong> plus ordinary income tax. This combined tax-and-penalty burden can consume 30-40% of your withdrawal:
+      </p>
+      <div class="formula-box">
+        <strong>Example: $50,000 withdrawal at age 45</strong><br/>
+        Income tax (24% bracket): $12,000<br/>
+        Early withdrawal penalty (10%): $5,000<br/>
+        <strong>You receive: $33,000 (lose 34%)</strong><br/>
+        Plus: the $50,000 loses decades of compound growth — true cost could exceed $200,000 in lost retirement savings.
+      </div>
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:10px;">Exceptions to the 10% Penalty</h3>
+      <ul style="margin-left:20px;color:var(--color-body);line-height:26px;font-size:14px;display:flex;flex-direction:column;gap:8px;">
+        <li><strong>Age 55 Rule:</strong> If you leave your job in the year you turn 55 or later, you can access that employer's 401(k) penalty-free.</li>
+        <li><strong>Rule of 55 for public safety:</strong> Firefighters, police, and EMTs can access funds penalty-free at age 50.</li>
+        <li><strong>72(t) SEPP:</strong> Substantially Equal Periodic Payments allow penalty-free withdrawals before 59½ if taken as a series of substantially equal payments over your life expectancy.</li>
+        <li><strong>Disability:</strong> Total and permanent disability qualifies for penalty exemption.</li>
+        <li><strong>Medical expenses:</strong> Unreimbursed medical expenses exceeding 7.5% of AGI may qualify.</li>
+        <li><strong>Qualified Domestic Relations Order (QDRO):</strong> Divorce-related transfers to a former spouse are exempt.</li>
+      </ul>
+    </section>
+
+    <section style="margin-bottom:24px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">How to Maximize Your 401(k) Step by Step</h2>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        {[
+          {step:'1',title:'Get the Full Match',desc:'Contribute at least enough to capture 100% of your employer match. This is an immediate 50-100% return.'},
+          {step:'2',title:'Increase Contributions Annually',desc:'Raise your contribution by 1% each year. You will barely notice the paycheck difference, but the long-term impact is enormous.'},
+          {step:'3',title:'Max Out if Possible',desc:'Aim for the IRS maximum ($23,000 for 2024). If you cannot max out, target 15% of gross income as a milestone.'},
+          {step:'4',title:'Use Catch-Up at 50',desc:'Once you turn 50, contribute an extra $7,500/year. This significantly accelerates savings in the final 15-20 years before retirement.'},
+          {step:'5',title:'Choose Low-Cost Funds',desc:'Look for index funds with expense ratios under 0.15%. Avoiding 1%+ fee funds saves hundreds of thousands over a career.'},
+          {step:'6',title:'Do NOT Cash Out When Changing Jobs',desc:'Roll over to your new 401(k) or an IRA. Cashing out triggers taxes, penalties, and permanently destroys retirement savings.'},
+        ].map(s=>(
+          <div style="display:flex;gap:16px;padding:18px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);align-items:flex-start;">
+            <div style="width:36px;height:36px;background:var(--color-link);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-mono);flex-shrink:0;">{s.step}</div>
+            <div><div style="font-weight:600;color:var(--color-ink);margin-bottom:4px;">{s.title}</div><div style="font-size:13px;color:var(--color-body);line-height:20px;">{s.desc}</div></div>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions About 401(k) Plans</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`k-faq-${i}`}><span>{faq.q}</span><svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faq-answer" id={`k-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:16px;}
+  .results-divider{height:1px;background:var(--color-hairline);margin:20px 0;}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .content-section{padding:40px 36px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-xl);}
+  .formula-box{padding:20px 24px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);font-family:var(--font-mono);font-size:15px;line-height:1.8;color:var(--color-ink);margin:12px 0;}
+  .compare-table{overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .compare-table table{font-size:13px;color:var(--color-body);}
+  .compare-table th{font-weight:600;color:var(--color-ink);font-size:12px;text-transform:uppercase;letter-spacing:0.05em;}
+  .compare-table td{border-top:1px solid var(--color-hairline);}
+  .adv-toggle{background:none;border:none;color:var(--color-link);cursor:pointer;font-size:13px;font-weight:500;padding:0;}
+  .k-hero{text-align:center;padding:36px 24px;background:linear-gradient(135deg,rgba(37,99,235,0.08),rgba(16,185,129,0.08));border:2px solid var(--color-link);border-radius:var(--radius-lg);}
+  .k-hero-value{font-size:clamp(40px,7vw,64px);font-weight:700;color:var(--color-link);letter-spacing:-1.5px;font-family:var(--font-mono);}
+  .k-hero-label{font-size:15px;color:var(--color-muted);margin-top:8px;}
+  .k-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
+  .k-stat{padding:14px;text-align:center;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .ks-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted);margin-bottom:6px;}
+  .ks-value{font-size:16px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+  .k-bar-wrap{margin-top:16px;padding:14px 16px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);border:1px solid var(--color-hairline);}
+  .k-bar{display:flex;height:16px;border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .k-bar-your{background:var(--color-ink);transition:width 0.5s;}
+  .k-bar-match{background:var(--color-link);transition:width 0.5s;}
+  .k-bar-earn{background:var(--color-success);transition:width 0.5s;}
+  .k-bar-legend{display:flex;gap:16px;font-size:12px;color:var(--color-body);}
+  .k-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;}
+  @media(max-width:768px){.content-section{padding:24px 18px;}.two-col{grid-template-columns:1fr;}.k-stats{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:500px){.k-hero{padding:24px 16px;}.k-stats{grid-template-columns:1fr 1fr;}}
+</style>
+
+<script>
+  document.getElementById('calc-401k-btn')!.addEventListener('click',()=>{
+    const errEl=document.getElementById('k-error') as HTMLElement, resEl=document.getElementById('k-results') as HTMLElement;
+    errEl.hidden=true;resEl.hidden=true;
+    const age=parseInt((document.getElementById('k-age') as HTMLInputElement).value);
+    const retire=parseInt((document.getElementById('k-retire-age') as HTMLInputElement).value);
+    const salary=parseFloat((document.getElementById('k-salary') as HTMLInputElement).value);
+    const contrib=parseFloat((document.getElementById('k-contrib') as HTMLInputElement).value);
+    const matchPct=parseFloat((document.getElementById('k-match-pct') as HTMLInputElement).value);
+    const matchLimit=parseFloat((document.getElementById('k-match-limit') as HTMLInputElement).value);
+    const retRate=parseFloat((document.getElementById('k-return') as HTMLInputElement).value);
+    let balance=parseFloat((document.getElementById('k-balance') as HTMLInputElement).value)||0;
+    const raise=parseFloat((document.getElementById('k-raise') as HTMLInputElement).value)||0;
+    const catchUpAge=(document.getElementById('k-catchup') as HTMLSelectElement).value==='50'?50:999;
+    if(isNaN(age)||isNaN(retire)||isNaN(salary)||isNaN(contrib)||age>=retire){document.getElementById('k-error-msg')!.textContent='Enter valid age, retirement age, salary, and contribution.';errEl.hidden=false;return}
+
+    const years=retire-age;
+    const r=retRate/100;
+    let totalYour=0, totalMatch=0;
+
+    for(let y=0;y<years;y++){
+      const currentAge=age+y;
+      let currentSalary=salary*Math.pow(1+raise/100,y);
+      let yourContrib=currentSalary*contrib/100;
+      const limit=currentAge>=catchUpAge?30500:23000;
+      if(yourContrib>limit) yourContrib=limit;
+      const matchContrib=Math.min(yourContrib,currentSalary*matchLimit/100)*matchPct/100;
+      totalYour+=yourContrib;
+      totalMatch+=matchContrib;
+      balance=(balance+yourContrib+matchContrib)*(1+r);
+    }
+
+    const totalEarnings=balance-totalYour-totalMatch;
+    const monthlyEst=(balance*0.04)/12; // 4% withdrawal rule
+
+    document.getElementById('k-total')!.textContent='$'+balance.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('k-your')!.textContent='$'+totalYour.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('k-match')!.textContent='$'+totalMatch.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('k-earnings')!.textContent='$'+totalEarnings.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('k-monthly')!.textContent='$'+monthlyEst.toLocaleString(undefined,{maximumFractionDigits:0})+'/mo';
+
+    if(balance>0){
+      const yPct=(totalYour/balance*100).toFixed(1), mPct=(totalMatch/balance*100).toFixed(1), ePct=(totalEarnings/balance*100).toFixed(1);
+      (document.getElementById('k-bar-your') as HTMLElement).style.width=yPct+'%';
+      (document.getElementById('k-bar-match') as HTMLElement).style.width=mPct+'%';
+      (document.getElementById('k-bar-earn') as HTMLElement).style.width=ePct+'%';
+    }
+    resEl.hidden=false;
+  });
+
+  document.getElementById('reset-401k-btn')!.addEventListener('click',()=>{
+    document.querySelectorAll('#k-calculator input[type=number]').forEach((i:any)=>{i.value='';});
+    (document.getElementById('k-balance') as HTMLInputElement).value='0';
+    (document.getElementById('k-retire-age') as HTMLInputElement).value='65';
+    (document.getElementById('k-contrib') as HTMLInputElement).value='10';
+    (document.getElementById('k-match-pct') as HTMLInputElement).value='50';
+    (document.getElementById('k-match-limit') as HTMLInputElement).value='6';
+    (document.getElementById('k-return') as HTMLInputElement).value='7';
+    (document.getElementById('k-raise') as HTMLInputElement).value='2';
+    (document.getElementById('k-results') as HTMLElement).hidden=true;
+  });
+
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+</script>

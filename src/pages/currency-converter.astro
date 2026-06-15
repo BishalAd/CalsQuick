@@ -1,0 +1,393 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How are currency exchange rates determined?', a: 'Exchange rates are determined by the foreign exchange market (Forex), where currencies are traded 24/5. Rates fluctuate based on supply and demand, interest rates, inflation, political stability, and economic performance. Central banks like the Federal Reserve and European Central Bank influence rates through monetary policy.' },
+  { q: 'How often do exchange rates update?', a: 'Exchange rates change continuously during market hours (Sunday 5 PM EST to Friday 5 PM EST). Our calculator fetches live rates from the European Central Bank via the Frankfurter API, updated daily on business days and reflecting the latest available market rates.' },
+  { q: 'What is the difference between the interbank rate and the rate I get at the bank?', a: 'The interbank rate (also called the mid-market rate) is what banks charge each other for large currency trades. Consumer rates at banks, airports, and money transfer services include a markup of 1-7%. A $1,000 transfer at the interbank rate of 1.10 EUR/USD gives you €1,100. At a bank\'s 1.05 rate, you get €1,050 — a $50 difference.' },
+  { q: 'Which currencies can I convert with this calculator?', a: 'Our calculator supports all major world currencies tracked by the European Central Bank, including USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, BRL, MXN, KRW, SGD, HKD, NOK, SEK, NZD, ZAR, and 15+ more. If a currency pair is not directly available, we cross-convert through EUR as the intermediary.' },
+  { q: 'What is the strongest currency in the world?', a: 'As of 2025, the Kuwaiti Dinar (KWD) is the highest-valued currency at approximately $3.25 USD per 1 KWD. The Bahraini Dinar (BHD), Omani Rial (OMR), and British Pound (GBP) are also among the strongest. The US Dollar remains the world\'s primary reserve currency.' },
+  { q: 'Why do exchange rates fluctuate so much?', a: 'Rates change due to interest rate differentials between countries, inflation expectations, trade balances, political events, and market sentiment. A country raising interest rates typically sees its currency strengthen as foreign investors seek higher yields. Unexpected events like elections or natural disasters can cause sharp movements.' },
+  { q: 'How can I get the best exchange rate for international transfers?', a: 'Use services like Wise (TransferWise), OFX, or Revolut that offer near-interbank rates with transparent fees. Avoid airport currency exchanges and bank wire transfers — they charge 3-7% markups. For large transfers ($10,000+), negotiate rates with a currency broker. Always compare the rate you are offered against the mid-market rate shown by our calculator.' },
+  { q: 'What is a currency peg?', a: 'Some countries peg their currency to another (usually the USD) at a fixed rate. The Hong Kong Dollar (HKD) is pegged at ~7.75-7.85 per USD. The Saudi Riyal is pegged at 3.75 per USD. Pegged currencies do not float freely — the central bank intervenes to maintain the fixed rate. When pegs break, currencies can move dramatically.' },
+  { q: 'Are cryptocurrency exchange rates available?', a: 'No, this calculator provides fiat currency exchange rates only. Cryptocurrency prices are available through separate crypto exchanges and are highly volatile. For crypto conversions, use a dedicated cryptocurrency exchange or price tracker.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Currency Converter', description: 'Free live currency converter with real-time exchange rates. Convert between USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, and 20+ currencies. Fast, accurate, updated daily using European Central Bank data via Frankfurter API.', url: '/currency-converter' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Compound Interest Calculator', href: '/compound-interest-calculator', icon: '📈', desc: 'Investment growth projections' },
+  { name: 'Percentage Calculator', href: '/percentage-calculator', icon: '📊', desc: 'Quick percentage math' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Calculate and split tips' },
+];
+
+const currencies = [
+  { code:'USD', name:'US Dollar', symbol:'$', flag:'🇺🇸' },
+  { code:'EUR', name:'Euro', symbol:'€', flag:'🇪🇺' },
+  { code:'GBP', name:'British Pound', symbol:'£', flag:'🇬🇧' },
+  { code:'JPY', name:'Japanese Yen', symbol:'¥', flag:'🇯🇵' },
+  { code:'AUD', name:'Australian Dollar', symbol:'A$', flag:'🇦🇺' },
+  { code:'CAD', name:'Canadian Dollar', symbol:'C$', flag:'🇨🇦' },
+  { code:'CHF', name:'Swiss Franc', symbol:'Fr', flag:'🇨🇭' },
+  { code:'CNY', name:'Chinese Yuan', symbol:'¥', flag:'🇨🇳' },
+  { code:'INR', name:'Indian Rupee', symbol:'₹', flag:'🇮🇳' },
+  { code:'NPR', name:'Nepalese Rupee', symbol:'रू', flag:'🇳🇵' },
+  { code:'BRL', name:'Brazilian Real', symbol:'R$', flag:'🇧🇷' },
+  { code:'MXN', name:'Mexican Peso', symbol:'$', flag:'🇲🇽' },
+  { code:'KRW', name:'South Korean Won', symbol:'₩', flag:'🇰🇷' },
+  { code:'SGD', name:'Singapore Dollar', symbol:'S$', flag:'🇸🇬' },
+  { code:'HKD', name:'Hong Kong Dollar', symbol:'HK$', flag:'🇭🇰' },
+  { code:'NOK', name:'Norwegian Krone', symbol:'kr', flag:'🇳🇴' },
+  { code:'SEK', name:'Swedish Krona', symbol:'kr', flag:'🇸🇪' },
+  { code:'NZD', name:'New Zealand Dollar', symbol:'NZ$', flag:'🇳🇿' },
+  { code:'ZAR', name:'South African Rand', symbol:'R', flag:'🇿🇦' },
+  { code:'AED', name:'UAE Dirham', symbol:'د.إ', flag:'🇦🇪' },
+];
+---
+
+<CalculatorLayout
+  title="Currency Converter — Live Exchange Rates | USD EUR GBP JPY INR & More"
+  description="Free live currency converter with real-time exchange rates. Convert between 20+ currencies including USD, EUR, GBP, JPY, AUD, INR, NPR. Updated daily from European Central Bank data. Fast, accurate, no signup needed."
+  canonical="/currency-converter"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Currency Converter', url: '/currency-converter' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Finance & Travel Tools</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Currency Converter</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Convert between 20+ currencies with live exchange rates. Updated daily from the European Central Bank via Frankfurter API. Fast, accurate, and free — no signup required.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="currency-calc">
+    <!-- Amount -->
+    <div style="margin-bottom:20px;">
+      <label for="cc-amount" class="label">Amount</label>
+      <input type="number" id="cc-amount" class="input-base input-lg" placeholder="1" value="1" min="0.01" step="any" style="font-size:22px;font-weight:600;" />
+    </div>
+
+    <!-- From / To -->
+    <div class="convert-row">
+      <div class="convert-col" style="flex:1;">
+        <label class="label">From</label>
+        <select id="cc-from" class="input-base input-lg" style="font-size:16px;">
+          {currencies.map(c=>(<option value={c.code}>{c.flag} {c.code} — {c.name}</option>))}
+        </select>
+      </div>
+      <button id="swap-btn" class="swap-btn" aria-label="Swap currencies" title="Swap currencies">⇄</button>
+      <div class="convert-col" style="flex:1;">
+        <label class="label">To</label>
+        <select id="cc-to" class="input-base input-lg" style="font-size:16px;">
+          {currencies.map((c,i)=>(<option value={c.code} selected={i===2}>{c.flag} {c.code} — {c.name}</option>))}
+        </select>
+      </div>
+    </div>
+
+    <!-- Rate status -->
+    <div style="display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <span id="rate-status" style="font-size:12px;color:var(--color-success);font-weight:500;">🟢 Live rates</span>
+      <span id="rate-timestamp" style="font-size:11px;color:var(--color-muted);"></span>
+    </div>
+
+    <!-- Result -->
+    <div id="cc-result" style="margin-top:24px;">
+      <div class="cc-result-hero">
+        <div class="cc-result-amount" id="cc-result-amount">—</div>
+        <div class="cc-result-rate" id="cc-result-rate"></div>
+      </div>
+    </div>
+
+    <!-- Quick amounts -->
+    <div style="margin-top:16px;">
+      <label class="label" style="margin-bottom:8px;">Quick Amounts</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        {[1,5,10,25,50,100,500,1000,5000,10000].map(n=>(
+          <button class="quick-amt-btn" data-amount={n} onclick={`(document.getElementById('cc-amount') as HTMLInputElement).value='${n}';convertCurrency();`}>${n>=1000?n.toLocaleString():n}</button>
+        ))}
+      </div>
+    </div>
+
+    <!-- Popular pairs -->
+    <div style="margin-top:24px;">
+      <label class="label" style="margin-bottom:8px;">Popular Conversions</label>
+      <div class="popular-grid">
+        {[
+          {from:'USD',to:'EUR'},{from:'USD',to:'GBP'},{from:'USD',to:'JPY'},{from:'USD',to:'INR'},
+          {from:'EUR',to:'USD'},{from:'GBP',to:'USD'},{from:'USD',to:'CAD'},{from:'USD',to:'AUD'},
+          {from:'USD',to:'NPR'},{from:'EUR',to:'GBP'},{from:'USD',to:'MXN'},{from:'USD',to:'CNY'},
+        ].map(pair=>(
+          <button class="popular-pair-btn" data-from={pair.from} data-to={pair.to}>
+            {pair.from} → {pair.to}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div id="cc-error" class="calc-error" role="alert" hidden style="margin-top:16px;">
+      <span id="cc-error-msg">Unable to fetch rates. Check your connection and try again.</span>
+    </div>
+  </div>
+
+  <!-- DEEP CONTENT -->
+  <div class="content-section fade-up" style="margin-top:56px;">
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Free Live Currency Converter — Accurate Exchange Rates for 20+ Currencies</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        Whether you are planning international travel, sending money abroad, shopping on foreign websites, or monitoring forex markets, an accurate <strong>currency converter</strong> is essential. Our converter uses live exchange rates sourced from the European Central Bank via the open-source Frankfurter API, updated every business day. Unlike many free converters that use stale or estimated rates, our data reflects actual central bank reference rates — the same rates used by financial institutions for benchmarking.
+      </p>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+        The converter supports <strong>20+ currencies</strong> including the US Dollar (USD), Euro (EUR), British Pound (GBP), Japanese Yen (JPY), Australian Dollar (AUD), Canadian Dollar (CAD), Swiss Franc (CHF), Chinese Yuan (CNY), Indian Rupee (INR), Nepalese Rupee (NPR), Brazilian Real (BRL), Mexican Peso (MXN), and more. All conversions happen instantly in your browser — no page reloads, no signup, completely free.
+      </p>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">How Currency Conversion Works: Understanding Exchange Rates</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        A currency exchange rate tells you how much of one currency you can buy with another. For example, if the USD/EUR rate is 0.92, $1 buys €0.92. The rate is constantly changing based on global supply and demand in the foreign exchange market — the largest financial market in the world, with over <strong>$7.5 trillion traded daily</strong>.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Direct vs Indirect Quotes</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        Exchange rates are quoted in two ways. A <strong>direct quote</strong> expresses the domestic currency per unit of foreign currency (e.g., 1.09 USD per 1 EUR for a US-based viewer). An <strong>indirect quote</strong> expresses foreign currency per unit of domestic currency (e.g., 0.92 EUR per 1 USD). Our converter shows whichever direction you select.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">The Bid-Ask Spread</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        In real forex trading, there are two rates: the <strong>bid</strong> (what buyers are willing to pay) and the <strong>ask</strong> (what sellers are asking). The difference is the spread — typically 0.01-0.05% for major currency pairs. Our converter shows the mid-market rate (average of bid and ask), which is the fairest reference rate. Banks and exchange services add their own margin on top of this rate.
+      </p>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Major World Currencies Reference Table</h2>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--color-canvas-soft-2);"><th style="padding:12px;">Currency</th><th style="padding:12px;">Code</th><th style="padding:12px;">Symbol</th><th style="padding:12px;">Central Bank</th><th style="padding:12px;">Category</th></tr></thead>
+          <tbody>
+            {[
+              ['US Dollar','USD','$','Federal Reserve','Major / Reserve'],
+              ['Euro','EUR','€','European Central Bank','Major'],
+              ['British Pound','GBP','£','Bank of England','Major'],
+              ['Japanese Yen','JPY','¥','Bank of Japan','Major'],
+              ['Australian Dollar','AUD','A$','Reserve Bank of Australia','Major'],
+              ['Canadian Dollar','CAD','C$','Bank of Canada','Major / Commodity'],
+              ['Swiss Franc','CHF','Fr','Swiss National Bank','Major / Safe Haven'],
+              ['Chinese Yuan','CNY','¥','People\'s Bank of China','Major / Managed'],
+              ['Indian Rupee','INR','₹','Reserve Bank of India','Emerging Market'],
+              ['Brazilian Real','BRL','R$','Central Bank of Brazil','Emerging Market'],
+            ].map(r=>(
+              <tr style="border-top:1px solid var(--color-hairline);"><td style="padding:11px 14px;font-weight:600;">{r[0]}</td><td style="padding:11px 14px;font-family:var(--font-mono);color:var(--color-link);">{r[1]}</td><td style="padding:11px 14px;">{r[2]}</td><td style="padding:11px 14px;font-size:13px;">{r[3]}</td><td style="padding:11px 14px;font-size:12px;color:var(--color-muted);">{r[4]}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Tips for Getting the Best Exchange Rate</h2>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        {[
+          {title:'Never Exchange at Airports',desc:'Airport currency exchanges and hotel desks charge 5-15% markups — the worst rates anywhere. Exchange only small amounts for immediate needs. Use local ATMs at your destination instead.'},
+          {title:'Use ATM Withdrawals Abroad',desc:'Local ATMs typically offer near-interbank rates with a small foreign transaction fee (0-3%). Always choose to be charged in the local currency — never accept the ATM\'s dynamic currency conversion offer.'},
+          {title:'Compare Online Transfer Services',desc:'For sending money internationally, services like Wise, OFX, and Remitly offer rates within 0.5-1% of the interbank rate. Traditional banks charge 3-7% plus wire fees. On a $5,000 transfer, this can save $100-300.'},
+          {title:'Use Credit Cards with No Foreign Transaction Fees',desc:'Many travel credit cards (Chase Sapphire, Capital One, Amex Platinum) charge 0% foreign transaction fees and use Visa/Mastercard\'s competitive exchange rates. Avoid cards with 3% foreign transaction fees.'},
+          {title:'Watch Out for Dynamic Currency Conversion',desc:'When paying abroad, you may be asked: "Pay in USD or local currency?" ALWAYS choose the local currency. Choosing USD triggers dynamic currency conversion with a 3-7% hidden markup. The same applies to ATM withdrawals.'},
+          {title:'Time Large Transfers',desc:'Exchange rates fluctuate. For transfers over $10,000, consider setting rate alerts and executing when the rate is favorable. Some services allow you to lock in a rate for future transfers.'},
+        ].map((t,i)=>(
+          <div style="display:flex;gap:14px;padding:18px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);align-items:flex-start;">
+            <div style="width:32px;height:32px;background:var(--color-link);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:var(--font-mono);flex-shrink:0;font-size:14px;">{i+1}</div>
+            <div><div style="font-weight:600;color:var(--color-ink);margin-bottom:4px;">{t.title}</div><div style="font-size:13px;color:var(--color-body);line-height:20px;">{t.desc}</div></div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section style="margin-bottom:24px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Exchange Rate Example: USD to Major Currencies</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        Below is an example conversion table for $1,000 USD to popular destinations. These are live reference rates — actual rates may vary by provider.
+      </p>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;" id="example-table">
+          <thead><tr style="background:var(--color-canvas-soft-2);"><th style="padding:12px;">Currency</th><th style="padding:12px;">Amount for $1,000 USD</th><th style="padding:12px;">Best For</th></tr></thead>
+          <tbody id="example-tbody">
+            <tr><td style="padding:11px 14px;" colspan="3">Loading live rates...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`cc-faq-${i}`}><span>{faq.q}</span><svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faq-answer" id={`cc-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);font-size:14px;color:var(--color-error);}
+  .content-section{padding:40px 36px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-xl);}
+  .compare-table{overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .compare-table table{font-size:13px;color:var(--color-body);}
+  .compare-table th{font-weight:600;color:var(--color-ink);font-size:12px;text-transform:uppercase;letter-spacing:0.05em;}
+  .compare-table td{border-top:1px solid var(--color-hairline);}
+  .convert-row{display:flex;align-items:flex-end;gap:12px;}
+  .convert-col{min-width:0;}
+  .swap-btn{width:48px;height:48px;border-radius:50%;border:1px solid var(--color-hairline);background:var(--color-canvas-soft-2);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all 0.15s;flex-shrink:0;margin-bottom:0;}
+  .swap-btn:hover{background:var(--color-canvas);border-color:var(--color-link);color:var(--color-link);}
+  .cc-result-hero{text-align:center;padding:32px 24px;background:linear-gradient(135deg,rgba(37,99,235,0.06),rgba(16,185,129,0.06));border:2px solid var(--color-link);border-radius:var(--radius-lg);}
+  .cc-result-amount{font-size:clamp(32px,6vw,52px);font-weight:700;color:var(--color-link);letter-spacing:-1.5px;font-family:var(--font-mono);}
+  .cc-result-rate{font-size:14px;color:var(--color-muted);margin-top:8px;font-family:var(--font-mono);}
+  .quick-amt-btn{padding:6px 14px;border:1px solid var(--color-hairline);border-radius:var(--radius-pill);background:var(--color-canvas-soft-2);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;}
+  .quick-amt-btn:hover{border-color:var(--color-link);background:var(--color-canvas);}
+  .popular-grid{display:flex;flex-wrap:wrap;gap:6px;}
+  .popular-pair-btn{padding:6px 14px;border:1px solid var(--color-hairline);border-radius:var(--radius-pill);background:var(--color-canvas-soft-2);cursor:pointer;font-size:12px;font-weight:500;font-family:var(--font-mono);transition:all 0.15s;}
+  .popular-pair-btn:hover{border-color:var(--color-link);background:var(--color-canvas);color:var(--color-link);}
+  @media(max-width:600px){.convert-row{flex-wrap:wrap;}.convert-col{flex:1 1 40% !important;}.swap-btn{margin:0 auto;order:0;}.content-section{padding:24px 18px;}}
+</style>
+
+<script>
+  let ratesCache:Record<string,number>|null=null;
+  let ratesTimestamp='';
+  const API='https://api.frankfurter.app';
+
+  async function fetchRates(base='EUR'){
+    try{
+      const res=await fetch(`${API}/latest?from=${base}`);
+      if(!res.ok) throw new Error('API error');
+      const data=await res.json();
+      ratesCache=data.rates;
+      ratesCache[base]=1;
+      ratesTimestamp=data.date;
+      return true;
+    }catch(e){
+      return false;
+    }
+  }
+
+  async function convertCurrency(){
+    const from=(document.getElementById('cc-from') as HTMLSelectElement).value;
+    const to=(document.getElementById('cc-to') as HTMLSelectElement).value;
+    const amount=parseFloat((document.getElementById('cc-amount') as HTMLInputElement).value)||1;
+    const statusEl=document.getElementById('rate-status') as HTMLElement;
+    const tsEl=document.getElementById('rate-timestamp') as HTMLElement;
+    const errEl=document.getElementById('cc-error') as HTMLElement;
+
+    errEl.hidden=true;
+
+    // Try to get rates
+    if(!ratesCache||from!=='EUR'){
+      statusEl.textContent='🟡 Fetching rates...';
+      statusEl.style.color='var(--color-warning)';
+      const ok=await fetchRates('EUR');
+      if(!ok){
+        statusEl.textContent='🔴 Failed to load';
+        statusEl.style.color='var(--color-error)';
+        errEl.hidden=false;
+        return;
+      }
+    }
+
+    // If we need rates in a different base
+    if(from!=='EUR' && (!ratesCache||!(from in ratesCache))){
+      await fetchRates(from);
+    }
+
+    statusEl.textContent='🟢 Live rates';
+    statusEl.style.color='var(--color-success)';
+    tsEl.textContent=ratesTimestamp?`Rates as of ${ratesTimestamp}`:'';
+
+    if(!ratesCache) return;
+
+    let rate:number;
+    if(from===to){
+      rate=1;
+    } else if(ratesCache[to]!==undefined && ratesCache[from]!==undefined){
+      rate=ratesCache[to]/ratesCache[from];
+    } else {
+      errEl.hidden=false;
+      return;
+    }
+
+    const result=amount*rate;
+    const fSym=document.querySelector(`#cc-from option[value="${from}"]`)?.textContent?.split('—')[0]?.trim().split(' ')[1]||from;
+    const tSym=document.querySelector(`#cc-to option[value="${to}"]`)?.textContent?.split('—')[0]?.trim().split(' ')[1]||to;
+
+    document.getElementById('cc-result-amount')!.textContent=`${result.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:to==='JPY'||to==='KRW'?0:4})} ${tSym}`;
+    document.getElementById('cc-result-rate')!.textContent=`1 ${fSym} = ${rate.toFixed(to==='JPY'||to==='KRW'?2:4)} ${tSym}`;
+
+    // Update example table
+    updateExampleTable(from,to);
+  }
+
+  async function updateExampleTable(from:string,to:string){
+    const targets=['EUR','GBP','JPY','CAD','AUD','INR','CNY','MXN','BRL','NPR'];
+    if(!ratesCache) await fetchRates('EUR');
+    if(!ratesCache) return;
+    const tbody=document.getElementById('example-tbody');
+    if(!tbody) return;
+    let html='';
+    for(const tc of targets){
+      if(tc===from) continue;
+      let rate=1;
+      if(ratesCache[tc]!==undefined && ratesCache[from]!==undefined){
+        rate=ratesCache[tc]/ratesCache[from];
+      } else if(from==='EUR' && ratesCache[tc]!==undefined){
+        rate=ratesCache[tc];
+      }
+      const result=1000*rate;
+      const cName=document.querySelector(`#cc-to option[value="${tc}"]`)?.textContent?.split('—')[1]?.trim()||tc;
+      html+=`<tr style="border-top:1px solid var(--color-hairline);"><td style="padding:11px 14px;font-weight:600;">${cName||tc} (${tc})</td><td style="padding:11px 14px;font-family:var(--font-mono);font-size:15px;">${result.toLocaleString(undefined,{maximumFractionDigits:2})}</td><td style="padding:11px 14px;font-size:13px;color:var(--color-muted);">${tc==='EUR'?'Eurozone travel':tc==='GBP'?'UK travel':tc==='JPY'?'Japan travel':tc==='INR'?'India travel':tc==='NPR'?'Nepal travel':'International'}</td></tr>`;
+    }
+    tbody.innerHTML=html;
+  }
+
+  // Initialize with USD to EUR
+  document.getElementById('cc-from')!.addEventListener('change',convertCurrency);
+  document.getElementById('cc-to')!.addEventListener('change',convertCurrency);
+  document.getElementById('cc-amount')!.addEventListener('input',()=>{
+    clearTimeout((window as any)._ccTimeout);
+    (window as any)._ccTimeout=setTimeout(convertCurrency,300);
+  });
+
+  // Swap button
+  document.getElementById('swap-btn')!.addEventListener('click',()=>{
+    const fromEl=document.getElementById('cc-from') as HTMLSelectElement;
+    const toEl=document.getElementById('cc-to') as HTMLSelectElement;
+    [fromEl.value,toEl.value]=[toEl.value,fromEl.value];
+    convertCurrency();
+  });
+
+  // Popular pair buttons
+  document.querySelectorAll('.popular-pair-btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      (document.getElementById('cc-from') as HTMLSelectElement).value=(b as HTMLElement).dataset.from!;
+      (document.getElementById('cc-to') as HTMLSelectElement).value=(b as HTMLElement).dataset.to!;
+      convertCurrency();
+    });
+  });
+
+  // FAQ toggle
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+
+  // Load on page ready
+  convertCurrency();
+</script>

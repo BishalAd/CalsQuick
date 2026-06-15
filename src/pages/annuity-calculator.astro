@@ -1,0 +1,452 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is an annuity?', a: 'An annuity is a financial product that provides a series of regular payments over time. You either invest a lump sum (immediate annuity) or make periodic contributions (deferred annuity), and in return receive guaranteed income payments — typically during retirement. Annuities are commonly used to ensure a stable income stream that you cannot outlive.' },
+  { q: 'How is the present value of an annuity calculated?', a: 'The present value of an ordinary annuity is: PV = PMT × [1 − (1 + r)^(−n)] / r, where PMT = payment amount, r = interest rate per period, n = number of periods. For an annuity due (payments at the beginning), multiply by (1 + r). Our calculator handles both types automatically.' },
+  { q: 'What is the difference between an ordinary annuity and an annuity due?', a: 'In an ordinary annuity, payments occur at the end of each period (e.g., end of month). In an annuity due, payments occur at the beginning of each period (e.g., rent, lease payments). An annuity due is worth more because each payment is received one period earlier, earning an extra period of interest.' },
+  { q: 'What is the difference between fixed and variable annuities?', a: 'A fixed annuity guarantees a specific interest rate and payment amount. A variable annuity invests your contributions in sub-accounts (similar to mutual funds), so payments fluctuate based on market performance. Fixed annuities offer certainty; variable annuities offer growth potential but carry investment risk.' },
+  { q: 'What is an immediate annuity vs a deferred annuity?', a: 'An immediate annuity is purchased with a lump sum and begins paying out immediately (within 12 months). A deferred annuity accumulates value over time through contributions or growth, with payouts starting at a future date — typically retirement. Deferred annuities have an accumulation phase and a payout phase.' },
+  { q: 'Are annuity payments taxable?', a: 'If purchased with pre-tax dollars (qualified annuity like an IRA), all withdrawals are taxed as ordinary income. If purchased with after-tax dollars (non-qualified annuity), only the earnings portion is taxed — your original principal returns tax-free. Consult a tax professional for your specific situation.' },
+  { q: 'What is a good rate of return for an annuity?', a: 'Fixed annuity rates typically range from 3% to 6% depending on the term length and prevailing interest rates. Variable annuities can return more but carry market risk. As of 2025, a 5-year fixed annuity may offer 4.5-5.5%. Always compare rates across multiple insurers before purchasing.' },
+  { q: 'What fees do annuities charge?', a: 'Common fees include: mortality and expense (M&E) risk charges (0.5-1.5% annually), administrative fees ($30-50/year), investment management fees for variable annuities (0.5-2%), and surrender charges if you withdraw early (typically 5-10%, declining over 5-10 years). Always read the prospectus carefully.' },
+  { q: 'Should I buy an annuity for retirement?', a: 'Annuities can be appropriate if you want guaranteed lifetime income beyond Social Security and pension benefits. However, they are not for everyone — high fees, limited liquidity, and complexity are significant drawbacks. Consider low-cost options like SPIAs (Single Premium Immediate Annuities) and compare with systematic withdrawals from a balanced portfolio.' },
+  { q: 'How does an annuity differ from a 401(k) or IRA?', a: '401(k)s and IRAs are retirement savings vehicles — you contribute and invest during your working years. Annuities are insurance products that convert savings into guaranteed income. Many people use both: accumulate in 401(k)/IRA during working years, then purchase an annuity at retirement to create lifetime income. Some 401(k) plans even offer annuity options.' },
+  { q: 'What happens to my annuity when I die?', a: 'It depends on the payout option you select. Life-only pays the highest amount but stops at death — nothing passes to heirs. Joint-and-survivor continues payments to your spouse. Period-certain guarantees payments for a set number of years (e.g., 20 years), with remaining payments going to beneficiaries if you die before the period ends. Cash refund returns any unpaid principal to your beneficiaries.' },
+  { q: 'What is a qualified vs non-qualified annuity?', a: 'A qualified annuity is funded with pre-tax dollars through an IRA or employer plan — contributions may be tax-deductible, but all withdrawals are fully taxable. A non-qualified annuity is funded with after-tax dollars — only the earnings portion is taxed upon withdrawal. Contribution limits apply to qualified annuities; non-qualified have no contribution limits.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Annuity Calculator', description: 'Free annuity calculator — calculate present value, future value, and payment amounts. Compare ordinary annuity vs annuity due, fixed vs variable, immediate vs deferred. Includes formulas, examples, and comprehensive annuity guide.', url: '/annuity-calculator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Compound Interest Calculator', href: '/compound-interest-calculator', icon: '📈', desc: 'Investment growth projections' },
+  { name: 'Retirement Calculator', href: '/401k-calculator', icon: '🏦', desc: '401(k) retirement planning' },
+  { name: 'Mortgage Calculator', href: '/mortgage-calculator', icon: '🏠', desc: 'Home loan payments' },
+];
+
+const annuityTypes = [
+  { key:'ordinary', label:'Ordinary Annuity', desc:'Payments at end of each period (standard)' },
+  { key:'due', label:'Annuity Due', desc:'Payments at beginning of each period' },
+];
+---
+
+<CalculatorLayout
+  title="Annuity Calculator — Present Value, Future Value & Payout Calculator"
+  description="Free annuity calculator with multiple modes. Calculate present value, future value, payment amounts, and compare ordinary annuity vs annuity due. Includes formulas, real-world examples, and comprehensive annuity guide for retirement planning."
+  canonical="/annuity-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Annuity Calculator', url: '/annuity-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Retirement & Financial Planning</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Annuity Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Calculate the present value, future value, or payment amount of any annuity. Compare ordinary annuities vs annuities due, and understand exactly what your retirement income will look like.
+    </p>
+  </div>
+
+  <!-- Calculator -->
+  <div class="calc-panel fade-up stagger-1">
+    <!-- Mode selector -->
+    <div style="margin-bottom:24px;">
+      <label class="label">Calculation Mode</label>
+      <div class="mode-grid" role="radiogroup">
+        <button class="mode-btn active" data-mode="pv" aria-pressed="true">
+          <span class="mode-icon">💰</span><span class="mode-label">Present Value</span>
+          <span class="mode-desc">How much to invest now?</span>
+        </button>
+        <button class="mode-btn" data-mode="fv" aria-pressed="false">
+          <span class="mode-icon">📈</span><span class="mode-label">Future Value</span>
+          <span class="mode-desc">What will it grow to?</span>
+        </button>
+        <button class="mode-btn" data-mode="pmt" aria-pressed="false">
+          <span class="mode-icon">📅</span><span class="mode-label">Payment Amount</span>
+          <span class="mode-desc">How much per period?</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="calc-form" id="annuity-inputs">
+      <!-- Filled dynamically -->
+    </div>
+
+    <!-- Annuity type -->
+    <div style="margin-top:16px;">
+      <label class="label">Annuity Type</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        {annuityTypes.map((t,i)=>(
+          <button class={`type-btn ${i===0?'active':''}`} data-type={t.key} aria-pressed={i===0?'true':'false'} title={t.desc}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:12px;">
+      <button id="calc-annuity-btn" class="btn-primary" style="flex:1;">Calculate</button>
+      <button id="reset-annuity-btn" class="btn-secondary">Clear</button>
+    </div>
+
+    <div id="annuity-error" class="calc-error" role="alert" hidden><span id="annuity-error-msg"></span></div>
+
+    <div id="annuity-results" hidden aria-live="polite" style="margin-top:24px;">
+      <div class="results-divider"></div>
+      <div class="annuity-hero">
+        <div class="annuity-hero-value" id="annuity-main-value">—</div>
+        <div class="annuity-hero-label" id="annuity-main-label">Result</div>
+      </div>
+      <div class="result-panel" style="margin-top:16px;" id="annuity-breakdown"></div>
+    </div>
+  </div>
+
+  <!-- ===== DEEP CONTENT SECTION ===== -->
+  <div class="content-section fade-up" style="margin-top:56px;">
+    
+    <!-- What is an Annuity -->
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">What Is an Annuity?</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        An <strong>annuity</strong> is a contract between you and an insurance company where you make a lump-sum payment or series of payments, and in return, the insurer agrees to make periodic payments to you — either immediately or at some future date. Annuities are designed to provide a steady, guaranteed income stream, most commonly during retirement, ensuring you do not outlive your savings.
+      </p>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        Think of an annuity as the opposite of life insurance. Life insurance protects against dying too soon; an annuity protects against living too long. It converts your accumulated savings into a predictable paycheck for life — or for a specified period.
+      </p>
+      
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Key Annuity Terminology</h3>
+      <div class="info-grid">
+        <div class="info-card"><strong>Annuitant:</strong> The person whose life expectancy determines the payout period.</div>
+        <div class="info-card"><strong>Accumulation Phase:</strong> The period when you contribute money and it grows tax-deferred.</div>
+        <div class="info-card"><strong>Payout Phase (Annuitization):</strong> The period when the insurer makes payments to you.</div>
+        <div class="info-card"><strong>Premium:</strong> The money you pay into the annuity — either as a lump sum or periodic payments.</div>
+        <div class="info-card"><strong>Surrender Charge:</strong> A penalty for withdrawing money early, typically declining over 5-10 years.</div>
+        <div class="info-card"><strong>Rider:</strong> An optional feature added to an annuity contract for an additional fee (e.g., death benefit rider, income rider).</div>
+      </div>
+    </section>
+
+    <!-- Types of Annuities -->
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Types of Annuities</h2>
+      
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:10px;">By Payout Timing</h3>
+      <div class="compare-table" style="margin-bottom:24px;">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="background:var(--color-canvas-soft-2);">
+              <th style="padding:12px;text-align:left;">Type</th>
+              <th style="padding:12px;text-align:left;">When Payments Start</th>
+              <th style="padding:12px;text-align:left;">Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px;font-weight:600;">Immediate Annuity</td><td style="padding:12px;">Within 12 months of purchase</td><td style="padding:12px;">Retirees who need income now</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Deferred Annuity</td><td style="padding:12px;">Future date (years later)</td><td style="padding:12px;">Workers saving for future retirement</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:10px;">By Investment Type</h3>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="background:var(--color-canvas-soft-2);">
+              <th style="padding:12px;text-align:left;">Type</th>
+              <th style="padding:12px;text-align:left;">How It Works</th>
+              <th style="padding:12px;text-align:left;">Risk Level</th>
+              <th style="padding:12px;text-align:left;">Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px;font-weight:600;">Fixed Annuity</td><td style="padding:12px;">Guaranteed interest rate set by insurer</td><td style="padding:12px;">Low</td><td style="padding:12px;">Conservative investors wanting guaranteed returns</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Variable Annuity</td><td style="padding:12px;">Returns tied to market performance of sub-accounts</td><td style="padding:12px;">Moderate-High</td><td style="padding:12px;">Investors comfortable with market risk seeking higher returns</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Fixed Indexed</td><td style="padding:12px;">Returns linked to a market index (e.g., S&P 500) with downside protection</td><td style="padding:12px;">Low-Moderate</td><td style="padding:12px;">Those wanting some growth potential without losing principal</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Annuity Formulas -->
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Annuity Formulas and Calculations</h2>
+      
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:12px;">Present Value of an Ordinary Annuity</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        The present value (PV) tells you how much money you need to invest today to generate a specific stream of future payments:
+      </p>
+      <div class="formula-box">
+        <strong>PV = PMT × [1 − (1 + r)<sup>−n</sup>] / r</strong>
+        <div>Where: PMT = payment per period, r = interest rate per period, n = number of periods</div>
+      </div>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:12px;">
+        <strong>Example:</strong> You want to receive $2,000/month for 20 years from an annuity earning 5% annual interest. Monthly rate = 0.05/12 = 0.004167, periods = 240. PV = 2000 × [1 − (1.004167)^(−240)] / 0.004167 = <strong>$304,059</strong>. This is the lump sum you need to invest today.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Future Value of an Ordinary Annuity</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        The future value (FV) tells you how much your regular contributions will grow to:
+      </p>
+      <div class="formula-box">
+        <strong>FV = PMT × [(1 + r)<sup>n</sup> − 1] / r</strong>
+      </div>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:12px;">
+        <strong>Example:</strong> You contribute $500/month for 30 years at 6% annual return. Monthly rate = 0.005, periods = 360. FV = 500 × [(1.005)^360 − 1] / 0.005 = <strong>$502,257</strong>.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Annuity Due vs Ordinary Annuity</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        For an annuity due (payments at the beginning of each period), multiply the ordinary annuity result by (1 + r):
+      </p>
+      <div class="formula-box">
+        <strong>PV<sub>due</sub> = PV<sub>ordinary</sub> × (1 + r)</strong><br/>
+        <strong>FV<sub>due</sub> = FV<sub>ordinary</sub> × (1 + r)</strong>
+      </div>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:12px;">
+        An annuity due is always worth more because each payment has an extra period to earn interest. Rent, lease payments, and insurance premiums are typically annuity dues.
+      </p>
+    </section>
+
+    <!-- Payout Options -->
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Annuity Payout Options: How You Receive Your Money</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        When you annuitize (begin receiving payments), you must choose a payout option. This decision is irreversible — choose carefully based on your health, marital status, and legacy goals.
+      </p>
+      <div class="compare-table">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr style="background:var(--color-canvas-soft-2);">
+              <th style="padding:12px;text-align:left;">Payout Option</th>
+              <th style="padding:12px;text-align:left;">Monthly Payment</th>
+              <th style="padding:12px;text-align:left;">Survivor Benefit</th>
+              <th style="padding:12px;text-align:left;">Best For</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px;font-weight:600;">Life Only</td><td style="padding:12px;">Highest</td><td style="padding:12px;">None — stops at death</td><td style="padding:12px;">Single people prioritizing maximum income</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Joint & Survivor</td><td style="padding:12px;">Lower</td><td style="padding:12px;">Spouse continues receiving (50-100%)</td><td style="padding:12px;">Married couples</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Period Certain</td><td style="padding:12px;">Medium</td><td style="padding:12px;">Beneficiaries receive remaining payments</td><td style="padding:12px;">Those wanting to leave something to heirs</td></tr>
+            <tr><td style="padding:12px;font-weight:600;">Life with Cash Refund</td><td style="padding:12px;">Lower</td><td style="padding:12px;">Unpaid principal refunded to beneficiaries</td><td style="padding:12px;">Those wanting lifetime income + principal protection</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tax Treatment -->
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Tax Treatment of Annuities</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        Understanding how annuities are taxed is essential before purchasing. The tax treatment depends on how the annuity was funded.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:10px;">Qualified Annuities (Pre-Tax Dollars)</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        Purchased through an IRA, 401(k), or other tax-deferred account. Contributions may be tax-deductible. ALL withdrawals — both principal and earnings — are taxed as ordinary income. Required Minimum Distributions (RMDs) apply starting at age 73 (as of 2024).
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:10px;">Non-Qualified Annuities (After-Tax Dollars)</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:12px;">
+        Purchased with after-tax money. Only the <strong>earnings portion</strong> of withdrawals is taxed as ordinary income — your original principal returns tax-free. The IRS uses an "exclusion ratio" to determine how much of each payment is taxable. No RMDs apply to non-qualified annuities.
+      </p>
+
+      <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:20px;margin-bottom:10px;">Early Withdrawal Penalty</h3>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+        Withdrawals before age 59½ are subject to a <strong>10% IRS penalty</strong> on the taxable portion, in addition to ordinary income tax. There are exceptions for disability, death, and substantially equal periodic payments (SEPP/72(t) rule). Always consult a tax professional before making early withdrawals.
+      </p>
+    </section>
+
+    <!-- Pros and Cons -->
+    <section style="margin-bottom:48px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Advantages and Disadvantages of Annuities</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+        <div class="pros-cons-card" style="border-left:3px solid var(--color-success);">
+          <h3 style="color:var(--color-success);margin-bottom:12px;">✅ Advantages</h3>
+          <ul style="display:flex;flex-direction:column;gap:10px;color:var(--color-body);font-size:14px;line-height:22px;">
+            <li><strong>Guaranteed Lifetime Income:</strong> You cannot outlive your money — a feature no other investment offers.</li>
+            <li><strong>Tax-Deferred Growth:</strong> Earnings grow without taxation until withdrawn.</li>
+            <li><strong>Principal Protection:</strong> Fixed and indexed annuities protect your principal from market losses.</li>
+            <li><strong>Death Benefit Options:</strong> Riders can ensure your beneficiaries receive unused funds.</li>
+            <li><strong>No Contribution Limits:</strong> Non-qualified annuities have no IRS contribution cap.</li>
+            <li><strong>Creditor Protection:</strong> In many states, annuities are protected from creditors in bankruptcy.</li>
+          </ul>
+        </div>
+        <div class="pros-cons-card" style="border-left:3px solid var(--color-error);">
+          <h3 style="color:var(--color-error);margin-bottom:12px;">❌ Disadvantages</h3>
+          <ul style="display:flex;flex-direction:column;gap:10px;color:var(--color-body);font-size:14px;line-height:22px;">
+            <li><strong>High Fees:</strong> M&E charges, administrative fees, and rider costs can total 1.5-4% annually.</li>
+            <li><strong>Limited Liquidity:</strong> Surrender charges lock up your money for 5-10 years.</li>
+            <li><strong>Complexity:</strong> Contracts are dense and difficult to compare across insurers.</li>
+            <li><strong>Ordinary Income Tax:</strong> Gains are taxed as income, not at lower capital gains rates.</li>
+            <li><strong>Inflation Risk:</strong> Fixed payments lose purchasing power over time unless inflation riders are added (at extra cost).</li>
+            <li><strong>Opportunity Cost:</strong> A low-cost index fund may outperform high-fee annuities over long periods.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- When to Buy -->
+    <section style="margin-bottom:24px;">
+      <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">When Should You Consider an Annuity?</h2>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+        Annuities are not for everyone. They are most appropriate when:
+      </p>
+      <ul style="margin-left:20px;color:var(--color-body);line-height:26px;font-size:14px;display:flex;flex-direction:column;gap:8px;">
+        <li>You are in good health and have a family history of longevity — you may outlive other retirement assets.</li>
+        <li>You have maxed out 401(k) and IRA contributions and want additional tax-deferred savings.</li>
+        <li>You are within 5-10 years of retirement and want to secure a guaranteed income floor.</li>
+        <li>You want to protect a portion of your retirement savings from market volatility.</li>
+        <li>You prefer the simplicity of a guaranteed paycheck over managing investment withdrawals.</li>
+      </ul>
+      <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-top:16px;">
+        Consider delaying Social Security to age 70 (earning 8% delayed retirement credits per year) before purchasing an annuity — this is often a better use of your money than paying annuity fees.
+      </p>
+    </section>
+  </div>
+
+  <!-- FAQ Section -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions About Annuities</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`ann-faq-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer" id={`ann-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:16px;}
+  .results-divider{height:1px;background:var(--color-hairline);margin:20px 0;}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .mode-grid{display:flex;gap:6px;flex-wrap:wrap;}
+  .mode-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 16px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;text-align:center;min-width:100px;flex:1;}
+  .mode-btn:hover{border-color:var(--color-link);}
+  .mode-btn.active{border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.12);}
+  .mode-icon{font-size:22px;}
+  .mode-label{font-size:13px;font-weight:600;color:var(--color-ink);}
+  .mode-desc{font-size:11px;color:var(--color-muted);}
+  .type-btn{padding:8px 18px;border:1px solid var(--color-hairline);border-radius:var(--radius-pill);background:var(--color-canvas-soft-2);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;}
+  .type-btn:hover{border-color:var(--color-link);}
+  .type-btn.active{border-color:var(--color-link);background:var(--color-link);color:#fff;}
+  .input-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+  .input-col{flex:1;min-width:140px;}
+  .annuity-hero{text-align:center;padding:36px 24px;background:var(--color-canvas-soft-2);border:2px solid var(--color-link);border-radius:var(--radius-lg);}
+  .annuity-hero-value{font-size:clamp(36px,7vw,60px);font-weight:700;color:var(--color-link);letter-spacing:-1.5px;font-family:var(--font-mono);}
+  .annuity-hero-label{font-size:15px;color:var(--color-muted);margin-top:6px;}
+  .result-panel{background:var(--color-canvas-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);padding:16px 20px;}
+  .result-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--color-hairline);}
+  .result-row-label{font-size:14px;color:var(--color-body);}
+  .result-row-value{font-size:14px;font-weight:600;color:var(--color-ink);}
+  .content-section{padding:40px 36px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-xl);}
+  .formula-box{padding:20px 24px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);font-family:var(--font-mono);font-size:16px;line-height:1.8;color:var(--color-ink);margin:12px 0;}
+  .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .info-card{padding:14px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);font-size:13px;color:var(--color-body);line-height:20px;}
+  .compare-table{overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .compare-table table{font-size:13px;color:var(--color-body);}
+  .compare-table th{font-weight:600;color:var(--color-ink);font-size:12px;text-transform:uppercase;letter-spacing:0.05em;}
+  .compare-table td{border-top:1px solid var(--color-hairline);}
+  .pros-cons-card{padding:24px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);}
+  @media(max-width:768px){
+    .info-grid{grid-template-columns:repeat(2,1fr);}
+    .content-section{padding:24px 18px;}
+    .compare-table{font-size:12px;}
+    .compare-table th,.compare-table td{padding:8px 6px !important;}
+  }
+  @media(max-width:500px){
+    .info-grid{grid-template-columns:1fr;}
+    .mode-btn{min-width:80px;padding:10px 8px;}
+    .annuity-hero{padding:24px 16px;}
+  }
+</style>
+
+<script>
+  let mode='pv', annuityType='ordinary';
+  document.querySelectorAll('.mode-btn').forEach(b=>b.addEventListener('click',()=>{
+    mode=(b as HTMLElement).dataset.mode!;
+    document.querySelectorAll('.mode-btn').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});
+    b.classList.add('active');b.setAttribute('aria-pressed','true');
+    renderInputs();
+  }));
+  document.querySelectorAll('.type-btn').forEach(b=>b.addEventListener('click',()=>{
+    annuityType=(b as HTMLElement).dataset.type!;
+    document.querySelectorAll('.type-btn').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});
+    b.classList.add('active');b.setAttribute('aria-pressed','true');
+  }));
+
+  function renderInputs(){
+    const c=document.getElementById('annuity-inputs')!;
+    const maps:Record<string,string>={
+      pv:`<div class="input-row"><div class="input-col"><label class="label">Payment Amount ($)</label><input type="number" id="ann-pmt" class="input-base input-lg" placeholder="e.g. 2000" /></div><div class="input-col"><label class="label">Annual Interest Rate (%)</label><input type="number" id="ann-rate" class="input-base input-lg" placeholder="e.g. 5" /></div></div><div class="input-row"><div class="input-col"><label class="label">Number of Years</label><input type="number" id="ann-years" class="input-base input-lg" placeholder="e.g. 20" /></div><div class="input-col"><label class="label">Payments Per Year</label><select id="ann-freq" class="input-base input-lg"><option value="12" selected>Monthly</option><option value="4">Quarterly</option><option value="2">Semi-Annually</option><option value="1">Annually</option></select></div></div><p class="text-body-sm" style="color:var(--color-muted);">How much do you need to invest today to receive regular payments?</p>`,
+      fv:`<div class="input-row"><div class="input-col"><label class="label">Contribution Per Period ($)</label><input type="number" id="ann-pmt" class="input-base input-lg" placeholder="e.g. 500" /></div><div class="input-col"><label class="label">Annual Interest Rate (%)</label><input type="number" id="ann-rate" class="input-base input-lg" placeholder="e.g. 6" /></div></div><div class="input-row"><div class="input-col"><label class="label">Number of Years</label><input type="number" id="ann-years" class="input-base input-lg" placeholder="e.g. 30" /></div><div class="input-col"><label class="label">Payments Per Year</label><select id="ann-freq" class="input-base input-lg"><option value="12" selected>Monthly</option><option value="4">Quarterly</option><option value="2">Semi-Annually</option><option value="1">Annually</option></select></div></div><p class="text-body-sm" style="color:var(--color-muted);">How much will your regular contributions grow to over time?</p>`,
+      pmt:`<div class="input-row"><div class="input-col"><label class="label">Present Value (Lump Sum) ($)</label><input type="number" id="ann-pv" class="input-base input-lg" placeholder="e.g. 300000" /></div><div class="input-col"><label class="label">Annual Interest Rate (%)</label><input type="number" id="ann-rate" class="input-base input-lg" placeholder="e.g. 5" /></div></div><div class="input-row"><div class="input-col"><label class="label">Number of Years</label><input type="number" id="ann-years" class="input-base input-lg" placeholder="e.g. 20" /></div><div class="input-col"><label class="label">Payments Per Year</label><select id="ann-freq" class="input-base input-lg"><option value="12" selected>Monthly</option><option value="4">Quarterly</option><option value="2">Semi-Annually</option><option value="1">Annually</option></select></div></div><p class="text-body-sm" style="color:var(--color-muted);">How much can you withdraw per period from your lump sum investment?</p>`,
+    };
+    c.innerHTML=maps[mode]||maps['pv'];
+  }
+  renderInputs();
+
+  document.getElementById('calc-annuity-btn')!.addEventListener('click',()=>{
+    const errEl=document.getElementById('annuity-error') as HTMLElement, resEl=document.getElementById('annuity-results') as HTMLElement;
+    errEl.hidden=true;resEl.hidden=true;
+    try{
+      const rate=parseFloat((document.getElementById('ann-rate') as HTMLInputElement).value);
+      const years=parseFloat((document.getElementById('ann-years') as HTMLInputElement).value);
+      const freq=parseInt((document.getElementById('ann-freq') as HTMLSelectElement).value);
+      if(isNaN(rate)||isNaN(years)||years<=0) throw 'Enter valid rate and years.';
+      const r=rate/100/freq;
+      const n=years*freq;
+      let result:number, label:string, breakdown:string;
+
+      if(mode==='pv'){
+        const pmt=parseFloat((document.getElementById('ann-pmt') as HTMLInputElement).value);
+        if(isNaN(pmt)||pmt<=0) throw 'Enter valid payment amount.';
+        result=pmt*(1-Math.pow(1+r,-n))/r;
+        if(annuityType==='due') result*=(1+r);
+        label='Lump Sum Needed Today';
+        breakdown=`<div class="result-row"><span class="result-row-label">Desired Payment</span><span class="result-row-value">$${pmt.toLocaleString()}/period</span></div><div class="result-row"><span class="result-row-label">Interest Rate</span><span class="result-row-value">${rate}% (${(rate/freq).toFixed(2)}% per period)</span></div><div class="result-row"><span class="result-row-label">Duration</span><span class="result-row-value">${years} years (${n} periods)</span></div><div class="result-row"><span class="result-row-label">Annuity Type</span><span class="result-row-value">${annuityType==='due'?'Annuity Due':'Ordinary Annuity'}</span></div><div class="result-row"><span class="result-row-label">Total Payouts</span><span class="result-row-value">$${(pmt*n).toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="result-row" style="border-bottom:none;"><span class="result-row-label">Interest Earned</span><span class="result-row-value" style="color:var(--color-success);">$${((pmt*n)-result).toLocaleString(undefined,{maximumFractionDigits:0})}</span></div>`;
+      } else if(mode==='fv'){
+        const pmt=parseFloat((document.getElementById('ann-pmt') as HTMLInputElement).value);
+        if(isNaN(pmt)||pmt<=0) throw 'Enter valid contribution amount.';
+        result=pmt*(Math.pow(1+r,n)-1)/r;
+        if(annuityType==='due') result*=(1+r);
+        label='Future Value';
+        const invested=pmt*n;
+        breakdown=`<div class="result-row"><span class="result-row-label">Contribution</span><span class="result-row-value">$${pmt.toLocaleString()}/period</span></div><div class="result-row"><span class="result-row-label">Duration</span><span class="result-row-value">${years} years (${n} periods)</span></div><div class="result-row"><span class="result-row-label">Total Invested</span><span class="result-row-value">$${invested.toLocaleString(undefined,{maximumFractionDigits:0})}</span></div><div class="result-row"><span class="result-row-label">Annuity Type</span><span class="result-row-value">${annuityType==='due'?'Annuity Due':'Ordinary Annuity'}</span></div><div class="result-row" style="border-bottom:none;"><span class="result-row-label">Interest Earned</span><span class="result-row-value" style="color:var(--color-success);">$${(result-invested).toLocaleString(undefined,{maximumFractionDigits:0})}</span></div>`;
+      } else {
+        const pv=parseFloat((document.getElementById('ann-pv') as HTMLInputElement).value);
+        if(isNaN(pv)||pv<=0) throw 'Enter valid lump sum amount.';
+        result=pv*r/(1-Math.pow(1+r,-n));
+        if(annuityType==='due') result/=(1+r);
+        label='Payment Per Period';
+        breakdown=`<div class="result-row"><span class="result-row-label">Lump Sum</span><span class="result-row-value">$${pv.toLocaleString()}</span></div><div class="result-row"><span class="result-row-label">Interest Rate</span><span class="result-row-value">${rate}% (${(rate/freq).toFixed(2)}% per period)</span></div><div class="result-row"><span class="result-row-label">Duration</span><span class="result-row-value">${years} years (${n} periods)</span></div><div class="result-row"><span class="result-row-label">Annuity Type</span><span class="result-row-value">${annuityType==='due'?'Annuity Due':'Ordinary Annuity'}</span></div><div class="result-row" style="border-bottom:none;"><span class="result-row-label">Total Payouts</span><span class="result-row-value">$${(result*n).toLocaleString(undefined,{maximumFractionDigits:0})}</span></div>`;
+      }
+
+      document.getElementById('annuity-main-value')!.textContent='$'+result.toLocaleString(undefined,{maximumFractionDigits:2});
+      document.getElementById('annuity-main-label')!.textContent=label;
+      document.getElementById('annuity-breakdown')!.innerHTML=breakdown;
+      resEl.hidden=false;
+    } catch(e:any){
+      document.getElementById('annuity-error-msg')!.textContent=typeof e==='string'?e:e.message;
+      errEl.hidden=false;
+    }
+  });
+
+  document.getElementById('reset-annuity-btn')!.addEventListener('click',()=>{
+    document.querySelectorAll('#annuity-inputs input[type=number]').forEach((i:any)=>{i.value='';});
+    (document.getElementById('annuity-results') as HTMLElement).hidden=true;
+  });
+
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+</script>

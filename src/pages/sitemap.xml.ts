@@ -133,6 +133,24 @@ const entries: SitemapEntry[] = [
     changefreq: 'weekly',
     priority:   0.9,
   },
+  {
+    url:        `${SITE}/annuity-calculator/`,
+    lastmod:    '2026-06-15',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/401k-calculator/`,
+    lastmod:    '2026-06-15',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/currency-converter/`,
+    lastmod:    '2026-06-15',
+    changefreq: 'daily',
+    priority:   0.9,
+  },
 
   // ── Blog ──────────────────────────────────────────────────────────────────
   {
@@ -245,6 +263,24 @@ const entries: SitemapEntry[] = [
   },
   {
     url:        `${SITE}/blog/pregnancy-due-date-guide/`,
+    lastmod:    '2026-06-15',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/annuity-calculator-guide/`,
+    lastmod:    '2026-06-15',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/401k-calculator-guide/`,
+    lastmod:    '2026-06-15',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/currency-converter-guide/`,
     lastmod:    '2026-06-15',
     changefreq: 'monthly',
     priority:   0.7,
