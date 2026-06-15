@@ -777,37 +777,30 @@ const relatedCalcs = [
     .diff-calendars-grid { grid-template-columns: 1fr !important; }
 
     /* Mobile compact select inputs */
-    .date-select-group {
-      gap: 4px !important;
-    }
-    .date-select-group select[id$="-month"] {
-      min-width: 70px !important;
-      flex: 1.5 !important;
-    }
-    .date-select-group select[id$="-day"] {
-      min-width: 50px !important;
-      flex: 1 !important;
-    }
-    .date-select-group input[id$="-year"] {
-      min-width: 60px !important;
-      flex: 1.2 !important;
-    }
-    .date-select-group select[id$="-month"],
-    .date-select-group select[id$="-day"],
-    .date-select-group input[id$="-year"] {
-      padding-left: 8px !important;
-      padding-right: 8px !important;
-      font-size: 13px !important;
-    }
-    .time-select-group {
-      gap: 4px !important;
-    }
-    .time-select-group select {
-      padding-left: 8px !important;
-      padding-right: 8px !important;
-      font-size: 13px !important;
-    }
+    .date-select-group { flex-wrap: wrap; gap: 6px; }
+    .date-select-group select, .date-select-group input { flex: 1; min-width: 48px; }
+    .time-select-group { gap: 4px; }
+    .time-select-group select { flex: 1; min-width: 48px; }
+    .stat-card { padding: 12px 10px; }
+    .stat-value { font-size: 20px; }
+    .stat-label { font-size: 10px; }
+    .main-result-card { padding: 24px 16px; }
+    .main-result-detail { font-size: 14px; }
+    .prose-section { padding: 20px 16px; overflow: hidden; }
+    .prose-section table { font-size: 12px; }
+    .prose-section ul { padding-left: 16px; gap: 6px; }
   }
+  @media (max-width: 380px) {
+    .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-card { padding: 10px 8px; }
+    .stat-value { font-size: 18px; }
+    .stat-label { font-size: 9px; }
+    .main-result-value { font-size: 42px; }
+    .main-result-detail { font-size: 13px; }
+    .date-select-group select, .date-select-group input { min-width: 44px; font-size: 12px; padding: 0 8px; height: 38px; }
+    .tab-btn { font-size: 14px; padding: 10px 16px; }
+  }
+
 </style>
 
 <script>

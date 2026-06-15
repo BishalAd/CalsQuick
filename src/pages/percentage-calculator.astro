@@ -1,0 +1,291 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How do I calculate a percentage?', a: 'To calculate X% of Y, multiply Y by X/100. For example, 20% of 150 = 150 × 20/100 = 30. Our calculator does this instantly — just enter the percentage and the number.' },
+  { q: 'How do I find what percentage one number is of another?', a: 'Divide the first number by the second and multiply by 100. For example, 45 out of 200: (45 ÷ 200) × 100 = 22.5%. Use our "X is what % of Y" mode for this calculation.' },
+  { q: 'How do I calculate percentage increase or decrease?', a: 'Percentage change = ((New Value − Old Value) ÷ Old Value) × 100. A positive result means increase, negative means decrease. For example, a price going from $80 to $100 is a (100−80)/80 × 100 = 25% increase.' },
+  { q: 'What is a percentage point vs percent?', a: 'A percentage point is the arithmetic difference between two percentages. For example, going from 10% to 15% is a 5 percentage point increase, but a 50% relative increase. This distinction is critical in finance, statistics, and polling.' },
+  { q: 'How do I calculate a tip using percentages?', a: 'To calculate a tip, multiply your bill by the tip percentage (e.g., 15% = 0.15). For a $50 bill at 18%: $50 × 0.18 = $9 tip. For detailed tip calculation with bill splitting, use our free Tip Calculator.' },
+  { q: 'How do I calculate a discount?', a: 'To calculate a sale price after discount: Discount Amount = Original Price × (Discount % ÷ 100). Sale Price = Original Price − Discount Amount. For a $80 item at 30% off: discount = $24, sale price = $56.' },
+  { q: 'How do I reverse-calculate a percentage?', a: 'If you know X is P% of a number, the original number = X ÷ (P ÷ 100). For example, if 45 is 15% of something: 45 ÷ 0.15 = 300. Use our "reverse percentage" mode for this.' },
+  { q: 'What is the percentage change formula in Excel?', a: 'In Excel, percentage change = (new_cell − old_cell) / old_cell, formatted as percentage. For example, if A1=100 and B1=125: =(B1−A1)/A1 returns 0.25, displayed as 25%. Our online calculator gives you the same result instantly.' },
+  { q: 'How do I add a percentage to a number?', a: 'To add P% to a number: Result = Number × (1 + P/100). For example, adding 20% to $50: $50 × 1.20 = $60. This is useful for tax calculations, markup pricing, and salary increases.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Percentage Calculator', description: 'Free online percentage calculator. Calculate percentage of a number, percentage change, percentage increase/decrease, discounts, and reverse percentages.', url: '/percentage-calculator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Calculate and split tips' },
+  { name: 'Loan EMI Calculator', href: '/loan-emi-calculator', icon: '🏦', desc: 'Calculate loan installments' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+];
+---
+
+<CalculatorLayout
+  title="Percentage Calculator — Free Online Percentage Calculation"
+  description="Free online percentage calculator. Calculate percentage of a number, what percent one number is of another, percentage increase/decrease, reverse percentages, and more. Instant, accurate results."
+  canonical="/percentage-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Percentage Calculator', url: '/percentage-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Math & Finance</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Percentage Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:600px;">
+      Calculate percentages instantly — percentage of a number, percentage change, reverse percentages, discounts, and more. Free, accurate, no signup required.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="pct-calculator">
+    <!-- Mode selector -->
+    <div style="margin-bottom:24px;">
+      <label class="label">Calculation Type</label>
+      <div class="mode-grid" role="radiogroup" aria-label="Percentage calculation type">
+        <button class="mode-btn active" data-mode="of" aria-pressed="true">
+          <span class="mode-icon">📊</span>
+          <span class="mode-label">% of a Number</span>
+          <span class="mode-desc">What is X% of Y?</span>
+        </button>
+        <button class="mode-btn" data-mode="is" aria-pressed="false">
+          <span class="mode-icon">🔍</span>
+          <span class="mode-label">X is what % of Y</span>
+          <span class="mode-desc">Find the percentage</span>
+        </button>
+        <button class="mode-btn" data-mode="change" aria-pressed="false">
+          <span class="mode-icon">📈</span>
+          <span class="mode-label">% Change</span>
+          <span class="mode-desc">Increase or decrease</span>
+        </button>
+        <button class="mode-btn" data-mode="reverse" aria-pressed="false">
+          <span class="mode-icon">↩️</span>
+          <span class="mode-label">Reverse %</span>
+          <span class="mode-desc">Find original number</span>
+        </button>
+        <button class="mode-btn" data-mode="add" aria-pressed="false">
+          <span class="mode-icon">➕</span>
+          <span class="mode-label">Add / Subtract %</span>
+          <span class="mode-desc">Markup or discount</span>
+        </button>
+        <button class="mode-btn" data-mode="discount" aria-pressed="false">
+          <span class="mode-icon">🏷️</span>
+          <span class="mode-label">Discount Calculator</span>
+          <span class="mode-desc">Sale price after % off</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic inputs -->
+    <div id="pct-inputs" class="calc-form">
+      <!-- Filled by JS -->
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button id="calc-pct-btn" class="btn-primary" style="flex:1;">Calculate</button>
+      <button id="reset-pct-btn" class="btn-secondary">Clear</button>
+    </div>
+
+    <div id="pct-error" class="calc-error" role="alert" hidden>
+      <span id="pct-error-msg"></span>
+    </div>
+
+    <!-- Result -->
+    <div id="pct-results" hidden aria-live="polite" style="margin-top:24px;">
+      <div class="results-divider"></div>
+      <div class="pct-result-hero">
+        <div class="pct-result-value" id="pct-main-result"></div>
+        <div class="pct-result-formula" id="pct-formula"></div>
+      </div>
+      <div id="pct-breakdown" class="result-panel" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
+  <!-- Common percentage quick reference -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:16px;">Common Percentages Quick Reference</h2>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);">
+            <th style="padding:12px 14px;text-align:left;">Percentage</th>
+            <th style="padding:12px 14px;text-align:left;">Decimal</th>
+            <th style="padding:12px 14px;text-align:left;">Fraction</th>
+            <th style="padding:12px 14px;text-align:left;">Common Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['1%','0.01','1/100','Sales tax (some states)'],
+            ['5%','0.05','1/20','Small discount'],
+            ['10%','0.10','1/10','Standard tip (low end)'],
+            ['15%','0.15','3/20','Standard tip, discount'],
+            ['20%','0.20','1/5','Down payment, tip'],
+            ['25%','0.25','1/4','Quarter, large discount'],
+            ['33.3%','0.333','1/3','One-third'],
+            ['50%','0.50','1/2','Half-off sale'],
+            ['75%','0.75','3/4','Three-quarters'],
+            ['100%','1.00','1/1','Double, whole'],
+          ].map(r => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 14px;font-weight:600;color:var(--color-link);">{r[0]}</td>
+              <td style="padding:10px 14px;font-family:var(--font-mono);">{r[1]}</td>
+              <td style="padding:10px 14px;font-family:var(--font-mono);">{r[2]}</td>
+              <td style="padding:10px 14px;font-size:13px;">{r[3]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Mastering Percentage Calculations in Everyday Life</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Percentages govern countless decisions in our daily lives — from calculating <strong>tips at restaurants</strong> and <strong>discounts while shopping</strong> to understanding <strong>interest rates on loans</strong> and <strong>tax brackets</strong>. A percentage is simply a fraction of 100: the word "percent" literally means "per hundred." Understanding how to quickly compute percentages without stress makes you more confident in financial negotiations, shopping decisions, and data interpretation.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Real-World Applications of Percentage Calculations</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Percentages appear everywhere: <strong>tip percentages</strong> at restaurants (15–20% in the US), <strong>sales tax</strong> (varies by state, 0–10%), <strong>discount percentages</strong> during sales events like Black Friday, <strong>APR interest rates</strong> on credit cards and loans, <strong>body fat percentage</strong> in fitness tracking, <strong>grade percentages</strong> in education, <strong>commission rates</strong> for sales professionals, and <strong>percentage changes</strong> in stock market returns. Being fast and accurate with percentage math saves you money, time, and prevents costly errors.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Why Use an Online Percentage Calculator?</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Mental math works for simple percentages (10%, 25%, 50%), but real-world numbers are rarely round. What is 17.5% of $847.63? What percentage is 137 of 892? Our calculator handles any numbers instantly — fractions, decimals, large values — without errors. Whether you are a student checking homework, a shopper comparing discounts, or a professional preparing financial reports, having a reliable <strong>free percentage calculator</strong> at your fingertips makes the difference.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`pct-faq-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="faq-answer" id={`pct-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form { display:flex;flex-direction:column;gap:16px; }
+  .results-divider { height:1px;background:var(--color-hairline);margin:20px 0; }
+  .calc-error { display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error); }
+  .prose-section { padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline); }
+  .mode-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+  .mode-btn { display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;text-align:center; }
+  .mode-btn:hover { border-color:var(--color-link);background:var(--color-canvas); }
+  .mode-btn.active { border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.12); }
+  .mode-icon { font-size:24px; }
+  .mode-label { font-size:13px;font-weight:600;color:var(--color-ink); }
+  .mode-desc { font-size:11px;color:var(--color-muted); }
+  .input-row { display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap; }
+  .input-col { flex:1;min-width:160px; }
+  .pct-result-hero { padding:32px 24px;background:var(--color-canvas-soft-2);border:2px solid var(--color-link);border-radius:var(--radius-lg);text-align:center; }
+  .pct-result-value { font-size:clamp(36px,6vw,56px);font-weight:700;color:var(--color-link);letter-spacing:-1.5px;font-family:var(--font-mono); }
+  .pct-result-formula { font-size:14px;color:var(--color-muted);margin-top:8px;font-family:var(--font-mono); }
+  .result-row { display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--color-hairline); }
+  .result-row-label { font-size:14px;color:var(--color-body); }
+  .result-row-value { font-size:14px;font-weight:600;color:var(--color-ink); }
+  @media(max-width:600px){ .mode-grid{grid-template-columns:repeat(2,1fr);} .pct-result-hero{padding:24px 16px;} }
+  @media(max-width:400px){ .mode-grid{grid-template-columns:1fr;} }
+</style>
+
+<script>
+  let mode = 'of';
+
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mode = (btn as HTMLElement).dataset.mode!;
+      document.querySelectorAll('.mode-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-pressed','true');
+      renderInputs();
+    });
+  });
+
+  function renderInputs() {
+    const c = document.getElementById('pct-inputs')!;
+    const maps: Record<string,string> = {
+      of: `<div class="input-row"><div class="input-col"><label class="label">Percentage (%)</label><input type="number" id="pct-val" class="input-base input-lg" placeholder="e.g. 20" step="any" /></div><div class="input-col"><label class="label">of Number</label><input type="number" id="pct-of" class="input-base input-lg" placeholder="e.g. 150" step="any" /></div></div><p class="text-body-sm" style="color:var(--color-muted);">What is X% of Y? Example: What is 20% of 150?</p>`,
+      is: `<div class="input-row"><div class="input-col"><label class="label">Number (Part)</label><input type="number" id="pct-part" class="input-base input-lg" placeholder="e.g. 45" step="any" /></div><div class="input-col"><label class="label">of Total (Whole)</label><input type="number" id="pct-whole" class="input-base input-lg" placeholder="e.g. 200" step="any" /></div></div><p class="text-body-sm" style="color:var(--color-muted);">X is what % of Y? Example: 45 is what % of 200?</p>`,
+      change: `<div class="input-row"><div class="input-col"><label class="label">Old Value</label><input type="number" id="pct-old" class="input-base input-lg" placeholder="e.g. 80" step="any" /></div><div class="input-col"><label class="label">New Value</label><input type="number" id="pct-new" class="input-base input-lg" placeholder="e.g. 100" step="any" /></div></div><p class="text-body-sm" style="color:var(--color-muted);">Percentage increase or decrease from old to new value.</p>`,
+      reverse: `<div class="input-col"><label class="label">Resulting Number</label><input type="number" id="pct-result-num" class="input-base input-lg" placeholder="e.g. 45" step="any" /></div><div class="input-col" style="margin-top:16px;"><label class="label">This is % of original</label><input type="number" id="pct-result-pct" class="input-base input-lg" placeholder="e.g. 15" step="any" /></div><p class="text-body-sm" style="color:var(--color-muted);margin-top:4px;">If X is P% of the original, what was the original?</p>`,
+      add: `<div class="input-row"><div class="input-col"><label class="label">Base Number</label><input type="number" id="pct-base" class="input-base input-lg" placeholder="e.g. 200" step="any" /></div><div class="input-col"><label class="label">Percentage (%)</label><input type="number" id="pct-add-pct" class="input-base input-lg" placeholder="e.g. 15" step="any" /></div></div><div style="display:flex;gap:8px;"><label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="radio" name="pct-op" value="add" checked style="accent-color:var(--color-link);" /> Add % (markup)</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:14px;"><input type="radio" name="pct-op" value="sub" style="accent-color:var(--color-link);" /> Subtract % (discount)</label></div>`,
+      discount: `<div class="input-row"><div class="input-col"><label class="label">Original Price</label><input type="number" id="pct-price" class="input-base input-lg" placeholder="e.g. 80" step="any" /></div><div class="input-col"><label class="label">Discount (%)</label><input type="number" id="pct-disc" class="input-base input-lg" placeholder="e.g. 30" step="any" /></div></div><p class="text-body-sm" style="color:var(--color-muted);">Calculate the sale price after a percentage discount.</p>`,
+    };
+    c.innerHTML = maps[mode] || maps['of'];
+  }
+
+  renderInputs();
+
+  function getVal(id:string):number{ return parseFloat((document.getElementById(id) as HTMLInputElement)?.value || ''); }
+
+  document.getElementById('calc-pct-btn')!.addEventListener('click',()=>{
+    const errEl = document.getElementById('pct-error') as HTMLElement;
+    const resEl = document.getElementById('pct-results') as HTMLElement;
+    errEl.hidden = true; resEl.hidden = true;
+    let result = '', formula = '', breakdown = '';
+
+    try {
+      if (mode === 'of') {
+        const p = getVal('pct-val'), n = getVal('pct-of'); if (isNaN(p)||isNaN(n)) throw 'Enter both values.';
+        const r = (p/100)*n; result = r.toLocaleString(undefined,{maximumFractionDigits:2}); formula = `${p}% × ${n} = ${r.toLocaleString(undefined,{maximumFractionDigits:4})}`;
+        breakdown = `<div class="result-row"><span class="result-row-label">Calculation</span><span class="result-row-value">${p}% of ${n}</span></div><div class="result-row" style="border-bottom:none"><span class="result-row-label">Formula</span><span class="result-row-value">${n} × (${p} ÷ 100)</span></div>`;
+      } else if (mode === 'is') {
+        const part = getVal('pct-part'), whole = getVal('pct-whole'); if (isNaN(part)||isNaN(whole)||whole===0) throw 'Enter both values (whole cannot be 0).';
+        const r = ((part/whole)*100); result = r.toLocaleString(undefined,{maximumFractionDigits:2})+'%'; formula = `${part} ÷ ${whole} × 100 = ${r.toLocaleString(undefined,{maximumFractionDigits:2})}%`;
+        breakdown = `<div class="result-row"><span class="result-row-label">Part</span><span class="result-row-value">${part.toLocaleString()}</span></div><div class="result-row"><span class="result-row-label">Whole</span><span class="result-row-value">${whole.toLocaleString()}</span></div><div class="result-row" style="border-bottom:none"><span class="result-row-label">Fraction</span><span class="result-row-value">${(part/whole*100).toFixed(1)}/100</span></div>`;
+      } else if (mode === 'change') {
+        const old = getVal('pct-old'), nw = getVal('pct-new'); if (isNaN(old)||isNaN(nw)||old===0) throw 'Enter both values (old cannot be 0).';
+        const change = ((nw-old)/old)*100; const dir = change>=0?'increase':'decrease';
+        result = Math.abs(change).toLocaleString(undefined,{maximumFractionDigits:2})+'% '+dir; formula = `(${nw} − ${old}) ÷ ${old} × 100 = ${change.toFixed(2)}%`;
+        breakdown = `<div class="result-row"><span class="result-row-label">Old Value</span><span class="result-row-value">${old.toLocaleString()}</span></div><div class="result-row"><span class="result-row-label">New Value</span><span class="result-row-value">${nw.toLocaleString()}</span></div><div class="result-row"><span class="result-row-label">Absolute Change</span><span class="result-row-value">${(nw-old)>=0?'+':''}${(nw-old).toLocaleString()}</span></div><div class="result-row" style="border-bottom:none"><span class="result-row-label">Direction</span><span class="result-row-value" style="color:${change>=0?'var(--color-success)':'var(--color-error)'};">${change>=0?'📈 Increase':'📉 Decrease'}</span></div>`;
+      } else if (mode === 'reverse') {
+        const num = getVal('pct-result-num'), p = getVal('pct-result-pct'); if (isNaN(num)||isNaN(p)||p===0) throw 'Enter both values (percentage cannot be 0).';
+        const orig = num/(p/100); result = orig.toLocaleString(undefined,{maximumFractionDigits:2}); formula = `${num} ÷ (${p} ÷ 100) = ${orig.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+        breakdown = `<div class="result-row"><span class="result-row-label">${num.toLocaleString()} is ${p}% of</span><span class="result-row-value">${orig.toLocaleString(undefined,{maximumFractionDigits:2})}</span></div><div class="result-row" style="border-bottom:none"><span class="result-row-label">Formula</span><span class="result-row-value">${num} ÷ ${p}%</span></div>`;
+      } else if (mode === 'add') {
+        const base = getVal('pct-base'), p = getVal('pct-add-pct'); if (isNaN(base)||isNaN(p)) throw 'Enter both values.';
+        const op = (document.querySelector('input[name="pct-op"]:checked') as HTMLInputElement).value;
+        const factor = op==='add' ? 1+p/100 : 1-p/100;
+        const r = base*factor; const diff = Math.abs(r-base);
+        result = r.toLocaleString(undefined,{maximumFractionDigits:2}); formula = `${base} ${op==='add'?'+':'-'} ${p}% = ${r.toLocaleString(undefined,{maximumFractionDigits:2})}`;
+        breakdown = `<div class="result-row"><span class="result-row-label">Base</span><span class="result-row-value">${base.toLocaleString()}</span></div><div class="result-row"><span class="result-row-label">${op==='add'?'Added':'Subtracted'}</span><span class="result-row-value">${p}% (${diff.toLocaleString(undefined,{maximumFractionDigits:2})})</span></div><div class="result-row" style="border-bottom:none"><span class="result-row-label">Result</span><span class="result-row-value" style="color:var(--color-link);font-weight:700;">${r.toLocaleString(undefined,{maximumFractionDigits:2})}</span></div>`;
+      } else if (mode === 'discount') {
+        const price = getVal('pct-price'), disc = getVal('pct-disc'); if (isNaN(price)||isNaN(disc)) throw 'Enter both values.';
+        const saved = price*disc/100; const final = price-saved;
+        result = `$${final.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}`; formula = `$${price} − ${disc}% = $${final.toFixed(2)}`;
+        breakdown = `<div class="result-row"><span class="result-row-label">Original Price</span><span class="result-row-value">$${price.toFixed(2)}</span></div><div class="result-row"><span class="result-row-label">Discount</span><span class="result-row-value">${disc}% (save $${saved.toFixed(2)})</span></div><div class="result-row" style="border-bottom:none"><span class="result-row-label">Sale Price</span><span class="result-row-value" style="color:var(--color-success);font-weight:700;">$${final.toFixed(2)}</span></div>`;
+      }
+    } catch(e:any) {
+      (document.getElementById('pct-error-msg') as HTMLElement).textContent = typeof e === 'string' ? e : e.message;
+      errEl.hidden = false; return;
+    }
+    (document.getElementById('pct-main-result') as HTMLElement).textContent = result;
+    (document.getElementById('pct-formula') as HTMLElement).textContent = formula;
+    (document.getElementById('pct-breakdown') as HTMLElement).innerHTML = breakdown;
+    resEl.hidden = false;
+  });
+
+  document.getElementById('reset-pct-btn')!.addEventListener('click',()=>{
+    document.querySelectorAll('#pct-inputs input[type=number]').forEach((i:any)=>{i.value='';});
+    (document.getElementById('pct-results') as HTMLElement).hidden = true;
+  });
+
+  // FAQ toggle
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const expanded = btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!expanded));
+    const ans = document.getElementById(btn.getAttribute('aria-controls')!);
+    if(ans) ans.classList.toggle('open',!expanded);
+  })});
+</script>

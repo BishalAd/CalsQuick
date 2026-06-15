@@ -1,0 +1,208 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How long will it take to pay off my credit card?', a: 'It depends on your balance, APR, and monthly payment. A $5,000 balance at 20% APR with $200/month payments takes 32 months and costs $1,432 in interest. With $400/month, it takes 14 months and costs $547. Our calculator shows your exact payoff date and total interest.' },
+  { q: 'How does credit card interest work?', a: 'Credit card interest compounds daily based on your average daily balance. The APR is divided by 365 to get the daily rate. Each day, interest accrues on your balance. Most cards have a grace period — if you pay the full statement balance by the due date, you pay zero interest.' },
+  { q: 'What is a good APR for a credit card?', a: 'As of 2024-2025, excellent credit (720+ score) can qualify for 15-19% APR. Good credit (690-719): 19-24%. Fair credit (630-689): 24-29%. Poor credit: 29%+. The average credit card APR in the US is around 22-24%. Always look for cards with 0% intro APR offers if you plan to carry a balance.' },
+  { q: 'What is the avalanche vs snowball method?', a: 'Avalanche: pay minimum on all cards, put extra toward highest APR card first — saves the most money. Snowball: pay smallest balance first for psychological wins — costs more but builds motivation. Our calculator helps you model either approach.' },
+  { q: 'How much should I pay monthly to eliminate credit card debt fast?', a: 'Pay as much as you can above the minimum. The minimum payment (usually 1-3% of balance) mostly covers interest and barely touches principal. Doubling or tripling the minimum dramatically shortens payoff time. A $3,000 balance at 22% with $100 min takes years; $300/month clears it in 12 months.' },
+  { q: 'Should I consolidate credit card debt?', a: 'Balance transfer cards with 0% intro APR (12-21 months) can save you hundreds in interest. Personal loans at 8-12% APR are cheaper than 22%+ credit cards. But only consolidate if you have a plan to pay off within the promotional period — otherwise, you may end up with more debt.' },
+  { q: 'What happens if I only pay the minimum payment?', a: 'It can take decades to pay off a balance with minimum payments. A $5,000 balance at 22% APR with 3% minimum ($150) takes over 4 years and costs $2,400+ in interest. Always pay more than the minimum — even an extra $50/month saves months and hundreds in interest.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Credit Card Payoff Calculator', description: 'Free credit card payoff calculator. Calculate exactly how long it will take to pay off your credit card debt, total interest costs, and how extra payments accelerate your debt freedom date.', url: '/credit-card-payoff-calculator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Compound Interest Calculator', href: '/compound-interest-calculator', icon: '📈', desc: 'Investment growth calculator' },
+  { name: 'Loan EMI Calculator', href: '/loan-emi-calculator', icon: '🏦', desc: 'Monthly loan payments' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Calculate and split tips' },
+];
+---
+
+<CalculatorLayout
+  title="Credit Card Payoff Calculator — Debt Payoff Timeline & Interest"
+  description="Free credit card payoff calculator. See exactly when you will be debt-free, total interest costs, and how extra monthly payments accelerate your payoff. Plan your debt freedom strategy."
+  canonical="/credit-card-payoff-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Credit Card Payoff Calculator', url: '/credit-card-payoff-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Debt Management</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Credit Card Payoff Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:620px;">
+      Calculate exactly when you will be debt-free. See how much interest you will pay and how extra monthly payments can save you months and hundreds of dollars.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1">
+    <div class="calc-form">
+      <div class="two-col">
+        <div><label for="cc-balance" class="label">Credit Card Balance ($)</label><input type="number" id="cc-balance" class="input-base input-lg" placeholder="e.g. 5000" min="1" step="any" /></div>
+        <div><label for="cc-apr" class="label">APR / Interest Rate (%)</label><input type="number" id="cc-apr" class="input-base input-lg" placeholder="e.g. 22" min="0" max="50" step="any" /></div>
+      </div>
+      <div class="two-col">
+        <div><label for="cc-payment" class="label">Monthly Payment ($)</label><input type="number" id="cc-payment" class="input-base input-lg" placeholder="e.g. 200" min="1" step="any" /></div>
+        <div><label for="cc-extra" class="label">Extra Monthly Payment ($) <span style="font-size:11px;color:var(--color-muted);">(optional)</span></label><input type="number" id="cc-extra" class="input-base input-lg" placeholder="e.g. 50" min="0" step="any" /></div>
+      </div>
+
+      <!-- Quick payment presets -->
+      <div>
+        <label class="label">Quick Payment Scenarios</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="preset-btn" data-pct="3">Minimum (~3%)</button>
+          <button class="preset-btn" data-pct="5">5% of Balance</button>
+          <button class="preset-btn" data-pct="10">10% of Balance</button>
+          <button class="preset-btn" data-pct="15">15% of Balance</button>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;">
+        <button id="calc-cc-btn" class="btn-primary" style="flex:1;">Calculate Payoff</button>
+        <button id="reset-cc-btn" class="btn-secondary">Clear</button>
+      </div>
+    </div>
+
+    <div id="cc-error" class="calc-error" role="alert" hidden><span id="cc-error-msg"></span></div>
+
+    <div id="cc-results" hidden aria-live="polite" style="margin-top:24px;">
+      <div class="results-divider"></div>
+      <div class="cc-hero">
+        <div class="cc-hero-col">
+          <div class="cc-stat-label">Payoff Date</div>
+          <div class="cc-stat-value" id="cc-payoff-date">—</div>
+        </div>
+        <div class="cc-hero-divider"></div>
+        <div class="cc-hero-col">
+          <div class="cc-stat-label">Months to Payoff</div>
+          <div class="cc-stat-value" id="cc-months">—</div>
+        </div>
+        <div class="cc-hero-divider"></div>
+        <div class="cc-hero-col">
+          <div class="cc-stat-label">Total Interest</div>
+          <div class="cc-stat-value" id="cc-total-interest" style="color:var(--color-error);">—</div>
+        </div>
+        <div class="cc-hero-divider"></div>
+        <div class="cc-hero-col">
+          <div class="cc-stat-label">Total Paid</div>
+          <div class="cc-stat-value" id="cc-total-paid">—</div>
+        </div>
+      </div>
+
+      <!-- Payment breakdown -->
+      <div class="result-panel" style="margin-top:16px;">
+        <div class="result-row"><span class="result-row-label">Monthly Principal</span><span class="result-row-value" id="cc-monthly-principal">—</span></div>
+        <div class="result-row"><span class="result-row-label">Monthly Interest</span><span class="result-row-value" id="cc-monthly-interest" style="color:var(--color-error);">—</span></div>
+        <div class="result-row"><span class="result-row-label">% Interest of Payment</span><span class="result-row-value" id="cc-interest-pct">—</span></div>
+        <div class="result-row" style="border-bottom:none;"><span class="result-row-label">Extra Payment Impact</span><span class="result-row-value" id="cc-extra-impact" style="color:var(--color-success);">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">How Credit Card Payoff Works: Breaking the Interest Cycle</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Americans collectively carry over <strong>$1 trillion in credit card debt</strong> with average APRs above 22%. The minimum payment trap is real — a $5,000 balance at 22% with typical 3% minimum payments ($150/month) takes 50 months to pay off and costs $2,489 in interest. That is nearly 50% of the original balance in interest alone. Understanding your payoff timeline empowers you to make better decisions.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">The Math Behind Minimum Payments</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Credit cards calculate interest daily: Daily Rate = APR ÷ 365. If your APR is 24%, the daily rate is 0.0658%. Each day, interest is added to your balance. At $150/month on a $5,000 balance, approximately $100 goes to interest in the first month — only $50 reduces principal. As the balance slowly decreases, more of each payment goes to principal. This is why the early months feel like you are running in place.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">The Fastest Path to Debt Freedom</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      The single most effective strategy: <strong>pay more than the minimum every month.</strong> Even an extra $50/month on a $5,000 balance at 22% reduces payoff time from 50 months to 32 months and saves $880 in interest. An extra $150/month (doubling the payment) clears the debt in 21 months and saves $1,600+. Use our calculator to find your personal sweet spot.
+    </p>
+  </div>
+
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`cc-faq-${i}`}><span>{faq.q}</span><svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faq-answer" id={`cc-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:20px;}
+  .results-divider{height:1px;background:var(--color-hairline);margin:20px 0;}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .preset-btn{padding:8px 16px;border:1px solid var(--color-hairline);border-radius:var(--radius-pill);background:var(--color-canvas-soft-2);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;}
+  .preset-btn:hover{border-color:var(--color-link);background:var(--color-canvas);}
+  .cc-hero{display:flex;background:var(--color-canvas-soft-2);border:2px solid var(--color-error);border-radius:var(--radius-lg);overflow:hidden;flex-wrap:wrap;}
+  .cc-hero-col{flex:1;min-width:100px;padding:20px 14px;text-align:center;}
+  .cc-hero-divider{width:1px;background:var(--color-hairline);}
+  .cc-stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted);margin-bottom:6px;}
+  .cc-stat-value{font-size:20px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+  .result-panel{background:var(--color-canvas-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);padding:16px 20px;}
+  .result-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--color-hairline);}
+  .result-row-label{font-size:14px;color:var(--color-body);}
+  .result-row-value{font-size:14px;font-weight:600;color:var(--color-ink);}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr;}.cc-hero-col{flex-basis:50%;}.cc-hero-divider:nth-child(2){display:none;}.prose-section{padding:20px 16px;}}
+</style>
+
+<script>
+  document.querySelectorAll('.preset-btn').forEach(b=>b.addEventListener('click',()=>{
+    const pct=parseFloat((b as HTMLElement).dataset.pct!);
+    const bal=parseFloat((document.getElementById('cc-balance') as HTMLInputElement).value)||0;
+    if(bal>0){(document.getElementById('cc-payment') as HTMLInputElement).value=Math.round(bal*pct/100).toString();}
+  }));
+
+  document.getElementById('calc-cc-btn')!.addEventListener('click',()=>{
+    const errEl=document.getElementById('cc-error') as HTMLElement, resEl=document.getElementById('cc-results') as HTMLElement;
+    errEl.hidden=true;resEl.hidden=true;
+    const bal=parseFloat((document.getElementById('cc-balance') as HTMLInputElement).value);
+    const apr=parseFloat((document.getElementById('cc-apr') as HTMLInputElement).value);
+    const pmt=parseFloat((document.getElementById('cc-payment') as HTMLInputElement).value);
+    const extra=parseFloat((document.getElementById('cc-extra') as HTMLInputElement).value)||0;
+    if(!bal||!apr||!pmt||bal<=0||pmt<=0){document.getElementById('cc-error-msg')!.textContent='Enter balance, APR, and payment.';errEl.hidden=false;return}
+    const totalPmt=pmt+extra;
+    const monthlyRate=apr/100/12;
+    if(totalPmt<=bal*monthlyRate){document.getElementById('cc-error-msg')!.textContent='Payment is too low to pay off the debt. Increase your payment to cover at least the monthly interest.';errEl.hidden=false;return}
+
+    // Calculate without extra first
+    let b1=bal, m1=0, int1=0;
+    while(b1>0.01&&m1<1200){const i=b1*monthlyRate;int1+=i;b1=b1+i-pmt;if(b1<0)b1=0;m1++;}
+    // With extra
+    let b2=bal, m2=0, int2=0;
+    while(b2>0.01&&m2<1200){const i=b2*monthlyRate;int2+=i;b2=b2+i-totalPmt;if(b2<0)b2=0;m2++;}
+
+    const now=new Date();
+    const payoffDate=new Date(now.getFullYear(),now.getMonth()+m2,now.getDate());
+    const dfmt=payoffDate.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+    const savedMonths=m1-m2;
+    const savedInterest=int1-int2;
+
+    document.getElementById('cc-payoff-date')!.textContent=dfmt;
+    document.getElementById('cc-months')!.textContent=m2+' months';
+    document.getElementById('cc-total-interest')!.textContent='$'+int2.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('cc-total-paid')!.textContent='$'+(bal+int2).toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('cc-monthly-principal')!.textContent='$'+(totalPmt-bal*monthlyRate).toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('cc-monthly-interest')!.textContent='$'+(bal*monthlyRate).toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('cc-interest-pct')!.textContent=(bal*monthlyRate/totalPmt*100).toFixed(1)+'%';
+    document.getElementById('cc-extra-impact')!.textContent=extra>0?`Saves ${savedMonths} months & $${savedInterest.toLocaleString(undefined,{maximumFractionDigits:0})}`:'Add an extra payment to see savings';
+    resEl.hidden=false;
+  });
+
+  document.getElementById('reset-cc-btn')!.addEventListener('click',()=>{
+    document.querySelectorAll('#cc-calculator input[type=number]').forEach((i:any)=>{i.value='';});
+    (document.getElementById('cc-results') as HTMLElement).hidden=true;
+  });
+
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+</script>

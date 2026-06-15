@@ -1,17 +1,45 @@
 ---
-const navLinks = [
-  { href: '/age-calculator', label: 'Age' },
-  { href: '/bmi-calculator', label: 'BMI' },
-  { href: '/calorie-calculator', label: 'Calorie' },
-  { href: '/tip-calculator', label: 'Tip' },
-  { href: '/online-ruler', label: 'Ruler' },
-  { href: '/mortgage-calculator', label: 'Mortgage' },
-  { href: '/aspect-ratio-calculator', label: 'Aspect Ratio' },
-  { href: '/loan-emi-calculator', label: 'EMI' },
-  { href: '/what-is-my-ip', label: 'My IP' },
+const currentPath = Astro.url.pathname;
+
+const toolCategories = [
+  {
+    label: 'Health',
+    tools: [
+      { href: '/age-calculator', label: 'Age' },
+      { href: '/bmi-calculator', label: 'BMI' },
+      { href: '/calorie-calculator', label: 'Calorie' },
+      { href: '/bmr-calculator', label: 'BMR' },
+      { href: '/tdee-calculator', label: 'TDEE' },
+      { href: '/water-intake-calculator', label: 'Water Intake' },
+      { href: '/pregnancy-due-date-calculator', label: 'Due Date' },
+    ],
+  },
+  {
+    label: 'Finance',
+    tools: [
+      { href: '/tip-calculator', label: 'Tip' },
+      { href: '/mortgage-calculator', label: 'Mortgage' },
+      { href: '/loan-emi-calculator', label: 'EMI' },
+      { href: '/compound-interest-calculator', label: 'Compound Interest' },
+      { href: '/credit-card-payoff-calculator', label: 'Credit Card Payoff' },
+    ],
+  },
+  {
+    label: 'Tools',
+    tools: [
+      { href: '/percentage-calculator', label: 'Percentage' },
+      { href: '/online-ruler', label: 'Ruler' },
+      { href: '/aspect-ratio-calculator', label: 'Aspect Ratio' },
+      { href: '/concrete-calculator', label: 'Concrete' },
+      { href: '/gpa-calculator', label: 'GPA' },
+      { href: '/what-is-my-ip', label: 'My IP' },
+    ],
+  },
+];
+
+const otherLinks = [
   { href: '/blog', label: 'Blog' },
 ];
-const currentPath = Astro.url.pathname;
 ---
 
 <header class="site-header" role="banner">
@@ -32,7 +60,31 @@ const currentPath = Astro.url.pathname;
 
       <!-- Desktop Links -->
       <ul class="nav-links" role="list">
-        {navLinks.map((link) => (
+        {toolCategories.map((cat) => (
+          <li class="nav-dropdown">
+            <button class="nav-link nav-dropdown-toggle" aria-expanded="false" aria-haspopup="true">
+              {cat.label}
+              <svg class="dropdown-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M2 3l3 4 3-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <ul class="nav-dropdown-menu" role="menu" aria-label={`${cat.label} calculators`}>
+              {cat.tools.map((tool) => (
+                <li role="none">
+                  <a
+                    href={tool.href}
+                    class={`nav-dropdown-link ${currentPath === tool.href ? 'nav-link--active' : ''}`}
+                    role="menuitem"
+                    aria-current={currentPath === tool.href ? 'page' : undefined}
+                  >
+                    {tool.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))}
+        {otherLinks.map((link) => (
           <li>
             <a
               href={link.href}
@@ -81,7 +133,26 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile menu -->
   <div class="mobile-menu" id="mobile-menu" aria-hidden="true" role="dialog" aria-modal="true">
     <ul role="list">
-      {navLinks.map((link) => (
+      {toolCategories.map((cat) => (
+        <li class="mobile-dropdown">
+          <button class="mobile-nav-link mobile-dropdown-toggle" aria-expanded="false">
+            {cat.label}
+            <svg class="dropdown-arrow" width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <path d="M2 3l3 4 3-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="mobile-dropdown-menu" hidden>
+            {cat.tools.map((tool) => (
+              <li>
+                <a href={tool.href} class={`mobile-nav-link mobile-sub-link ${currentPath === tool.href ? 'mobile-nav-link--active' : ''}`}>
+                  {tool.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+      {otherLinks.map((link) => (
         <li>
           <a href={link.href} class={`mobile-nav-link ${currentPath === link.href ? 'mobile-nav-link--active' : ''}`}>
             {link.label}
@@ -154,15 +225,57 @@ const currentPath = Astro.url.pathname;
     border-radius: var(--radius-pill);
     transition: color 0.15s ease, background-color 0.15s ease;
     letter-spacing: -0.28px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
   }
   .nav-link:hover { color: var(--color-ink); background: var(--color-canvas-soft-2); }
   .nav-link--active { color: var(--color-ink); font-weight: 500; }
+
+  /* Dropdown */
+  .nav-dropdown { position: relative; }
+  .nav-dropdown-toggle { cursor: pointer; }
+  .dropdown-arrow { transition: transform 0.2s ease; flex-shrink: 0; }
+  .nav-dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+  .nav-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card-lg);
+    padding: 6px;
+    list-style: none;
+    margin-top: 4px;
+    z-index: 1001;
+  }
+  .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .nav-dropdown-link {
+    display: block;
+    padding: 8px 14px;
+    font-size: 13.5px;
+    color: var(--color-body);
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s, background-color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-dropdown-link:hover { color: var(--color-ink); background: var(--color-canvas-soft-2); }
+  .nav-dropdown-link.nav-link--active { color: var(--color-ink); font-weight: 500; background: var(--color-canvas-soft-2); }
+
   .nav-cta {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  
+
   .theme-toggle-btn {
     display: inline-flex;
     align-items: center;
@@ -180,13 +293,13 @@ const currentPath = Astro.url.pathname;
     border-color: var(--color-hairline-strong);
     background: var(--color-canvas-soft-2);
   }
-  
+
   /* Show/hide icons based on html data-theme attribute */
   :global(html[data-theme="dark"]) .sun-icon { display: block; }
   :global(html[data-theme="dark"]) .moon-icon { display: none; }
   :global(html[data-theme="light"]) .sun-icon { display: none; }
   :global(html[data-theme="light"]) .moon-icon { display: block; }
-  
+
   /* Fallbacks */
   .sun-icon { display: none; }
   .moon-icon { display: block; }
@@ -218,19 +331,43 @@ const currentPath = Astro.url.pathname;
     border-bottom: 1px solid var(--color-hairline);
     padding: 8px 16px 16px;
     box-shadow: var(--shadow-card-md);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
   }
   .mobile-menu[aria-hidden="false"] { display: block; }
   .mobile-nav-link {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     padding: 12px 8px;
     font-size: 15px;
     font-weight: 400;
     color: var(--color-body);
     text-decoration: none;
     border-bottom: 1px solid var(--color-hairline);
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
   }
   .mobile-nav-link:last-of-type { border-bottom: none; }
   .mobile-nav-link--active { color: var(--color-ink); font-weight: 500; }
+  .mobile-sub-link { padding-left: 28px; font-size: 14px; }
+
+  /* Mobile dropdown */
+  .mobile-dropdown-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: var(--color-canvas-soft-2);
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+  }
+  .mobile-dropdown-toggle .dropdown-arrow { transition: transform 0.2s ease; }
+  .mobile-dropdown-toggle.open .dropdown-arrow { transform: rotate(180deg); }
 
   @media (max-width: 767px) {
     .nav-links, .nav-cta { display: none; }
@@ -250,6 +387,17 @@ const currentPath = Astro.url.pathname;
       menu.setAttribute('aria-hidden', String(isOpen));
     });
   }
+
+  // Mobile dropdown toggles
+  document.querySelectorAll('.mobile-dropdown-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      btn.classList.toggle('open', !expanded);
+      const submenu = btn.nextElementSibling as HTMLElement;
+      if (submenu) submenu.hidden = expanded;
+    });
+  });
 
   // Theme Toggler Logic
   const toggleBtn = document.getElementById('theme-toggle');

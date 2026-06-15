@@ -1,0 +1,240 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How is a due date calculated?', a: 'The standard method is Naegele\'s Rule: add 280 days (40 weeks) to the first day of your last menstrual period (LMP). For example, if LMP was January 1, the estimated due date is October 8. This assumes a 28-day cycle with ovulation on day 14. Our calculator adjusts for your actual cycle length.' },
+  { q: 'How accurate is a due date?', a: 'Only about 4% of babies are born exactly on their due date. Most (80%) arrive within 2 weeks before or after. The due date is an estimate — your healthcare provider may adjust it based on ultrasound measurements, which are most accurate in the first trimester (within 5-7 days).' },
+  { q: 'What if my cycle is not 28 days?', a: 'If your cycle is longer than 28 days, ovulation occurs later and your due date shifts. For a 32-day cycle, add 4 extra days. Our calculator automatically adjusts the due date based on your cycle length. Irregular cycles make the estimate less reliable — an early ultrasound provides the most accurate dating.' },
+  { q: 'What are the three trimesters of pregnancy?', a: 'First trimester: Week 1 to Week 13 (months 1-3). Second trimester: Week 14 to Week 27 (months 4-6). Third trimester: Week 28 to Week 40+ (months 7-9). Each trimester has distinct developmental milestones and screening tests. Our calculator shows your exact trimester dates.' },
+  { q: 'When can I find out the baby\'s sex?', a: 'An ultrasound can typically determine sex around 18-20 weeks (the anatomy scan). Non-invasive prenatal testing (NIPT) can detect sex as early as 10 weeks via a blood test. Our calculator shows when you reach these key milestones.' },
+  { q: 'When should I start feeling the baby move?', a: 'First-time moms typically feel movement (quickening) between 18-22 weeks. Experienced moms may feel it as early as 16-18 weeks. If you have not felt movement by 24 weeks, contact your healthcare provider.' },
+  { q: 'What does \"weeks pregnant\" actually mean?', a: 'Pregnancy is dated from the first day of your last period, not from conception. So at \"4 weeks pregnant,\" conception actually occurred about 2 weeks ago. This means weeks 1-2 of pregnancy occur before you are actually pregnant. The total is 40 weeks from LMP to due date.' },
+  { q: 'Can I calculate my due date from conception date?', a: 'Yes. Add 266 days (38 weeks) to the conception date. This is slightly more accurate than the LMP method, but few women know their exact conception date. IVF patients know the exact embryo transfer date, making this the most precise dating method.' },
+  { q: 'What is a full-term pregnancy?', a: 'Early term: 37 weeks 0 days to 38 weeks 6 days. Full term: 39 weeks 0 days to 40 weeks 6 days. Late term: 41 weeks 0 days to 41 weeks 6 days. Postterm: 42 weeks and beyond. Babies born at 39-40 weeks have the best health outcomes.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Pregnancy Due Date Calculator', description: 'Free pregnancy due date calculator. Calculate your estimated due date, conception date, trimester dates, and key pregnancy milestones based on your last period or conception date.', url: '/pregnancy-due-date-calculator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+  { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Body mass index' },
+  { name: 'Water Intake Calculator', href: '/water-intake-calculator', icon: '💧', desc: 'Daily water needs' },
+];
+---
+
+<CalculatorLayout
+  title="Pregnancy Due Date Calculator — Estimate Your Baby\'s Arrival"
+  description="Free pregnancy due date calculator using Naegele\'s Rule. Calculate your estimated due date from your last period or conception date. Get trimester dates, week-by-week info, and key pregnancy milestones."
+  canonical="/pregnancy-due-date-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Pregnancy Due Date Calculator', url: '/pregnancy-due-date-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Health & Pregnancy</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Pregnancy Due Date Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:620px;">
+      Calculate your estimated due date, conception window, trimester dates, and key pregnancy milestones. Based on Naegele\'s Rule with cycle length adjustment.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1">
+    <div>
+      <label class="label">Calculation Method</label>
+      <div class="method-grid">
+        <button class="method-btn active" data-method="lmp" aria-pressed="true">
+          <span class="method-icon">📅</span><span class="method-label">Last Period (LMP)</span>
+        </button>
+        <button class="method-btn" data-method="conception" aria-pressed="false">
+          <span class="method-icon">❤️</span><span class="method-label">Conception Date</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="lmp-inputs" class="calc-form">
+      <div><label for="lmp-date" class="label">First Day of Last Menstrual Period</label><input type="date" id="lmp-date" class="input-base input-lg" /></div>
+      <div><label for="cycle-length" class="label">Average Cycle Length (days)</label><input type="number" id="cycle-length" class="input-base input-lg" value="28" min="20" max="45" /></div>
+    </div>
+
+    <div id="conception-inputs" class="calc-form" hidden>
+      <div><label for="conception-date" class="label">Conception Date</label><input type="date" id="conception-date" class="input-base input-lg" /></div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button id="calc-due-btn" class="btn-primary" style="flex:1;">Calculate Due Date</button>
+      <button id="reset-due-btn" class="btn-secondary">Clear</button>
+    </div>
+
+    <div id="due-error" class="calc-error" role="alert" hidden><span id="due-error-msg"></span></div>
+
+    <div id="due-results" hidden aria-live="polite" style="margin-top:24px;">
+      <div class="results-divider"></div>
+      <div class="due-hero">
+        <div class="due-hero-label">🎀 Estimated Due Date</div>
+        <div class="due-hero-date" id="due-date">—</div>
+        <div class="due-hero-sub" id="due-countdown">—</div>
+      </div>
+
+      <div class="due-stats-grid">
+        <div class="due-stat"><div class="ds-label">Conception Window</div><div class="ds-value" id="due-conception">—</div></div>
+        <div class="due-stat"><div class="ds-label">First Trimester Ends</div><div class="ds-value" id="due-t1">—</div></div>
+        <div class="due-stat"><div class="ds-label">Second Trimester Ends</div><div class="ds-value" id="due-t2">—</div></div>
+        <div class="due-stat"><div class="ds-label">Third Trimester Starts</div><div class="ds-value" id="due-t3">—</div></div>
+      </div>
+
+      <div class="milestones-section" style="margin-top:20px;">
+        <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:12px;">Key Pregnancy Milestones</h3>
+        <div class="result-panel" id="milestones-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">How Due Dates Are Calculated: Understanding Naegele\'s Rule</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The most common method for calculating a pregnancy due date is <strong>Naegele\'s Rule</strong>, developed by German obstetrician Franz Naegele in the early 1800s. His formula adds 280 days (40 weeks) to the first day of your last menstrual period (LMP), then subtracts 3 months and adds 7 days. For example, if your LMP was March 15: add 7 days = March 22, subtract 3 months = December 22 estimated due date.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Cycle Length Matters</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Naegele\'s Rule assumes a 28-day cycle with ovulation on day 14. If your cycle is 35 days, ovulation occurs around day 21 — 7 days later — so your due date shifts forward by 7 days. Our calculator automatically adjusts for your cycle length. For the most accurate dating, your healthcare provider will use a first-trimester ultrasound, which is accurate within 5-7 days.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Important Disclaimer</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      This calculator provides an <strong>estimate only</strong> and is not a substitute for professional medical advice. Always consult your doctor, midwife, or OB-GYN for personalized pregnancy care and accurate dating via ultrasound. Every pregnancy is unique, and only your healthcare provider can give you an exact due date based on your individual circumstances.
+    </p>
+  </div>
+
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`due-faq-${i}`}><span>{faq.q}</span><svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faq-answer" id={`due-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:20px;}
+  .results-divider{height:1px;background:var(--color-hairline);margin:20px 0;}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .method-grid{display:flex;gap:8px;flex-wrap:wrap;}
+  .method-btn{display:flex;align-items:center;gap:10px;padding:12px 18px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;}
+  .method-btn:hover{border-color:var(--color-link);}
+  .method-btn.active{border-color:var(--color-link);background:var(--color-canvas);}
+  .method-icon{font-size:20px;}
+  .method-label{font-size:14px;font-weight:500;color:var(--color-ink);}
+  .due-hero{text-align:center;padding:36px 24px;background:linear-gradient(135deg,rgba(236,72,153,0.08),rgba(168,85,247,0.08));border:2px solid #ec4899;border-radius:var(--radius-lg);}
+  .due-hero-label{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-muted);margin-bottom:10px;}
+  .due-hero-date{font-size:clamp(28px,5vw,48px);font-weight:700;color:#ec4899;letter-spacing:-1px;}
+  .due-hero-sub{font-size:14px;color:var(--color-body);margin-top:8px;}
+  .due-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
+  .due-stat{padding:14px 10px;text-align:center;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .ds-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted);margin-bottom:6px;}
+  .ds-value{font-size:14px;font-weight:600;color:var(--color-ink);}
+  .result-panel{background:var(--color-canvas-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);padding:16px 20px;}
+  .mile-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--color-hairline);}
+  .mile-label{font-size:13px;color:var(--color-body);}
+  .mile-value{font-size:13px;font-weight:600;color:var(--color-ink);}
+  @media(max-width:600px){.due-stats-grid{grid-template-columns:repeat(2,1fr);}.due-hero{padding:24px 16px;}.prose-section{padding:20px 16px;}}
+</style>
+
+<script>
+  let method='lmp';
+
+  document.querySelectorAll('.method-btn').forEach(b=>b.addEventListener('click',()=>{
+    method=(b as HTMLElement).dataset.method!;
+    document.querySelectorAll('.method-btn').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});
+    b.classList.add('active');b.setAttribute('aria-pressed','true');
+    (document.getElementById('lmp-inputs') as HTMLElement).hidden=method!=='lmp';
+    (document.getElementById('conception-inputs') as HTMLElement).hidden=method!=='conception';
+  }));
+
+  document.getElementById('calc-due-btn')!.addEventListener('click',()=>{
+    const errEl=document.getElementById('due-error') as HTMLElement, resEl=document.getElementById('due-results') as HTMLElement;
+    errEl.hidden=true;resEl.hidden=true;
+
+    let dueDate:Date, lmpDate:Date;
+    try{
+      if(method==='lmp'){
+        const lmpVal=(document.getElementById('lmp-date') as HTMLInputElement).value;
+        const cycleLen=parseInt((document.getElementById('cycle-length') as HTMLInputElement).value)||28;
+        if(!lmpVal) throw 'Select your last period date.';
+        lmpDate=new Date(lmpVal+'T00:00:00');
+        if(isNaN(lmpDate.getTime())) throw 'Invalid date.';
+        const adjustDays=cycleLen-28;
+        dueDate=new Date(lmpDate.getTime()+(280+adjustDays)*86400000);
+      } else {
+        const concVal=(document.getElementById('conception-date') as HTMLInputElement).value;
+        if(!concVal) throw 'Select your conception date.';
+        const concDate=new Date(concVal+'T00:00:00');
+        if(isNaN(concDate.getTime())) throw 'Invalid date.';
+        dueDate=new Date(concDate.getTime()+266*86400000);
+        lmpDate=new Date(concDate.getTime()-14*86400000);
+      }
+    } catch(e:any){document.getElementById('due-error-msg')!.textContent=typeof e==='string'?e:e.message;errEl.hidden=false;return}
+
+    const dfmt=dueDate.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    const diffDays=Math.ceil((dueDate.getTime()-Date.now())/86400000);
+    const weeks=Math.floor(diffDays/7);
+    const days=diffDays%7;
+    const countdown=diffDays>0?`${weeks} weeks and ${days} days to go`:`Your due date has passed!`;
+    const t1End=new Date(lmpDate.getTime()+13*7*86400000);
+    const t2End=new Date(lmpDate.getTime()+27*7*86400000);
+    const t3Start=new Date(lmpDate.getTime()+28*7*86400000);
+    const conceptionStart=new Date(lmpDate.getTime()+12*86400000);
+    const conceptionEnd=new Date(lmpDate.getTime()+16*86400000);
+    const sfmt=(d:Date)=>d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+    document.getElementById('due-date')!.textContent=dfmt;
+    document.getElementById('due-countdown')!.textContent=countdown;
+    document.getElementById('due-conception')!.textContent=`${sfmt(conceptionStart)} – ${sfmt(conceptionEnd)}`;
+    document.getElementById('due-t1')!.textContent=sfmt(t1End);
+    document.getElementById('due-t2')!.textContent=sfmt(t2End);
+    document.getElementById('due-t3')!.textContent=sfmt(t3Start);
+
+    const milestones=[
+      {week:4,label:'Missed Period',desc:'Pregnancy test may show positive'},
+      {week:6,label:'Heartbeat Detectable',desc:'Visible on early ultrasound'},
+      {week:8,label:'First Prenatal Visit',desc:'Typically scheduled around 8-10 weeks'},
+      {week:10,label:'NIPT Blood Test',desc:'Non-invasive prenatal testing (optional)'},
+      {week:12,label:'NT Scan Window',desc:'Nuchal translucency screening (11-13 weeks)'},
+      {week:16,label:'Early Movement',desc:'Quickening may be felt (experienced moms)'},
+      {week:20,label:'Anatomy Scan',desc:'Mid-pregnancy ultrasound; sex visible'},
+      {week:24,label:'Viability Milestone',desc:'Baby has chance of survival if born'},
+      {week:28,label:'Third Trimester',desc:'Glucose screening test; kick counts start'},
+      {week:37,label:'Early Term',desc:'Baby is considered early term; lungs mature'},
+      {week:40,label:'Due Date',desc:'Estimated date of delivery'},
+    ];
+    const today=new Date();
+    let ml='';
+    milestones.forEach(m=>{
+      const d=new Date(lmpDate.getTime()+(m.week-1)*7*86400000);
+      const passed=d<=today;
+      ml+=`<div class="mile-row"><span class="mile-label">⭐ ${m.label} <span style="font-size:11px;color:var(--color-muted);">(Week ${m.week})</span></span><span class="mile-value" style="color:${passed?'var(--color-success)':'var(--color-muted)'};">${sfmt(d)} ${passed?'✓':''}</span></div>`;
+    });
+    document.getElementById('milestones-list')!.innerHTML=ml;
+    resEl.hidden=false;
+  });
+
+  document.getElementById('reset-due-btn')!.addEventListener('click',()=>{
+    (document.getElementById('lmp-date') as HTMLInputElement).value='';
+    (document.getElementById('conception-date') as HTMLInputElement).value='';
+    (document.getElementById('cycle-length') as HTMLInputElement).value='28';
+    (document.getElementById('due-results') as HTMLElement).hidden=true;
+  });
+
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+</script>

@@ -1,26 +1,52 @@
 ---
-const footerLinks = {
-  Calculators: [
-    { label: 'Age Calculator', href: '/age-calculator' },
-    { label: 'BMI Calculator', href: '/bmi-calculator' },
-    { label: 'Calorie Calculator', href: '/calorie-calculator' },
-    { label: 'Tip Calculator', href: '/tip-calculator' },
-    { label: 'Online Ruler', href: '/online-ruler' },
-    { label: 'Mortgage Calculator', href: '/mortgage-calculator' },
-    { label: 'Aspect Ratio Calculator', href: '/aspect-ratio-calculator' },
-    { label: 'Loan EMI Calculator', href: '/loan-emi-calculator' },
-    { label: 'What Is My IP', href: '/what-is-my-ip' },
-  ],
-  Company: [
-    { label: 'About', href: '/about' },
-    { label: 'Blog', href: '/blog' },
-    { label: 'Contact', href: '/contact' },
-  ],
-  Legal: [
-    { label: 'Privacy Policy', href: '/privacy-policy' },
-    { label: 'Terms of Use', href: '/terms' },
-  ],
-};
+type CollapsibleSection = 'tools' | 'static';
+
+const toolCategories: Array<{ label: string; links: Array<{ label: string; href: string }> }> = [
+  {
+    label: 'Health Calculators',
+    links: [
+      { label: 'Age Calculator', href: '/age-calculator' },
+      { label: 'BMI Calculator', href: '/bmi-calculator' },
+      { label: 'BMR Calculator', href: '/bmr-calculator' },
+      { label: 'Calorie Calculator', href: '/calorie-calculator' },
+      { label: 'TDEE Calculator', href: '/tdee-calculator' },
+      { label: 'Water Intake', href: '/water-intake-calculator' },
+      { label: 'Due Date Calculator', href: '/pregnancy-due-date-calculator' },
+    ],
+  },
+  {
+    label: 'Finance Calculators',
+    links: [
+      { label: 'Tip Calculator', href: '/tip-calculator' },
+      { label: 'Mortgage Calculator', href: '/mortgage-calculator' },
+      { label: 'Loan EMI Calculator', href: '/loan-emi-calculator' },
+      { label: 'Compound Interest', href: '/compound-interest-calculator' },
+      { label: 'Credit Card Payoff', href: '/credit-card-payoff-calculator' },
+    ],
+  },
+  {
+    label: 'Productivity Tools',
+    links: [
+      { label: 'Percentage Calculator', href: '/percentage-calculator' },
+      { label: 'Online Ruler', href: '/online-ruler' },
+      { label: 'Aspect Ratio Calculator', href: '/aspect-ratio-calculator' },
+      { label: 'Concrete Calculator', href: '/concrete-calculator' },
+      { label: 'GPA Calculator', href: '/gpa-calculator' },
+      { label: 'What Is My IP', href: '/what-is-my-ip' },
+    ],
+  },
+];
+
+// Always-visible sections — critical for AdSense approval
+const companyLinks = [
+  { label: 'About', href: '/about' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'Contact', href: '/contact' },
+];
+const legalLinks = [
+  { label: 'Privacy Policy', href: '/privacy-policy' },
+  { label: 'Terms of Use', href: '/terms' },
+];
 ---
 
 <footer class="site-footer" role="contentinfo">
@@ -42,12 +68,21 @@ const footerLinks = {
         <p class="footer-tagline">Fast, Accurate &amp; Free<br/>Online Calculators</p>
       </div>
 
-      <!-- Links -->
-      {Object.entries(footerLinks).map(([category, links]) => (
-        <div class="footer-col">
-          <h3 class="footer-col-title">{category}</h3>
-          <ul>
-            {links.map((link) => (
+      <!-- Tool categories (collapsible on mobile) -->
+      {toolCategories.map((cat) => (
+        <div class="footer-col footer-col--tools">
+          <button
+            class="footer-col-title"
+            aria-expanded="true"
+            type="button"
+          >
+            {cat.label}
+            <svg class="footer-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="footer-list">
+            {cat.links.map((link) => (
               <li>
                 <a href={link.href} class="footer-link">{link.label}</a>
               </li>
@@ -55,14 +90,37 @@ const footerLinks = {
           </ul>
         </div>
       ))}
+
+      <!-- Company (always visible) -->
+      <div class="footer-col footer-col--static">
+        <h3 class="footer-col-title footer-col-title--static">Company</h3>
+        <ul class="footer-list footer-list--static">
+          {companyLinks.map((link) => (
+            <li>
+              <a href={link.href} class="footer-link">{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Legal (always visible) -->
+      <div class="footer-col footer-col--static">
+        <h3 class="footer-col-title footer-col-title--static">Legal</h3>
+        <ul class="footer-list footer-list--static">
+          {legalLinks.map((link) => (
+            <li>
+              <a href={link.href} class="footer-link">{link.label}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
 
     <div class="footer-bottom">
-      <p class="text-caption" style="color: var(--color-muted);">
-        &copy; {new Date().getFullYear()} CalcQuick. All rights reserved.
-      </p>
-      <p class="text-caption" style="color: var(--color-muted);">
-        calcquick.online
+      <p class="footer-copy">&copy; {new Date().getFullYear()} CalcQuick.online. All rights reserved.</p>
+      <p class="footer-desc">
+        CalcQuick provides free online calculators for health, finance, and productivity.
+        All calculations run in your browser. We do not collect or store your data.
       </p>
     </div>
   </div>
@@ -70,63 +128,221 @@ const footerLinks = {
 
 <style>
   .site-footer {
+    padding: 64px 0 32px;
     border-top: 1px solid var(--color-hairline);
     background: var(--color-canvas);
-    padding: 64px 0 32px;
   }
   .footer-inner {
     display: grid;
-    grid-template-columns: 1.5fr repeat(3, 1fr);
-    gap: 48px;
-    padding-bottom: 48px;
-    border-bottom: 1px solid var(--color-hairline);
+    grid-template-columns: 1.5fr repeat(5, 1fr);
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
   .footer-logo {
     display: flex;
     align-items: center;
     gap: 8px;
     text-decoration: none;
-    color: var(--color-ink);
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
+    color: var(--color-ink);
     letter-spacing: -0.3px;
-    margin-bottom: 12px;
   }
   .footer-tagline {
     font-size: 13px;
-    line-height: 20px;
     color: var(--color-muted);
+    line-height: 20px;
+    margin: 0;
+  }
+  .footer-col {
+    display: flex;
+    flex-direction: column;
   }
   .footer-col-title {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--color-muted);
-    margin-bottom: 16px;
-  }
-  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .footer-link {
-    font-size: 14px;
-    color: var(--color-body);
-    text-decoration: none;
-    transition: color 0.15s ease;
-    letter-spacing: -0.28px;
-  }
-  .footer-link:hover { color: var(--color-ink); }
-  .footer-bottom {
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: default;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 4px;
+    width: 100%;
+    text-align: left;
+  }
+  /* Static titles (Company, Legal) — never look like buttons on desktop */
+  .footer-col-title--static {
+    cursor: default;
+  }
+  .footer-chevron {
+    display: none;
+    flex-shrink: 0;
+    color: var(--color-muted);
+    transition: transform 0.2s ease;
+  }
+  .footer-col-title.collapsed .footer-chevron {
+    transform: rotate(-90deg);
+  }
+  .footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  /* Static lists (Company, Legal) — always visible */
+  .footer-list--static {
+    display: flex !important;
+  }
+  .footer-link {
+    font-size: 13.5px;
+    color: var(--color-body);
+    text-decoration: none;
+    transition: color 0.15s ease;
+    line-height: 20px;
+  }
+  .footer-link:hover {
+    color: var(--color-ink);
+  }
+
+  .footer-bottom {
     padding-top: 24px;
+    border-top: 1px solid var(--color-hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .footer-copy {
+    font-size: 12px;
+    color: var(--color-muted);
+    margin: 0;
+  }
+  .footer-desc {
+    font-size: 12px;
+    color: var(--color-muted);
+    line-height: 18px;
+    max-width: 520px;
+    margin: 0;
+  }
+
+  @media (max-width: 1023px) {
+    .footer-inner {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
   }
   @media (max-width: 767px) {
-    .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
-    .footer-brand { grid-column: 1 / -1; }
-  }
-  @media (max-width: 480px) {
-    .footer-inner { grid-template-columns: 1fr; }
-    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .footer-brand {
+      margin-bottom: 24px;
+    }
+
+    /* Tool categories: collapsible on mobile */
+    .footer-col--tools {
+      border-bottom: 1px solid var(--color-hairline);
+    }
+    .footer-col--tools .footer-col-title {
+      cursor: pointer;
+      padding: 14px 0;
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+    .footer-col--tools .footer-col-title:hover {
+      color: var(--color-ink);
+    }
+    .footer-col--tools .footer-chevron {
+      display: block;
+    }
+    .footer-col--tools .footer-list {
+      padding-bottom: 12px;
+      display: none;
+    }
+    .footer-col--tools .footer-col-title:not(.collapsed) + .footer-list {
+      display: flex;
+    }
+
+    /* Company & Legal: always visible, no accordion behavior */
+    .footer-col--static {
+      border-bottom: 1px solid var(--color-hairline);
+      padding: 14px 0;
+    }
+    .footer-col--static .footer-col-title {
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .footer-col--static .footer-chevron {
+      display: none !important;
+    }
+    .footer-col--static .footer-list {
+      display: flex !important;
+      gap: 6px;
+    }
   }
 </style>
+
+<script>
+  // On mobile, collapse tool categories by default except first
+  function applyMobileState() {
+    const isMobile = window.innerWidth <= 767;
+    document.querySelectorAll('.footer-col--tools .footer-col-title').forEach((btn, i) => {
+      const list = btn.nextElementSibling as HTMLElement;
+      if (!list) return;
+      if (isMobile && i > 0) {
+        btn.classList.add('collapsed');
+        list.style.display = 'none';
+        btn.setAttribute('aria-expanded', 'false');
+      } else {
+        btn.classList.remove('collapsed');
+        list.style.display = '';
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    // Company and Legal are NEVER collapsed
+    document.querySelectorAll('.footer-col--static .footer-col-title').forEach((btn) => {
+      btn.setAttribute('aria-expanded', 'true');
+    });
+  }
+
+  applyMobileState();
+
+  // Toggle on click (tool categories only)
+  document.querySelectorAll('.footer-col--tools .footer-col-title').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (window.innerWidth > 767) return; // no toggle on desktop
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.classList.toggle('collapsed', expanded);
+      btn.setAttribute('aria-expanded', String(!expanded));
+      const list = btn.nextElementSibling as HTMLElement;
+      if (list) list.style.display = expanded ? 'none' : '';
+    });
+  });
+
+  // Update on resize — reset state
+  let wasMobile = window.innerWidth <= 767;
+  window.addEventListener('resize', () => {
+    const isMobile = window.innerWidth <= 767;
+    if (isMobile !== wasMobile) {
+      wasMobile = isMobile;
+      applyMobileState();
+    }
+  });
+</script>

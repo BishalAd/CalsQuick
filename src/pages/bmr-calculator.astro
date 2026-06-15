@@ -486,12 +486,35 @@ const activityLevels = [
     .bmr-arrow{transform:rotate(90deg);}
     .macro-grid{grid-template-columns:repeat(3,1fr);}
     .prose-section{padding:20px 16px;}
+    .formula-tabs{flex-wrap:wrap;gap:4px;}
+    .formula-tab{font-size:12px;padding:8px 12px;flex:1;min-width:0;text-align:center;}
+    .bf-ref-grid{grid-template-columns:repeat(3,1fr);}
   }
   @media(max-width:480px){
     .goal-grid{grid-template-columns:repeat(2,1fr);}
-    .macro-grid{grid-template-columns:1fr 1fr 1fr;}
-    .formula-tab{font-size:11px;padding:6px 6px;}
-    .bf-ref-grid{flex-direction:column;}
+    .macro-grid{grid-template-columns:repeat(3,1fr);}
+    .formula-tab{font-size:11px;padding:7px 5px;white-space:normal;line-height:1.2;}
+    .formula-tabs{gap:3px;}
+    .activity-list{gap:6px;}
+    .activity-radio{padding:10px 12px;}
+    .ar-desc{font-size:11px;}
+    .bf-ref-grid{grid-template-columns:repeat(2,1fr);}
+    .bmr-compare-table{font-size:12px;}
+    .bmr-compare-table th,.bmr-compare-table td{padding:8px 8px;}
+    .input-with-unit{flex-direction:column;align-items:stretch;gap:8px;}
+    .input-with-unit .seg-ctrl{width:100%;justify-content:center;}
+    .input-with-unit .seg-btn{flex:1;text-align:center;}
+  }
+  @media(max-width:380px){
+    .goal-grid{grid-template-columns:repeat(2,1fr);}
+    .goal-card{padding:12px 8px;}
+    .goal-cals{font-size:18px;}
+    .macro-grid{grid-template-columns:repeat(3,1fr);gap:6px;}
+    .macro-card{padding:12px 6px;}
+    .macro-value{font-size:16px;}
+    .formula-tab{font-size:10px;padding:6px 3px;}
+    .bf-ref-grid{grid-template-columns:1fr 1fr;}
+    .bf-ref-item{padding:6px 6px;}
   }
 </style>
 

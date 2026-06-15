@@ -29,9 +29,9 @@ const schemas = [
 ];
 
 const relatedCalcs = [
+  { name: 'BMR Calculator', href: '/bmr-calculator', icon: '🔥', desc: 'Calculate your metabolic rate' },
   { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Check your body mass index' },
-  { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🔥', desc: 'Find your daily calorie needs' },
-  { name: 'GPA Calculator', href: '/gpa-calculator', icon: '🎓', desc: 'Calculate your GPA' },
+  { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🍎', desc: 'Find your daily calorie needs' },
 ];
 ---
 
@@ -557,6 +557,7 @@ const relatedCalcs = [
     .urine-scale { grid-template-columns:repeat(3,1fr); }
     .water-hero { flex-direction:column;align-items:flex-start;gap:16px;padding:20px 16px; }
     .prose-section { padding:20px 16px; }
+    .exercise-presets{justify-content:flex-start;}
   }
   @media (max-width: 500px) {
     .two-col { grid-template-columns:1fr; }
@@ -565,6 +566,32 @@ const relatedCalcs = [
     .water-stats-grid { grid-template-columns:repeat(2,1fr); }
     .conditions-grid { grid-template-columns:1fr 1fr; }
     .field-group { flex-direction:column;align-items:stretch; }
+    .exercise-presets{gap:4px;}
+    .ex-preset-btn{font-size:11px;padding:3px 8px;}
+    .glass-tracker{padding:12px;}
+    .schedule-item{flex-wrap:wrap;gap:4px;}
+    .sched-time,.sched-amount{min-width:auto;}
+    .pet-result-hero{flex-direction:column;align-items:flex-start;gap:8px;}
+    .unit-btn{padding:5px 10px;font-size:12px;}
+  }
+  @media (max-width: 380px) {
+    .activity-grid { grid-template-columns:repeat(2,1fr);gap:4px; }
+    .activity-btn{padding:8px 4px;}
+    .act-label{font-size:11px;}
+    .act-desc{font-size:9px;}
+    .climate-grid { grid-template-columns:repeat(2,1fr);gap:4px; }
+    .climate-btn{padding:8px 4px;}
+    .clim-label{font-size:10px;}
+    .conditions-grid { grid-template-columns:1fr; }
+    .water-stats-grid { grid-template-columns:repeat(2,1fr);gap:6px; }
+    .water-stat{padding:8px 6px;}
+    .urine-scale { grid-template-columns:repeat(3,1fr);gap:4px; }
+    .urine-swatch{width:28px;height:28px;}
+    .urine-label{font-size:10px;}
+    .urine-status{font-size:9px;}
+    .glass-item{font-size:20px;}
+    .seg-ctrl{gap:2px;}
+    .seg-btn{padding:6px 10px;font-size:12px;}
   }
 </style>
 

@@ -1,0 +1,193 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is compound interest?', a: 'Compound interest is interest earned on both your original principal AND previously accumulated interest. Unlike simple interest, which only pays on the principal, compound interest creates exponential growth — your money makes money on the money it already made.' },
+  { q: 'How is compound interest calculated?', a: 'The formula is A = P(1 + r/n)^(nt), where A = final amount, P = principal, r = annual interest rate (decimal), n = compounding periods per year, t = years. For example, $1,000 at 7% compounded monthly for 10 years: A = 1000(1+0.07/12)^120 = $2,009.66.' },
+  { q: 'What is the difference between simple and compound interest?', a: 'Simple interest pays only on the original principal. Compound pays on principal + accumulated interest. Over long periods, the difference is dramatic: $10,000 at 7% simple for 30 years = $31,000. Compound (annually) = $76,123. Compound (monthly) = $81,165.' },
+  { q: 'How does compounding frequency affect returns?', a: 'More frequent compounding yields more money. Daily compounding produces slightly more than monthly, which produces more than quarterly, which produces more than annually. For a 7% rate, the APY is 7.00% (annual), 7.23% (quarterly), 7.25% (monthly), 7.25% (daily).' },
+  { q: 'What is the Rule of 72?', a: 'The Rule of 72 estimates how long it takes money to double at a given interest rate: Years to double ≈ 72 ÷ interest rate. At 7%, money doubles in about 72 ÷ 7 ≈ 10.3 years. At 10%, about 7.2 years. This is a quick mental shortcut — our calculator gives exact results.' },
+  { q: 'How much should I invest monthly to reach my goal?', a: 'Use our calculator in reverse: enter your goal amount, interest rate, and time period. It calculates the monthly contribution needed. For example, to reach $500,000 in 30 years at 7%, contribute approximately $410/month.' },
+  { q: 'Does compound interest apply to debt?', a: 'Yes — and it works against you. Credit card interest compounds daily, which is why carrying a balance is so expensive. A $5,000 balance at 24% APR compounds to over $6,000 in just one year if unpaid. Always pay off high-interest debt before investing.' },
+  { q: 'What is APY vs APR?', a: 'APR (Annual Percentage Rate) is the simple annual rate. APY (Annual Percentage Yield) accounts for compounding. For monthly compounding at 7% APR, the APY is about 7.23%. APY is always higher than APR when compounding occurs more than once per year.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Compound Interest Calculator', description: 'Free compound interest calculator. Calculate investment growth with regular contributions, compare compounding frequencies, and visualize wealth accumulation over time.', url: '/compound-interest-calculator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Loan EMI Calculator', href: '/loan-emi-calculator', icon: '🏦', desc: 'Calculate loan installments' },
+  { name: 'Mortgage Calculator', href: '/mortgage-calculator', icon: '🏠', desc: 'Home loan payments' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Calculate and split tips' },
+];
+---
+
+<CalculatorLayout
+  title="Compound Interest Calculator — Investment Growth & Wealth Projection"
+  description="Free compound interest calculator. Calculate investment growth with regular contributions, compare daily/monthly/quarterly/annual compounding, and see how your money grows over time with the power of compound interest."
+  canonical="/compound-interest-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Compound Interest Calculator', url: '/compound-interest-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Financial Planning</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Compound Interest Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:620px;">
+      See how your investments grow with the power of compound interest. Model one-time investments, monthly contributions, and compare compounding frequencies.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1">
+    <div class="calc-form">
+      <div class="two-col">
+        <div><label for="ci-principal" class="label">Initial Investment ($)</label><input type="number" id="ci-principal" class="input-base input-lg" placeholder="e.g. 10000" min="0" step="any" /></div>
+        <div><label for="ci-monthly" class="label">Monthly Contribution ($)</label><input type="number" id="ci-monthly" class="input-base input-lg" placeholder="e.g. 500" min="0" step="any" /></div>
+      </div>
+      <div class="two-col">
+        <div><label for="ci-rate" class="label">Annual Interest Rate (%)</label><input type="number" id="ci-rate" class="input-base input-lg" placeholder="e.g. 7" min="0" max="100" step="any" /></div>
+        <div><label for="ci-years" class="label">Time Period (Years)</label><input type="number" id="ci-years" class="input-base input-lg" placeholder="e.g. 20" min="1" max="100" step="1" /></div>
+      </div>
+      <div>
+        <label class="label">Compounding Frequency</label>
+        <div class="freq-grid">
+          {['Daily','Monthly','Quarterly','Annually'].map((f,i)=>(
+            <button class={`freq-btn ${i===1?'active':''}`} data-freq={f.toLowerCase()} aria-pressed={i===1?'true':'false'}>{f}</button>
+          ))}
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button id="calc-ci-btn" class="btn-primary" style="flex:1;">Calculate</button>
+        <button id="reset-ci-btn" class="btn-secondary">Clear</button>
+      </div>
+    </div>
+
+    <div id="ci-error" class="calc-error" role="alert" hidden><span id="ci-error-msg"></span></div>
+
+    <div id="ci-results" hidden aria-live="polite" style="margin-top:24px;">
+      <div class="results-divider"></div>
+      <div class="ci-hero">
+        <div class="ci-total-value" id="ci-total">—</div>
+        <div class="ci-total-label">Future Value</div>
+      </div>
+      <div class="ci-breakdown-grid">
+        <div class="ci-stat"><div class="ci-stat-label">Total Invested</div><div class="ci-stat-value" id="ci-invested">—</div></div>
+        <div class="ci-stat"><div class="ci-stat-label">Interest Earned</div><div class="ci-stat-value" id="ci-interest" style="color:var(--color-success);">—</div></div>
+        <div class="ci-stat"><div class="ci-stat-label">% from Interest</div><div class="ci-stat-value" id="ci-pct">—</div></div>
+        <div class="ci-stat"><div class="ci-stat-label">Years to Double</div><div class="ci-stat-value" id="ci-double">—</div></div>
+      </div>
+      <div class="ci-bar-wrap">
+        <div class="ci-bar-track"><div class="ci-bar-invested" id="ci-bar-invested"></div><div class="ci-bar-interest" id="ci-bar-interest"></div></div>
+        <div class="ci-bar-legend">
+          <span><span class="leg-dot" style="background:var(--color-ink);"></span>Invested</span>
+          <span><span class="leg-dot" style="background:var(--color-success);"></span>Interest</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">The Power of Compound Interest: Why Starting Early Matters</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Albert Einstein reportedly called compound interest the <strong>"eighth wonder of the world"</strong> — and for good reason. A 25-year-old who invests $300/month at 7% will have approximately $758,000 by age 65. If they wait until 35 to start, even investing $600/month, they will have only about $680,000. The 10-year head start with half the monthly contribution produces more wealth. Time in the market beats timing the market.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Compounding Frequency Makes a Real Difference</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      $100,000 invested at 7% for 30 years with annual compounding = $761,226. With monthly compounding = $806,562. With daily compounding = $812,423. That is over $50,000 more just from more frequent compounding. Most savings accounts compound daily, while most bonds compound semi-annually. Always check the compounding frequency when comparing investment products.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`ci-faq-${i}`}><span>{faq.q}</span><svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faq-answer" id={`ci-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:20px;}
+  .results-divider{height:1px;background:var(--color-hairline);margin:20px 0;}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .freq-grid{display:flex;gap:6px;flex-wrap:wrap;}
+  .freq-btn{padding:8px 18px;border:1px solid var(--color-hairline);border-radius:var(--radius-pill);background:var(--color-canvas-soft-2);cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;}
+  .freq-btn:hover{border-color:var(--color-link);}
+  .freq-btn.active{border-color:var(--color-link);background:var(--color-link);color:#fff;}
+  .ci-hero{text-align:center;padding:36px 24px;background:var(--color-canvas-soft-2);border:2px solid var(--color-success);border-radius:var(--radius-lg);}
+  .ci-total-value{font-size:clamp(42px,7vw,64px);font-weight:700;color:var(--color-success);letter-spacing:-1.5px;font-family:var(--font-mono);}
+  .ci-total-label{font-size:15px;color:var(--color-muted);margin-top:6px;}
+  .ci-breakdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px;}
+  .ci-stat{padding:14px;text-align:center;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .ci-stat-label{font-size:11px;font-weight:600;color:var(--color-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+  .ci-stat-value{font-size:18px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+  .ci-bar-wrap{margin-top:20px;padding:14px 16px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);border:1px solid var(--color-hairline);}
+  .ci-bar-track{display:flex;height:18px;border-radius:99px;overflow:hidden;margin-bottom:8px;}
+  .ci-bar-invested{background:var(--color-ink);transition:width 0.5s;}
+  .ci-bar-interest{background:var(--color-success);transition:width 0.5s;}
+  .ci-bar-legend{display:flex;gap:16px;font-size:12px;color:var(--color-body);}
+  .leg-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;}
+  @media(max-width:600px){.two-col{grid-template-columns:1fr;}.ci-breakdown-grid{grid-template-columns:repeat(2,1fr);}.ci-hero{padding:24px 16px;}.prose-section{padding:20px 16px;}}
+</style>
+
+<script>
+  let freq = 'monthly';
+  document.querySelectorAll('.freq-btn').forEach(b=>b.addEventListener('click',()=>{
+    freq=(b as HTMLElement).dataset.freq!;
+    document.querySelectorAll('.freq-btn').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});
+    b.classList.add('active');b.setAttribute('aria-pressed','true');
+  }));
+
+  document.getElementById('calc-ci-btn')!.addEventListener('click',()=>{
+    const errEl=document.getElementById('ci-error') as HTMLElement, resEl=document.getElementById('ci-results') as HTMLElement;
+    errEl.hidden=true;resEl.hidden=true;
+    const P=parseFloat((document.getElementById('ci-principal') as HTMLInputElement).value)||0;
+    const M=parseFloat((document.getElementById('ci-monthly') as HTMLInputElement).value)||0;
+    const r=parseFloat((document.getElementById('ci-rate') as HTMLInputElement).value);
+    const t=parseInt((document.getElementById('ci-years') as HTMLInputElement).value);
+    if(isNaN(r)||isNaN(t)||t<=0){document.getElementById('ci-error-msg')!.textContent='Enter rate and years.';errEl.hidden=false;return}
+    const periods:Record<string,number>={daily:365,monthly:12,quarterly:4,annually:1};
+    const n=periods[freq]||12;
+    const rn=r/100/n;
+    const nt=n*t;
+    const fvP=P*Math.pow(1+rn,nt);
+    let fvM=0; if(M>0) fvM=M*((Math.pow(1+rn,nt)-1)/rn);
+    const fv=fvP+fvM;
+    const invested=P+M*12*t;
+    const interest=fv-invested;
+    const pctInterest=invested>0?(interest/fv*100):0;
+    const yearsDouble=r>0?Math.log(2)/Math.log(1+r/100):0;
+
+    document.getElementById('ci-total')!.textContent='$'+fv.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('ci-invested')!.textContent='$'+invested.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('ci-interest')!.textContent='$'+interest.toLocaleString(undefined,{maximumFractionDigits:0});
+    document.getElementById('ci-pct')!.textContent=pctInterest.toFixed(1)+'%';
+    document.getElementById('ci-double')!.textContent=yearsDouble>0?yearsDouble.toFixed(1)+' yrs':'N/A';
+    const investedPct=fv>0?invested/fv*100:50;
+    (document.getElementById('ci-bar-invested') as HTMLElement).style.width=investedPct+'%';
+    (document.getElementById('ci-bar-interest') as HTMLElement).style.width=(100-investedPct)+'%';
+    resEl.hidden=false;
+  });
+
+  document.getElementById('reset-ci-btn')!.addEventListener('click',()=>{
+    document.querySelectorAll('#ci-calculator input[type=number]').forEach((i:any)=>{i.value='';});
+    (document.getElementById('ci-results') as HTMLElement).hidden=true;
+  });
+
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+</script>

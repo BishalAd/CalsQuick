@@ -1,0 +1,242 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How is GPA calculated?', a: 'GPA (Grade Point Average) is calculated by multiplying each course grade point by its credit hours, summing all grade points, and dividing by total credit hours. A = 4.0, B = 3.0, C = 2.0, D = 1.0, F = 0.0. Plus/minus grades receive intermediate values (e.g., B+ = 3.3, A- = 3.7).' },
+  { q: 'What is the difference between weighted and unweighted GPA?', a: 'Unweighted GPA uses a standard 4.0 scale for all courses. Weighted GPA gives extra points for AP, IB, and Honors classes — typically +1.0 (so an A in AP = 5.0). Colleges consider both. Our calculator supports both scales.' },
+  { q: 'What is a good GPA for college admissions?', a: 'Top universities (Ivy League, Stanford, MIT) typically admit students with 3.8-4.0 unweighted GPA. Competitive state schools: 3.5-3.8. Strong regional universities: 3.0-3.5. Community colleges: 2.0+. Your GPA is one factor — test scores and extracurriculars also matter.' },
+  { q: 'How can I raise my GPA?', a: 'Focus on high-credit courses — an A in a 4-credit course impacts GPA more than an A in a 1-credit course. Retake courses where you earned low grades (many schools replace the old grade). Use our target GPA calculator to see exactly what grades you need.' },
+  { q: 'How do I calculate my cumulative GPA?', a: 'Add grade points from ALL semesters combined, divided by total credits from all semesters. Do not average semester GPAs — that ignores credit weighting. Our calculator handles cumulative GPA by letting you add unlimited courses across semesters.' },
+  { q: 'What is a passing GPA?', a: 'Most colleges require a minimum 2.0 cumulative GPA to graduate and maintain satisfactory academic standing. Below 2.0 typically places you on academic probation. Some programs (nursing, engineering) require higher minimums like 2.5-2.75.' },
+  { q: 'How does GPA affect scholarships and financial aid?', a: 'Many merit scholarships require maintaining a 3.0-3.5 GPA. Federal financial aid requires Satisfactory Academic Progress (SAP), typically a 2.0 cumulative GPA and completing 67% of attempted credits. Athletic eligibility often requires a 2.0-2.3 GPA.' },
+  { q: 'How do plus and minus grades affect GPA?', a: 'Standard grade points: A+ = 4.0 (or 4.3 at some schools), A = 4.0, A- = 3.7, B+ = 3.3, B = 3.0, B- = 2.7, C+ = 2.3, C = 2.0, C- = 1.7, D+ = 1.3, D = 1.0, F = 0.0. Some schools do not use plus/minus — check your institution.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'GPA Calculator', description: 'Free GPA calculator for college, high school, and university students. Calculate weighted and unweighted GPA, cumulative GPA, and find what grades you need to reach your target GPA.', url: '/gpa-calculator' }),
+  generateFAQ(faqs),
+];
+
+const gradeOptions = [
+  { label:'A+', value:4.0 }, { label:'A', value:4.0 }, { label:'A-', value:3.7 },
+  { label:'B+', value:3.3 }, { label:'B', value:3.0 }, { label:'B-', value:2.7 },
+  { label:'C+', value:2.3 }, { label:'C', value:2.0 }, { label:'C-', value:1.7 },
+  { label:'D+', value:1.3 }, { label:'D', value:1.0 }, { label:'F', value:0.0 },
+];
+
+const relatedCalcs = [
+  { name: 'Percentage Calculator', href: '/percentage-calculator', icon: '📊', desc: 'Calculate percentages' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+  { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🔥', desc: 'Daily calorie needs' },
+];
+---
+
+<CalculatorLayout
+  title="GPA Calculator — College & High School Grade Point Average"
+  description="Free GPA calculator for college and high school students. Calculate weighted and unweighted GPA, cumulative GPA, target GPA, and find exactly what grades you need to improve your GPA."
+  canonical="/gpa-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'GPA Calculator', url: '/gpa-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Education Tools</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">GPA Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:620px;">
+      Calculate your GPA instantly. Add courses with grades and credit hours, see your cumulative GPA, and find out what grades you need to reach your target GPA.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1">
+    <div>
+      <label class="label">GPA Scale</label>
+      <div class="seg-ctrl" role="group" style="margin-bottom:16px;">
+        <button class="seg-btn active" data-scale="unweighted" aria-pressed="true">Unweighted (4.0)</button>
+        <button class="seg-btn" data-scale="weighted" aria-pressed="false">Weighted (5.0/AP)</button>
+      </div>
+    </div>
+
+    <!-- Course rows -->
+    <div id="gpa-courses">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button id="add-course-btn" class="btn-secondary btn-sm">+ Add Course</button>
+      <button id="reset-gpa-btn" class="btn-secondary btn-sm">Clear All</button>
+    </div>
+
+    <!-- Results -->
+    <div id="gpa-results" style="margin-top:20px;">
+      <div class="results-divider"></div>
+      <div class="gpa-hero">
+        <div class="gpa-big" id="gpa-value">—</div>
+        <div class="gpa-label">Your GPA</div>
+      </div>
+      <div class="gpa-stats">
+        <div class="gpa-stat"><span class="gs-label">Total Credits</span><span class="gs-value" id="gpa-credits">—</span></div>
+        <div class="gpa-stat"><span class="gs-label">Total Grade Points</span><span class="gs-value" id="gpa-points">—</span></div>
+        <div class="gpa-stat"><span class="gs-label">Courses</span><span class="gs-value" id="gpa-count">—</span></div>
+      </div>
+    </div>
+
+    <!-- Target GPA -->
+    <div style="margin-top:24px;padding:20px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);">
+      <h3 style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:12px;">🎯 Target GPA: What Grades Do I Need?</h3>
+      <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
+        <div style="flex:1;min-width:120px;"><label for="target-gpa" class="label" style="font-size:12px;">Target GPA</label><input type="number" id="target-gpa" class="input-base" style="height:38px;" placeholder="e.g. 3.5" min="0" max="5" step="0.1" /></div>
+        <div style="flex:1;min-width:120px;"><label for="target-credits" class="label" style="font-size:12px;">Remaining Credits</label><input type="number" id="target-credits" class="input-base" style="height:38px;" placeholder="e.g. 15" min="1" step="1" /></div>
+        <button id="calc-target-btn" class="btn-primary" style="height:38px;font-size:13px;">Calculate</button>
+      </div>
+      <div id="target-result" style="margin-top:14px;font-size:14px;color:var(--color-body);" hidden>
+        You need a <strong id="target-needed" style="color:var(--color-link);">—</strong> GPA in your remaining <span id="target-rem-credits">—</span> credits.
+      </div>
+    </div>
+  </div>
+
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Understanding GPA: Your Academic Compass</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Your <strong>Grade Point Average (GPA)</strong> is the single number that summarizes your academic performance. Colleges use it for admissions, employers check it for internships, and scholarship committees rely on it for awards. A GPA is simply the weighted average of all your course grades — each course grade point multiplied by its credit hours, divided by total credits. Our calculator automates this for any number of courses.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Key Strategies to Improve Your GPA</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      <strong>1. Prioritize high-credit courses:</strong> An A in a 4-credit chemistry lab impacts your GPA 4× more than an A in a 1-credit seminar. <strong>2. Retake low grades:</strong> Many colleges replace the old grade with the new one when you retake a course. <strong>3. Use the target GPA tool:</strong> Enter your current GPA, target, and remaining credits to see exactly what average you need. <strong>4. Don't let one bad semester define you:</strong> Even a 2.5 after freshman year can become a 3.2+ with consistent 3.5+ semesters.
+    </p>
+  </div>
+
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`gpa-faq-${i}`}><span>{faq.q}</span><svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faq-answer" id={`gpa-faq-${i}`} role="region">{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:20px;}
+  .results-divider{height:1px;background:var(--color-hairline);margin:20px 0;}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .seg-ctrl{display:flex;gap:2px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);padding:3px;width:fit-content;}
+  .seg-btn{padding:7px 16px;font-size:13px;font-weight:500;border:none;background:transparent;color:var(--color-body);border-radius:calc(var(--radius-md)-2px);cursor:pointer;transition:all 0.15s;}
+  .seg-btn:hover{background:var(--color-canvas);color:var(--color-ink);}
+  .seg-btn.active{background:var(--color-canvas);color:var(--color-ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .course-row{display:flex;align-items:flex-end;gap:8px;padding:10px 0;border-bottom:1px solid var(--color-hairline);flex-wrap:wrap;}
+  .course-name{flex:2;min-width:120px;}
+  .course-grade{flex:1;min-width:80px;}
+  .course-credits{flex:0.8;min-width:60px;}
+  .course-remove{flex-shrink:0;}
+  .gpa-hero{text-align:center;padding:28px;background:var(--color-canvas-soft-2);border:2px solid var(--color-link);border-radius:var(--radius-lg);}
+  .gpa-big{font-size:clamp(48px,8vw,72px);font-weight:700;color:var(--color-link);letter-spacing:-2px;font-family:var(--font-mono);}
+  .gpa-label{font-size:15px;color:var(--color-muted);margin-top:6px;}
+  .gpa-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
+  .gpa-stat{padding:12px;text-align:center;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .gs-label{font-size:11px;font-weight:600;color:var(--color-muted);text-transform:uppercase;display:block;margin-bottom:4px;}
+  .gs-value{font-size:16px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+  @media(max-width:500px){.course-row{gap:6px;}.course-name,.course-grade,.course-credits{min-width:100%;}.gpa-stats{grid-template-columns:repeat(3,1fr);gap:6px;}.prose-section{padding:20px 16px;}}
+</style>
+
+<script>
+  let scale = 'unweighted';
+  document.querySelectorAll('[data-scale]').forEach(b=>b.addEventListener('click',()=>{
+    scale=(b as HTMLElement).dataset.scale!;
+    document.querySelectorAll('[data-scale]').forEach(x=>{x.classList.remove('active');x.setAttribute('aria-pressed','false')});
+    b.classList.add('active');b.setAttribute('aria-pressed','true');
+    updateGPA();
+  }));
+
+  const grades:Record<string,number> = {'A+':4.0,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D+':1.3,'D':1.0,'F':0.0};
+  const weightedGrades:Record<string,number> = {'A+':5.0,'A':5.0,'A-':4.7,'B+':4.3,'B':4.0,'B-':3.7,'C+':3.3,'C':3.0,'C-':2.7,'D+':2.3,'D':2.0,'F':0.0};
+
+  function renderCourses(count=4){
+    const c=document.getElementById('gpa-courses')!;
+    let html='';
+    for(let i=0;i<count;i++){
+      html+=`<div class="course-row" data-course="${i}">
+        <div class="course-name"><input type="text" class="input-base" placeholder="Course name (e.g. Math 101)" style="height:38px;" /></div>
+        <div class="course-grade"><select class="input-base" style="height:38px;">${Object.keys(grades).map(g=>`<option value="${g}" ${g==='A'?'selected':''}>${g}</option>`).join('')}</select></div>
+        <div class="course-credits"><input type="number" class="input-base" placeholder="Credits" value="3" min="0.5" max="15" step="0.5" style="height:38px;" /></div>
+        <div class="course-remove"><button class="remove-course-btn" style="border:none;background:transparent;color:var(--color-muted);cursor:pointer;font-size:18px;padding:4px 8px;">×</button></div>
+      </div>`;
+    }
+    c.innerHTML=html;
+    bindCourseEvents();
+  }
+
+  function bindCourseEvents(){
+    document.querySelectorAll('.remove-course-btn').forEach(b=>{b.addEventListener('click',()=>{
+      const row=(b as HTMLElement).closest('.course-row')!;
+      row.remove();
+      if(document.querySelectorAll('.course-row').length===0) renderCourses(1);
+      else updateGPA();
+    })});
+    document.querySelectorAll('.course-row input, .course-row select').forEach(el=>{el.addEventListener('input',updateGPA);el.addEventListener('change',updateGPA)});
+  }
+
+  function updateGPA(){
+    let totalPoints=0, totalCredits=0, count=0;
+    const gMap = scale==='weighted'?weightedGrades:grades;
+    document.querySelectorAll('.course-row').forEach(row=>{
+      const grade=(row.querySelector('select') as HTMLSelectElement)?.value;
+      const credits=parseFloat((row.querySelector('input[type=number]') as HTMLInputElement)?.value)||0;
+      if(grade&&credits>0&&gMap[grade]!==undefined){
+        totalPoints+=gMap[grade]*credits;
+        totalCredits+=credits;
+        count++;
+      }
+    });
+    const gpa=totalCredits>0?totalPoints/totalCredits:0;
+    document.getElementById('gpa-value')!.textContent=gpa.toFixed(2);
+    document.getElementById('gpa-credits')!.textContent=String(totalCredits);
+    document.getElementById('gpa-points')!.textContent=totalPoints.toFixed(1);
+    document.getElementById('gpa-count')!.textContent=String(count);
+  }
+
+  document.getElementById('add-course-btn')!.addEventListener('click',()=>{
+    const idx=document.querySelectorAll('.course-row').length;
+    const div=document.createElement('div');
+    div.className='course-row';div.dataset.course=String(idx);
+    div.innerHTML=`<div class="course-name"><input type="text" class="input-base" placeholder="Course name" style="height:38px;" /></div><div class="course-grade"><select class="input-base" style="height:38px;">${Object.keys(grades).map(g=>`<option value="${g}" ${g==='A'?'selected':''}>${g}</option>`).join('')}</select></div><div class="course-credits"><input type="number" class="input-base" placeholder="Credits" value="3" min="0.5" max="15" step="0.5" style="height:38px;" /></div><div class="course-remove"><button class="remove-course-btn" style="border:none;background:transparent;color:var(--color-muted);cursor:pointer;font-size:18px;padding:4px 8px;">×</button></div>`;
+    document.getElementById('gpa-courses')!.appendChild(div);
+    bindCourseEvents();
+  });
+
+  document.getElementById('reset-gpa-btn')!.addEventListener('click',()=>{renderCourses(4);});
+
+  document.getElementById('calc-target-btn')!.addEventListener('click',()=>{
+    const target=parseFloat((document.getElementById('target-gpa') as HTMLInputElement).value);
+    const remCredits=parseFloat((document.getElementById('target-credits') as HTMLInputElement).value);
+    if(isNaN(target)||isNaN(remCredits)||remCredits<=0) return;
+    let totalPoints=0, totalCredits=0;
+    const gMap=scale==='weighted'?weightedGrades:grades;
+    document.querySelectorAll('.course-row').forEach(row=>{
+      const grade=(row.querySelector('select') as HTMLSelectElement)?.value;
+      const credits=parseFloat((row.querySelector('input[type=number]') as HTMLInputElement)?.value)||0;
+      if(grade&&credits>0&&gMap[grade]!==undefined){totalPoints+=gMap[grade]*credits;totalCredits+=credits;}
+    });
+    if(totalCredits===0) return;
+    const currentGPA=totalPoints/totalCredits;
+    const neededTotal=target*(totalCredits+remCredits)-totalPoints;
+    const neededGPA=neededTotal/remCredits;
+    const el=document.getElementById('target-result') as HTMLElement;
+    el.hidden=false;
+    document.getElementById('target-needed')!.textContent=neededGPA.toFixed(2);
+    document.getElementById('target-rem-credits')!.textContent=String(remCredits);
+    if(neededGPA>4&&scale==='unweighted') (document.getElementById('target-needed') as HTMLElement).textContent+= ' ⚠️ (impossible on 4.0 scale)';
+    if(neededGPA>5&&scale==='weighted') (document.getElementById('target-needed') as HTMLElement).textContent+= ' ⚠️ (impossible on 5.0 scale)';
+  });
+
+  renderCourses(4);
+  document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{
+    const e=btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded',String(!e));
+    document.getElementById(btn.getAttribute('aria-controls')!)?.classList.toggle('open',!e);
+  })});
+</script>
