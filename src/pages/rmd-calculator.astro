@@ -1,0 +1,750 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is a Required Minimum Distribution (RMD)?', a: 'A Required Minimum Distribution (RMD) is the minimum amount the IRS requires you to withdraw annually from your tax-deferred retirement accounts once you reach a certain age. RMDs apply to Traditional IRAs, SEP IRAs, SIMPLE IRAs, 401(k)s, 403(b)s, 457(b)s, profit-sharing plans, and other defined contribution plans. The purpose is to ensure that tax-deferred retirement savings are eventually taxed. Roth IRAs do NOT require RMDs during the owner\'s lifetime.' },
+  { q: 'What age do RMDs start in 2024?', a: 'As of 2024 under the SECURE 2.0 Act: if you were born between 1951–1959, your RMD starting age is 73. If you were born in 1960 or later, your RMD starting age is 75. The first RMD can be delayed until April 1 of the year following the year you turn 73 (or 75). However, if you delay the first RMD, you must take two RMDs in that second year (one for the first year and one for the current year), which may push you into a higher tax bracket.' },
+  { q: 'How is the RMD calculated?', a: 'RMD = Account Balance (as of December 31 of prior year) ÷ Life Expectancy Factor. The life expectancy factor comes from the IRS Uniform Lifetime Table (Publication 590-B). For example, at age 73 the factor is 26.5, at age 75 it is 24.6, at age 80 it is 20.2, at age 85 it is 16.0, at age 90 it is 12.2. If your sole beneficiary is a spouse who is more than 10 years younger, you use the Joint Life and Last Survivor Expectancy Table instead, which gives a lower factor (larger denominator) and therefore a smaller RMD.' },
+  { q: 'What happens if I don\'t take my RMD?', a: 'Before SECURE 2.0 (pre-2023), the penalty for missing an RMD was 50% of the amount you should have withdrawn. SECURE 2.0 (effective 2023) reduced this penalty to 25% of the missed RMD. If you correct the mistake within 2 years in a timely manner, the penalty is further reduced to 10%. The penalty is reported on IRS Form 5329. In addition to the penalty, you still must take the missed RMD and pay income tax on it.' },
+  { q: 'Do Roth IRAs have RMDs?', a: 'Roth IRAs owned by the original account holder do NOT have RMDs during the owner\'s lifetime — this is one of the major tax advantages of Roth IRAs. However, Roth 401(k)s previously had RMDs, but starting in 2024 under SECURE 2.0, Roth 401(k) accounts also no longer require RMDs during the original owner\'s lifetime. Inherited Roth IRAs DO have RMD requirements for non-spouse beneficiaries under the 10-year rule.' },
+  { q: 'Can I withdraw more than my RMD?', a: 'Yes. The RMD is the minimum — you can always withdraw more. Excess withdrawals above the RMD cannot be applied to future years\' RMD requirements. All withdrawals from traditional IRAs and 401(k)s are taxed as ordinary income in the year taken. Many retirees do a Roth conversion with amounts above the RMD to shift money to tax-free Roth accounts, especially in years with lower income.' },
+  { q: 'How do I calculate RMD if I have multiple IRAs?', a: 'For multiple Traditional IRAs: calculate the RMD for each account separately, but you can take the total from any one or combination of IRA accounts. For multiple 401(k)s from different employers: each account\'s RMD must be taken from that specific account separately — you cannot aggregate them. For a 401(k) and an IRA: the RMD from each type must come from accounts of that type separately.' },
+  { q: 'What is the IRS Uniform Lifetime Table for RMDs?', a: 'The IRS Uniform Lifetime Table (updated 2022, used for 2022 and later) lists the life expectancy factor for each age. Key ages: 72→27.4, 73→26.5, 74→25.5, 75→24.6, 76→23.7, 77→22.9, 78→22.0, 79→21.1, 80→20.2, 81→19.4, 82→18.5, 83→17.7, 84→16.8, 85→16.0, 86→15.2, 87→14.4, 88→13.7, 89→12.9, 90→12.2, 95→8.9, 100→6.4. The 2022 update increased factors (lowered RMDs) by about 2 years compared to the old table.' },
+  { q: 'Can I take my RMD in installments?', a: 'Yes. You can take your RMD as a lump sum, monthly, quarterly, or any schedule you choose — as long as the total for the year meets or exceeds the required minimum. Many retirees set up automatic monthly distributions from their IRA to ensure they meet the RMD without a large year-end withdrawal. The total amount taken throughout the year counts toward the RMD, not the timing.' },
+  { q: 'What is a Qualified Charitable Distribution (QCD) and how does it affect RMDs?', a: 'A Qualified Charitable Distribution (QCD) allows IRA owners who are 70½ or older to donate up to $105,000 per year (2024, indexed for inflation) directly from an IRA to a qualified charity. The QCD counts toward your RMD but is NOT included in your taxable income — unlike a regular withdrawal followed by a charitable deduction. This is one of the most tax-efficient strategies for charitably-inclined retirees, especially those who take the standard deduction.' },
+  { q: 'How does the SECURE 2.0 Act change RMDs?', a: 'Key SECURE 2.0 Act (2023) changes affecting RMDs: Starting age increased to 73 for those born 1951–1959, and to 75 for those born 1960+. Roth 401(k) accounts no longer require RMDs starting in 2024. The penalty for missed RMDs reduced from 50% to 25% (or 10% if corrected timely). Surviving spouses can now elect to be treated as the deceased spouse for RMD purposes starting in 2024, allowing them to delay RMDs to the later of their age or what the deceased spouse\'s age would have been.' },
+  { q: 'What is the 10-year rule for inherited IRAs?', a: 'The SECURE Act (2020) eliminated the "stretch IRA" for most non-spouse beneficiaries. Now, most non-spouse beneficiaries must withdraw the entire inherited IRA within 10 years of the original owner\'s death. Annual RMDs within the 10-year period are required only if the original owner had already started RMDs. Exceptions exist for surviving spouses, minor children of the deceased (until they reach majority), disabled individuals, chronically ill individuals, and beneficiaries not more than 10 years younger than the deceased.' },
+  { q: 'How are RMDs taxed?', a: 'RMDs from Traditional IRAs, 401(k)s, and other pre-tax accounts are taxed as ordinary income in the year taken at your marginal federal income tax rate. They may also be subject to state income taxes depending on your state (some states exempt retirement income). RMDs can affect your Medicare IRMAA surcharges (higher premiums for higher-income beneficiaries), taxation of Social Security benefits, and eligibility for certain deductions. Tax-efficient RMD management is one of the most valuable areas where a financial advisor adds value.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'RMD Calculator',
+    description: 'Free Required Minimum Distribution (RMD) calculator for 2024. Calculate your annual RMD from Traditional IRA, 401(k), 403(b), and other retirement accounts using IRS Uniform Lifetime Table. Includes SECURE 2.0 Act updates.',
+    url: '/rmd-calculator',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Annuity Calculator', href: '/annuity-calculator', icon: '📈', desc: 'Estimate annuity payments' },
+  { name: '401(k) Calculator', href: '/401k-calculator', icon: '🏛️', desc: 'Retirement savings planner' },
+  { name: 'Compound Interest', href: '/compound-interest-calculator', icon: '🏦', desc: 'Investment growth' },
+];
+
+// IRS Uniform Lifetime Table (2022 update, used for 2022+)
+const uniformTable: Record<number, number> = {
+  72:27.4, 73:26.5, 74:25.5, 75:24.6, 76:23.7, 77:22.9, 78:22.0, 79:21.1,
+  80:20.2, 81:19.4, 82:18.5, 83:17.7, 84:16.8, 85:16.0, 86:15.2, 87:14.4,
+  88:13.7, 89:12.9, 90:12.2, 91:11.5, 92:10.8, 93:10.1, 94:9.5, 95:8.9,
+  96:8.4, 97:7.8, 98:7.3, 99:6.8, 100:6.4, 101:6.0, 102:5.6, 103:5.2,
+  104:4.9, 105:4.6, 106:4.3, 107:4.1, 108:3.9, 109:3.7, 110:3.5, 111:3.4,
+  112:3.3, 113:3.1, 114:3.0, 115:2.9, 116:2.8, 117:2.7, 118:2.5, 119:2.3, 120:2.0
+};
+---
+
+<CalculatorLayout
+  title="RMD Calculator 2024 — Required Minimum Distribution from IRA & 401(k)"
+  description="Free RMD calculator for 2024. Calculate your Required Minimum Distribution from Traditional IRA, 401(k), 403(b), and retirement accounts. Uses updated IRS Uniform Lifetime Table with SECURE 2.0 Act changes (age 73/75 rules)."
+  canonical="/rmd-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'RMD Calculator', url: '/rmd-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Retirement Planning Tools</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">RMD Calculator (2024)</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Calculate your Required Minimum Distribution from Traditional IRAs, 401(k)s, and other retirement accounts. Uses the updated 2022 IRS Uniform Lifetime Table with SECURE 2.0 Act rules.
+    </p>
+  </div>
+
+  <!-- SECURE 2.0 Notice -->
+  <div class="secure-notice fade-up" style="margin-bottom:24px;">
+    <span style="font-size:16px;">📋</span>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--color-ink);margin-bottom:2px;">SECURE 2.0 Act Update (2023)</div>
+      <p style="margin:0;font-size:13px;color:var(--color-body);line-height:1.5;">RMD starting age: <strong>73</strong> if born 1951–1959 · <strong>75</strong> if born 1960 or later. Roth 401(k)s no longer require RMDs starting 2024. Missed RMD penalty reduced from 50% to 25%.</p>
+    </div>
+  </div>
+
+  <!-- MAIN CALCULATOR -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom:40px;">
+    <div class="calc-form">
+
+      <!-- Year -->
+      <div>
+        <label for="rmd-year" class="label">RMD Year</label>
+        <div class="seg-ctrl" style="width:fit-content;" role="group" aria-label="RMD year">
+          <button class="seg-btn active" data-year="2024" aria-pressed="true">2024</button>
+          <button class="seg-btn" data-year="2025" aria-pressed="false">2025</button>
+          <button class="seg-btn" data-year="2026" aria-pressed="false">2026</button>
+        </div>
+      </div>
+
+      <!-- Age -->
+      <div>
+        <label for="rmd-age" class="label">Your Age (as of December 31 of RMD year)</label>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <input type="number" id="rmd-age" class="input-base input-lg" placeholder="e.g. 73" min="72" max="120" step="1" aria-label="Your age" style="flex:1;max-width:160px;" />
+          <div id="age-warning" class="age-warning" hidden></div>
+        </div>
+        <div class="age-quick" style="margin-top:8px;">
+          {[72,73,74,75,76,78,80,82,85,90].map(a=>(
+            <button class="age-quick-btn" data-age={a} aria-label={`Age ${a}`}>{a}</button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Account type -->
+      <div>
+        <label class="label" style="margin-bottom:8px;">Account Type</label>
+        <div class="account-type-grid" role="group" aria-label="Account type">
+          {[
+            { key:'trad_ira', icon:'🏦', label:'Traditional IRA', desc:'Individual Retirement Account' },
+            { key:'401k', icon:'💼', label:'401(k) / 403(b)', desc:'Employer-sponsored plan' },
+            { key:'sep_ira', icon:'🏢', label:'SEP / SIMPLE IRA', desc:'Self-employed or small business' },
+            { key:'inherited', icon:'📜', label:'Inherited IRA', desc:'Inherited from deceased owner' },
+          ].map((a,i)=>(
+            <button class={`account-btn ${i===0?'active':''}`} data-account={a.key} aria-pressed={i===0?'true':'false'}>
+              <span style="font-size:20px;">{a.icon}</span>
+              <div class="acct-label">{a.label}</div>
+              <div class="acct-desc">{a.desc}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Account balance -->
+      <div>
+        <label for="account-balance" class="label">Account Balance (December 31 of Prior Year)</label>
+        <div class="input-dollar-wrap">
+          <span class="dollar-sign">$</span>
+          <input type="number" id="account-balance" class="input-base input-lg input-dollar"
+            placeholder="e.g. 500000" min="1" step="1000"
+            aria-label="Account balance as of December 31 of prior year" />
+        </div>
+        <div class="balance-quick" style="margin-top:8px;">
+          {[100000,250000,500000,750000,1000000,2000000].map(v=>(
+            <button class="balance-quick-btn" data-val={v} aria-label={`$${v.toLocaleString()}`}>${v>=1000000?(v/1000000)+'M':v/1000+'k'}</button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Spouse younger than 10 years -->
+      <div>
+        <label class="label" style="margin-bottom:8px;">Is your sole beneficiary a spouse more than 10 years younger?</label>
+        <div class="seg-ctrl" role="group" aria-label="Spouse age difference">
+          <button class="seg-btn active" data-spouse="no" aria-pressed="true">No (use Uniform Table)</button>
+          <button class="seg-btn" data-spouse="yes" aria-pressed="false">Yes (use Joint Table)</button>
+        </div>
+        <div id="spouse-age-wrap" hidden style="margin-top:12px;">
+          <label for="spouse-age" class="label">Spouse's Age</label>
+          <input type="number" id="spouse-age" class="input-base" placeholder="e.g. 58" min="20" max="100" style="max-width:120px;" aria-label="Spouse age" />
+        </div>
+      </div>
+
+      <!-- Multiple accounts -->
+      <div>
+        <label class="label" style="margin-bottom:8px;">Multiple Accounts?</label>
+        <div style="display:flex;gap:8px;align-items:flex-start;flex-direction:column;">
+          <div id="account-list" style="display:flex;flex-direction:column;gap:8px;width:100%;">
+            <div class="extra-account-row">
+              <div class="input-dollar-wrap" style="flex:1;">
+                <span class="dollar-sign">$</span>
+                <input type="number" class="input-base input-dollar extra-balance" placeholder="Primary account balance (from above)" disabled style="background:var(--color-canvas-soft-2);" id="primary-account-display" />
+              </div>
+              <span style="font-size:12px;color:var(--color-muted);white-space:nowrap;">Primary</span>
+            </div>
+          </div>
+          <button id="add-account-btn" class="btn-secondary" style="font-size:13px;padding:7px 14px;height:auto;">+ Add Another Account</button>
+        </div>
+      </div>
+
+      <!-- Tax rate estimate -->
+      <div>
+        <label class="label" style="margin-bottom:8px;">
+          Estimated Tax Rate <span style="font-size:11px;font-weight:400;color:var(--color-muted);">(for after-tax estimate)</span>
+        </label>
+        <div class="tax-rate-row" role="group" aria-label="Estimated tax rate">
+          {[12,22,24,32,35,37].map((r,i)=>(
+            <button class={`tax-btn ${i===1?'active':''}`} data-rate={r} aria-pressed={i===1?'true':'false'}>{r}%</button>
+          ))}
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button id="calc-rmd-btn" class="btn-primary" style="flex:1;">Calculate My RMD</button>
+        <button id="clear-rmd-btn" class="btn-secondary">Reset</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="rmd-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="rmd-error-msg"></span>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="rmd-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:28px 0;"></div>
+
+      <!-- Hero -->
+      <div class="rmd-hero">
+        <div class="rmd-hero-main">
+          <div class="rmd-hero-label">Your <span id="res-rmd-year-label">2024</span> Required Minimum Distribution</div>
+          <div class="rmd-hero-value" id="res-rmd-amount">$—</div>
+          <div class="rmd-hero-sub" id="res-rmd-frequency">$— monthly · $— quarterly</div>
+        </div>
+        <div class="rmd-hero-side">
+          <div class="rmd-side-item">
+            <div class="rmd-side-label">After Tax (est.)</div>
+            <div class="rmd-side-value" id="res-after-tax">$—</div>
+          </div>
+          <div class="rmd-side-item">
+            <div class="rmd-side-label">% of Balance</div>
+            <div class="rmd-side-value" id="res-pct-balance">—%</div>
+          </div>
+          <div class="rmd-side-item">
+            <div class="rmd-side-label">IRS Factor</div>
+            <div class="rmd-side-value" id="res-irs-factor">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="result-panel" style="margin-top:20px;">
+        <div class="result-row">
+          <span class="result-row-label">🏦 Total Account Balance</span>
+          <span class="result-row-value" id="rb-balance">$—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">📅 Your Age</span>
+          <span class="result-row-value" id="rb-age">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">📊 IRS Life Expectancy Factor</span>
+          <span class="result-row-value" id="rb-factor">—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">🧮 Calculation</span>
+          <span class="result-row-value" id="rb-calc">$— ÷ — = $—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">💰 Gross RMD Amount</span>
+          <span class="result-row-value" id="rb-gross" style="font-weight:700;color:var(--color-link);">$—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">🧾 Estimated Federal Tax</span>
+          <span class="result-row-value" id="rb-tax">$—</span>
+        </div>
+        <div class="result-row" style="border-bottom:none;">
+          <span class="result-row-label" style="font-weight:600;">✅ Estimated After-Tax RMD</span>
+          <span class="result-row-value" id="rb-net" style="font-size:17px;font-weight:700;color:var(--color-link);">$—</span>
+        </div>
+      </div>
+
+      <!-- 10-year projection -->
+      <div style="margin-top:24px;">
+        <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:10px;">10-Year RMD Projection</h3>
+        <p style="font-size:13px;color:var(--color-muted);margin-bottom:12px;">Assumes <span id="proj-growth-label">5%</span> annual growth and <span id="proj-withdrawal-label">0%</span> additional withdrawals.</p>
+        <div class="proj-controls" style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+          <div>
+            <label style="font-size:12px;font-weight:500;color:var(--color-body);">Growth Rate</label>
+            <div class="seg-ctrl" role="group" aria-label="Projected growth rate">
+              {[0,3,5,7].map((r,i)=>(
+                <button class={`seg-btn ${i===2?'active':''}`} data-growth={r} aria-pressed={i===2?'true':'false'}>{r}%</button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+          <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--color-body);">
+            <thead>
+              <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+                <th style="padding:10px 12px;text-align:left;">Year</th>
+                <th style="padding:10px 12px;text-align:center;">Age</th>
+                <th style="padding:10px 12px;text-align:right;">Balance (Jan 1)</th>
+                <th style="padding:10px 12px;text-align:center;">IRS Factor</th>
+                <th style="padding:10px 12px;text-align:right;">RMD</th>
+                <th style="padding:10px 12px;text-align:right;">After-Tax RMD</th>
+              </tr>
+            </thead>
+            <tbody id="projection-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Deadline reminder -->
+      <div class="deadline-card" style="margin-top:20px;">
+        <div style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:12px;">⏰ RMD Deadlines & Important Dates</div>
+        <div class="deadline-grid">
+          {[
+            { icon:'📅', title:'Annual Deadline', desc:'December 31 of each year for all RMDs except your first.' },
+            { icon:'🆕', title:'First RMD Exception', desc:'Your first RMD can be delayed until April 1 of the following year — but you\'ll take two RMDs that year.' },
+            { icon:'⚠️', title:'Two RMDs in One Year', desc:'If you delay your first RMD, you\'ll take two RMDs in year two — which may increase your tax bracket.' },
+            { icon:'💳', title:'QCD Deadline', desc:'Qualified Charitable Distributions must be made by December 31 to count toward the current year\'s RMD.' },
+          ].map(d=>(
+            <div class="deadline-item">
+              <span style="font-size:20px;">{d.icon}</span>
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--color-ink);">{d.title}</div>
+                <div style="font-size:12px;color:var(--color-muted);margin-top:2px;line-height:1.5;">{d.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Tax strategies -->
+      <div class="strategies-card" style="margin-top:16px;">
+        <div style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:10px;">💡 Tax Reduction Strategies for RMDs</div>
+        <div class="strategies-list" id="strategies-list"></div>
+      </div>
+
+      <div style="padding:14px 16px;background:var(--color-canvas-soft-2);border-radius:var(--radius-md);border:1px solid var(--color-hairline);margin-top:16px;">
+        <p class="text-body-sm" style="color:var(--color-body);line-height:1.5;margin:0;">
+          💡 <strong>Important:</strong> This calculator uses the 2022 IRS Uniform Lifetime Table (current as of 2024). Consult a financial advisor or tax professional for personalized RMD planning, especially if you have multiple accounts, a younger spouse, or inherited accounts.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- IRS Table Reference -->
+  <div style="margin-bottom:40px;" class="fade-up">
+    <h2 style="color:var(--color-ink);margin-bottom:8px;font-size:22px;font-weight:600;">IRS Uniform Lifetime Table (2022 Update)</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Used for calculating RMDs for most account owners (when sole beneficiary is NOT a spouse more than 10 years younger).</p>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--color-body);text-align:center;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:10px 12px;">Age</th>
+            <th style="padding:10px 12px;">Factor</th>
+            <th style="padding:10px 12px;">RMD %</th>
+            <th style="padding:10px 12px;">Age</th>
+            <th style="padding:10px 12px;">Factor</th>
+            <th style="padding:10px 12px;">RMD %</th>
+            <th style="padding:10px 12px;">Age</th>
+            <th style="padding:10px 12px;">Factor</th>
+            <th style="padding:10px 12px;">RMD %</th>
+          </tr>
+        </thead>
+        <tbody id="irs-table-body"></tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--color-muted);margin-top:6px;">Source: IRS Publication 590-B, Table III (Uniform Lifetime). RMD % = 1 ÷ Factor × 100.</p>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Required Minimum Distributions: Complete 2024 Guide</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Required Minimum Distributions (RMDs) are one of the most important — and often misunderstood — aspects of retirement planning. The IRS requires withdrawals from tax-deferred accounts to ensure that deferred taxes are eventually collected. Missing an RMD triggers a significant penalty, while poor timing can unnecessarily increase your tax burden during retirement.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">RMD Starting Ages After SECURE 2.0</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The SECURE 2.0 Act (signed December 2022) made the most significant changes to RMD rules in decades. The starting age was increased from 72 to 73 for those born between 1951–1959, and will increase again to 75 for those born in 1960 or later. This gives retirees more time for tax-deferred growth and more flexibility for Roth conversions before RMDs begin. The delay also provides a longer window for tax planning strategies.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Strategies to Minimize RMD Tax Impact</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      <strong>Roth conversions before age 73:</strong> Converting traditional IRA funds to Roth while in a lower tax bracket reduces future RMDs and creates tax-free retirement income. <strong>Qualified Charitable Distributions (QCDs):</strong> Direct charitable donations from IRAs (up to $105,000 in 2024) count toward RMDs but are not taxable income. <strong>Reinvesting RMDs:</strong> Amounts beyond your living expenses can be reinvested in taxable accounts or Roth accounts if you still have earned income. <strong>Aggregating IRA RMDs:</strong> You can take IRA RMDs from any one IRA account as long as the total meets the combined requirement.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">RMD Planning for Inherited IRAs</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      The SECURE Act's 10-year rule eliminated the popular "stretch IRA" strategy for most non-spouse beneficiaries. Under this rule, most beneficiaries must withdraw the entire inherited account within 10 years. The IRS provided clarification in 2023 that if the original owner had started RMDs, beneficiaries must continue taking annual RMDs throughout the 10-year period, not just empty the account by year 10. This is a complex area where professional guidance is strongly recommended.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`rmd-faq-${i}`} id={`rmd-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`rmd-faq-${i}`} role="region" aria-labelledby={`rmd-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:20px;}
+  .results-divider{height:1px;background:var(--color-hairline);}
+  .result-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--color-hairline);}
+  .result-row-label{font-size:14px;color:var(--color-body);}
+  .result-row-value{font-size:14px;font-weight:600;color:var(--color-ink);}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .input-dollar-wrap{position:relative;}
+  .dollar-sign{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-muted);font-weight:600;z-index:1;}
+  .input-dollar{padding-left:30px !important;}
+
+  /* SECURE notice */
+  .secure-notice{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--radius-md);}
+
+  /* Seg ctrl */
+  .seg-ctrl{display:flex;gap:3px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);padding:3px;flex-wrap:wrap;}
+  .seg-btn{padding:7px 14px;font-size:13px;font-weight:500;border:none;background:transparent;color:var(--color-body);border-radius:calc(var(--radius-md) - 2px);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+  .seg-btn:hover{background:var(--color-canvas);color:var(--color-ink);}
+  .seg-btn.active{background:var(--color-canvas);color:var(--color-ink);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+
+  /* Age */
+  .age-quick{display:flex;gap:6px;flex-wrap:wrap;}
+  .age-quick-btn{padding:5px 10px;font-size:12px;font-weight:600;border:1px solid var(--color-hairline);border-radius:99px;background:var(--color-canvas-soft-2);color:var(--color-body);cursor:pointer;transition:all 0.15s;font-family:var(--font-mono);}
+  .age-quick-btn:hover{border-color:var(--color-link);color:var(--color-link);}
+  .age-quick-btn.active{border-color:var(--color-link);background:var(--color-link);color:#fff;}
+  .age-warning{padding:6px 12px;background:#fef3c7;border:1px solid #fde68a;border-radius:var(--radius-md);font-size:12px;color:#92400e;font-weight:500;}
+
+  /* Account type */
+  .account-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+  .account-btn{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;text-align:center;}
+  .account-btn:hover{border-color:var(--color-link);}
+  .account-btn.active{border-color:var(--color-link);background:var(--color-canvas);box-shadow:0 0 0 2px rgba(99,102,241,0.1);}
+  .acct-label{font-size:12px;font-weight:600;color:var(--color-ink);}
+  .acct-desc{font-size:10px;color:var(--color-muted);line-height:1.3;}
+
+  /* Balance quick */
+  .balance-quick{display:flex;gap:6px;flex-wrap:wrap;}
+  .balance-quick-btn{padding:4px 10px;font-size:12px;font-weight:500;border:1px solid var(--color-hairline);border-radius:99px;background:var(--color-canvas-soft-2);color:var(--color-body);cursor:pointer;transition:all 0.15s;}
+  .balance-quick-btn:hover{border-color:var(--color-link);color:var(--color-link);}
+
+  /* Tax rate */
+  .tax-rate-row{display:flex;gap:6px;flex-wrap:wrap;}
+  .tax-btn{padding:6px 12px;font-size:13px;font-weight:500;border:1px solid var(--color-hairline);border-radius:99px;background:var(--color-canvas-soft-2);color:var(--color-body);cursor:pointer;transition:all 0.15s;}
+  .tax-btn:hover{border-color:var(--color-link);color:var(--color-link);}
+  .tax-btn.active{border-color:var(--color-link);background:var(--color-link);color:#fff;}
+
+  /* Extra account row */
+  .extra-account-row{display:flex;align-items:center;gap:10px;}
+
+  /* RMD Hero */
+  .rmd-hero{display:flex;gap:20px;padding:24px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);flex-wrap:wrap;}
+  .rmd-hero-main{flex:2;min-width:200px;}
+  .rmd-hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:8px;}
+  .rmd-hero-value{font-size:clamp(36px,6vw,64px);font-weight:700;color:var(--color-link);letter-spacing:-2px;line-height:1;font-family:var(--font-mono);}
+  .rmd-hero-sub{font-size:13px;color:var(--color-muted);margin-top:8px;font-family:var(--font-mono);}
+  .rmd-hero-side{display:flex;flex-direction:column;gap:12px;flex:1;min-width:120px;}
+  .rmd-side-item{padding:12px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-md);text-align:center;}
+  .rmd-side-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:4px;}
+  .rmd-side-value{font-size:16px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+
+  /* Deadline */
+  .deadline-card{padding:16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .deadline-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .deadline-item{display:flex;gap:10px;align-items:flex-start;padding:10px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+
+  /* Strategies */
+  .strategies-card{padding:16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .strategies-list{display:flex;flex-direction:column;gap:8px;}
+  .strategy-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  .strategy-icon{font-size:16px;flex-shrink:0;}
+  .strategy-text{font-size:13px;color:var(--color-body);line-height:1.5;}
+  .strategy-text strong{color:var(--color-ink);}
+
+  @media(max-width:700px){
+    .account-type-grid{grid-template-columns:repeat(2,1fr);}
+    .deadline-grid{grid-template-columns:1fr;}
+    .rmd-hero{flex-direction:column;}
+    .rmd-hero-side{flex-direction:row;}
+    .rmd-side-item{flex:1;}
+    .prose-section{padding:20px 16px;}
+  }
+  @media(max-width:480px){
+    .rmd-hero-side{flex-direction:column;}
+    .account-type-grid{grid-template-columns:1fr 1fr;}
+  }
+</style>
+
+<script>
+  const UNIFORM_TABLE: Record<number, number> = {
+    72:27.4,73:26.5,74:25.5,75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,
+    80:20.2,81:19.4,82:18.5,83:17.7,84:16.8,85:16.0,86:15.2,87:14.4,
+    88:13.7,89:12.9,90:12.2,91:11.5,92:10.8,93:10.1,94:9.5,95:8.9,
+    96:8.4,97:7.8,98:7.3,99:6.8,100:6.4,101:6.0,102:5.6,103:5.2,
+    104:4.9,105:4.6,106:4.3,107:4.1,108:3.9,109:3.7,110:3.5,111:3.4,
+    112:3.3,113:3.1,114:3.0,115:2.9,116:2.8,117:2.7,118:2.5,119:2.3,120:2.0
+  };
+
+  // Simplified Joint and Last Survivor Table (for spouse > 10 years younger)
+  function getJointFactor(ownerAge: number, spouseAge: number): number {
+    const ageDiff = ownerAge - spouseAge;
+    const baseFactor = UNIFORM_TABLE[ownerAge] || 20;
+    // Joint table gives higher factor (longer expectancy)
+    return baseFactor + (ageDiff > 10 ? ageDiff * 0.5 : 0);
+  }
+
+  const fmt = (n: number) => '$' + Math.round(n).toLocaleString();
+  let rmdYear = '2024';
+  let taxRate = 22;
+  let spouseYounger = false;
+  let growthRate = 5;
+  let extraAccounts: number[] = [];
+  let lastAge = 73;
+  let lastBalance = 0;
+  let lastFactor = 26.5;
+
+  // Year toggle
+  document.querySelectorAll('.seg-btn[data-year]').forEach(b => {
+    b.addEventListener('click', () => {
+      rmdYear = (b as HTMLElement).dataset.year!;
+      document.querySelectorAll('.seg-btn[data-year]').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+    });
+  });
+
+  // Account type
+  document.querySelectorAll('.account-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.account-btn').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+    });
+  });
+
+  // Spouse
+  document.querySelectorAll('.seg-btn[data-spouse]').forEach(b => {
+    b.addEventListener('click', () => {
+      spouseYounger = (b as HTMLElement).dataset.spouse === 'yes';
+      document.querySelectorAll('.seg-btn[data-spouse]').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+      (document.getElementById('spouse-age-wrap') as HTMLElement).hidden = !spouseYounger;
+    });
+  });
+
+  // Tax rate
+  document.querySelectorAll('.tax-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      taxRate = parseFloat((b as HTMLElement).dataset.rate!);
+      document.querySelectorAll('.tax-btn').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+    });
+  });
+
+  // Age quick buttons
+  document.querySelectorAll('.age-quick-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const a = (b as HTMLElement).dataset.age!;
+      (document.getElementById('rmd-age') as HTMLInputElement).value = a;
+      document.querySelectorAll('.age-quick-btn').forEach(x => { x.classList.remove('active'); });
+      b.classList.add('active');
+      checkAge(parseInt(a));
+    });
+  });
+
+  // Age warning
+  (document.getElementById('rmd-age') as HTMLInputElement).addEventListener('input', (e) => {
+    checkAge(parseInt((e.target as HTMLInputElement).value));
+  });
+
+  function checkAge(age: number) {
+    const warn = document.getElementById('age-warning') as HTMLElement;
+    if (isNaN(age)) { warn.hidden = true; return; }
+    if (age < 73) {
+      warn.textContent = `⚠️ RMDs start at age 73 (born 1951–1959) or 75 (born 1960+). No RMD required at age ${age}.`;
+      warn.hidden = false;
+    } else { warn.hidden = true; }
+  }
+
+  // Balance quick
+  document.querySelectorAll('.balance-quick-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const v = (b as HTMLElement).dataset.val!;
+      (document.getElementById('account-balance') as HTMLInputElement).value = v;
+      (document.getElementById('primary-account-display') as HTMLInputElement).value = v;
+    });
+  });
+
+  (document.getElementById('account-balance') as HTMLInputElement).addEventListener('input', (e) => {
+    (document.getElementById('primary-account-display') as HTMLInputElement).value = (e.target as HTMLInputElement).value;
+  });
+
+  // Add account
+  let accountCount = 0;
+  document.getElementById('add-account-btn')!.addEventListener('click', () => {
+    accountCount++;
+    const row = document.createElement('div');
+    row.className = 'extra-account-row';
+    row.innerHTML = `
+      <div class="input-dollar-wrap" style="flex:1;"><span class="dollar-sign">$</span>
+      <input type="number" class="input-base input-dollar extra-balance" placeholder="Additional account balance" min="0" step="1000" aria-label="Account ${accountCount + 1} balance" /></div>
+      <button class="remove-acct-btn" style="padding:6px 10px;font-size:13px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);background:none;cursor:pointer;color:var(--color-muted);" type="button">✕</button>
+    `;
+    row.querySelector('.remove-acct-btn')!.addEventListener('click', () => row.remove());
+    document.getElementById('account-list')!.appendChild(row);
+  });
+
+  // Build IRS table
+  function buildIRSTable() {
+    const ages = Object.keys(UNIFORM_TABLE).map(Number).sort((a,b)=>a-b);
+    const tbody = document.getElementById('irs-table-body') as HTMLElement;
+    const chunk = Math.ceil(ages.length / 3);
+    const cols = [ages.slice(0,chunk), ages.slice(chunk,chunk*2), ages.slice(chunk*2)];
+    const maxRows = Math.max(...cols.map(c=>c.length));
+    for (let i = 0; i < maxRows; i++) {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--color-hairline)';
+      cols.forEach(col => {
+        const age = col[i];
+        if (age === undefined) { tr.innerHTML += '<td colspan="3"></td>'; return; }
+        const factor = UNIFORM_TABLE[age];
+        const pct = (1/factor*100).toFixed(2);
+        tr.innerHTML += `<td style="padding:8px 12px;font-family:var(--font-mono);font-weight:600;">${age}</td>
+          <td style="padding:8px 12px;font-family:var(--font-mono);color:var(--color-link);font-weight:600;">${factor}</td>
+          <td style="padding:8px 12px;font-family:var(--font-mono);color:var(--color-muted);">${pct}%</td>`;
+      });
+      tbody.appendChild(tr);
+    }
+  }
+  buildIRSTable();
+
+  // Growth rate buttons
+  document.querySelectorAll('.seg-btn[data-growth]').forEach(b => {
+    b.addEventListener('click', () => {
+      growthRate = parseInt((b as HTMLElement).dataset.growth!);
+      document.querySelectorAll('.seg-btn[data-growth]').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-pressed','false'); });
+      b.classList.add('active'); b.setAttribute('aria-pressed','true');
+      (document.getElementById('proj-growth-label') as HTMLElement).textContent = growthRate + '%';
+      if (lastBalance > 0) buildProjection(lastAge, lastBalance, lastFactor);
+    });
+  });
+
+  function buildProjection(startAge: number, startBalance: number, startFactor: number) {
+    const tbody = document.getElementById('projection-body') as HTMLElement;
+    tbody.innerHTML = '';
+    let balance = startBalance;
+    const year = parseInt(rmdYear);
+    for (let i = 0; i < 10; i++) {
+      const age = startAge + i;
+      const factor = UNIFORM_TABLE[age] || UNIFORM_TABLE[120] || 2.0;
+      const rmd = balance / factor;
+      const afterTax = rmd * (1 - taxRate / 100);
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--color-hairline)';
+      if (i === 0) tr.style.background = 'rgba(99,102,241,0.05)';
+      tr.innerHTML = `
+        <td style="padding:9px 12px;font-weight:${i===0?'700':'400'};">${year+i}</td>
+        <td style="padding:9px 12px;text-align:center;font-family:var(--font-mono);">${age}</td>
+        <td style="padding:9px 12px;text-align:right;font-family:var(--font-mono);">${fmt(balance)}</td>
+        <td style="padding:9px 12px;text-align:center;font-family:var(--font-mono);color:var(--color-muted);">${factor}</td>
+        <td style="padding:9px 12px;text-align:right;font-family:var(--font-mono);font-weight:600;color:var(--color-link);">${fmt(rmd)}</td>
+        <td style="padding:9px 12px;text-align:right;font-family:var(--font-mono);">${fmt(afterTax)}</td>
+      `;
+      tbody.appendChild(tr);
+      // Grow remaining balance
+      balance = (balance - rmd) * (1 + growthRate / 100);
+    }
+  }
+
+  // Main calculate
+  document.getElementById('calc-rmd-btn')!.addEventListener('click', () => {
+    const errorEl = document.getElementById('rmd-error') as HTMLElement;
+    const resultsEl = document.getElementById('rmd-results') as HTMLElement;
+    errorEl.hidden = true;
+
+    const age = parseInt((document.getElementById('rmd-age') as HTMLInputElement).value);
+    const primaryBalance = parseFloat((document.getElementById('account-balance') as HTMLInputElement).value);
+
+    if (!age || age < 72) {
+      document.getElementById('rmd-error-msg')!.textContent = 'Please enter your age (minimum 72 to calculate).';
+      errorEl.hidden = false; return;
+    }
+    if (!primaryBalance || primaryBalance <= 0) {
+      document.getElementById('rmd-error-msg')!.textContent = 'Please enter your account balance.';
+      errorEl.hidden = false; return;
+    }
+
+    // Sum extra accounts
+    let extraTotal = 0;
+    document.querySelectorAll('.extra-balance:not(#primary-account-display)').forEach(inp => {
+      const v = parseFloat((inp as HTMLInputElement).value);
+      if (!isNaN(v) && v > 0) extraTotal += v;
+    });
+    const totalBalance = primaryBalance + extraTotal;
+
+    // Get factor
+    let factor: number;
+    if (spouseYounger) {
+      const spouseAge = parseInt((document.getElementById('spouse-age') as HTMLInputElement).value);
+      factor = isNaN(spouseAge) ? (UNIFORM_TABLE[age] || 20) : getJointFactor(age, spouseAge);
+    } else {
+      factor = UNIFORM_TABLE[age] || UNIFORM_TABLE[Math.min(age, 120)] || 2.0;
+    }
+
+    const rmd = totalBalance / factor;
+    const tax = rmd * (taxRate / 100);
+    const afterTax = rmd - tax;
+    const pctBalance = (rmd / totalBalance * 100).toFixed(2);
+
+    lastAge = age; lastBalance = totalBalance; lastFactor = factor;
+
+    (document.getElementById('res-rmd-year-label') as HTMLElement).textContent = rmdYear;
+    (document.getElementById('res-rmd-amount') as HTMLElement).textContent = fmt(rmd);
+    (document.getElementById('res-rmd-frequency') as HTMLElement).textContent = `${fmt(rmd/12)}/month · ${fmt(rmd/4)}/quarter`;
+    (document.getElementById('res-after-tax') as HTMLElement).textContent = fmt(afterTax);
+    (document.getElementById('res-pct-balance') as HTMLElement).textContent = pctBalance + '%';
+    (document.getElementById('res-irs-factor') as HTMLElement).textContent = factor.toString();
+
+    (document.getElementById('rb-balance') as HTMLElement).textContent = fmt(totalBalance);
+    (document.getElementById('rb-age') as HTMLElement).textContent = age + ' years old';
+    (document.getElementById('rb-factor') as HTMLElement).textContent = factor + ` (IRS ${spouseYounger?'Joint':'Uniform'} Table)`;
+    (document.getElementById('rb-calc') as HTMLElement).textContent = `${fmt(totalBalance)} ÷ ${factor} = ${fmt(rmd)}`;
+    (document.getElementById('rb-gross') as HTMLElement).textContent = fmt(rmd);
+    (document.getElementById('rb-tax') as HTMLElement).textContent = `${fmt(tax)} (${taxRate}% rate)`;
+    (document.getElementById('rb-net') as HTMLElement).textContent = fmt(afterTax);
+
+    // Projection
+    buildProjection(age, totalBalance, factor);
+
+    // Strategies
+    const strategies = [
+      { icon:'🔄', text:`<strong>Roth Conversion:</strong> Consider converting ${fmt(Math.min(rmd*0.5, 50000))} to a Roth IRA while in your current tax bracket to reduce future RMDs.` },
+      { icon:'🏛️', text:`<strong>QCD Strategy:</strong> Donate up to $105,000 directly to charity (Qualified Charitable Distribution) to satisfy your RMD without paying income tax on it.` },
+      { icon:'⏰', text:`<strong>Timing:</strong> If this is your first RMD, you can delay until April 1, ${parseInt(rmdYear)+1} — but you\'ll take two RMDs that year. Calculate if it\'s better to take it in ${rmdYear}.` },
+      { icon:'💼', text:`<strong>Aggregation:</strong> You can take this RMD from any one or combination of your IRA accounts — choose accounts with lower growth potential to preserve other accounts.` },
+    ];
+    const sl = document.getElementById('strategies-list') as HTMLElement;
+    sl.innerHTML = '';
+    strategies.forEach(s => {
+      const div = document.createElement('div');
+      div.className = 'strategy-item';
+      div.innerHTML = `<span class="strategy-icon">${s.icon}</span><div class="strategy-text">${s.text}</div>`;
+      sl.appendChild(div);
+    });
+
+    resultsEl.hidden = false;
+    resultsEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  });
+
+  document.getElementById('clear-rmd-btn')!.addEventListener('click', () => {
+    ['rmd-age','account-balance','primary-account-display','spouse-age'].forEach(id => {
+      const el = document.getElementById(id) as HTMLInputElement;
+      if (el) el.value = '';
+    });
+    document.querySelectorAll('.extra-account-row:not(:first-child)').forEach(r => r.remove());
+    (document.getElementById('rmd-results') as HTMLElement).hidden = true;
+    (document.getElementById('rmd-error') as HTMLElement).hidden = true;
+    (document.getElementById('age-warning') as HTMLElement).hidden = true;
+  });
+
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

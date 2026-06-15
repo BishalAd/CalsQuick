@@ -151,6 +151,30 @@ const entries: SitemapEntry[] = [
     changefreq: 'daily',
     priority:   0.9,
   },
+  {
+    url:        `${SITE}/workers-comp-calculator/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/child-support-calculator/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/rmd-calculator/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/overtime-calculator/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
 
   // ── Blog ──────────────────────────────────────────────────────────────────
   {
@@ -282,6 +306,30 @@ const entries: SitemapEntry[] = [
   {
     url:        `${SITE}/blog/currency-converter-guide/`,
     lastmod:    '2026-06-15',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/workers-comp-guide/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/child-support-guide/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/rmd-calculator-guide/`,
+    lastmod:    '2026-06-16',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/overtime-pay-guide/`,
+    lastmod:    '2026-06-16',
     changefreq: 'monthly',
     priority:   0.7,
   },

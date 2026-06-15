@@ -1,0 +1,890 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'How is workers compensation calculated?', a: 'Workers compensation benefits are typically calculated as a percentage of your average weekly wage (AWW). Most states pay 66.67% (two-thirds) of your pre-injury average weekly wage, up to a state-mandated maximum. Your AWW is usually calculated from your wages in the 52 weeks before your injury. For example, if you earned $1,200/week, your weekly workers comp benefit would be approximately $800 (66.67% × $1,200), subject to your state maximum.' },
+  { q: 'What is the average weekly wage (AWW) for workers comp?', a: 'Your Average Weekly Wage (AWW) is the foundation of workers comp calculations. It is typically calculated by adding up all wages earned in the 52 weeks before the injury date and dividing by 52. Some states use 13 weeks or 26 weeks instead. AWW includes base wages, overtime (in some states), bonuses, tips, and commissions. Part-time workers may have their AWW calculated differently.' },
+  { q: 'How long do workers comp benefits last?', a: 'Duration depends on injury severity: Temporary Total Disability (TTD): until you return to work or reach Maximum Medical Improvement (MMI), typically up to 2 years. Temporary Partial Disability (TPD): while working light duty at reduced wages. Permanent Partial Disability (PPD): lump sum or weekly payments based on impairment rating. Permanent Total Disability (PTD): lifetime benefits in most states. Medical benefits typically continue for life for the injured body part.' },
+  { q: 'What is the maximum workers comp benefit by state?', a: 'Every state sets a maximum weekly benefit (usually tied to the state average weekly wage). Examples: California max is $1,620.00/week (2024), Texas max is $1,066/week, Florida max is $1,206/week, New York max is $1,145.43/week, and Illinois max is $1,897.68/week. Our calculator applies the correct maximum for your state automatically.' },
+  { q: 'What types of workers comp disability benefits exist?', a: 'There are four main types: Temporary Total Disability (TTD) — you cannot work at all while recovering, paid at 66.67% AWW. Temporary Partial Disability (TPD) — you can work light duty at reduced wages, paid for the wage difference. Permanent Partial Disability (PPD) — permanent impairment after reaching MMI, based on an impairment rating. Permanent Total Disability (PTD) — cannot return to any work, may receive lifetime benefits.' },
+  { q: 'Is workers compensation taxable?', a: 'Federal law: workers compensation benefits are generally NOT subject to federal income tax. State taxes: most states also do not tax workers comp benefits. Exception: if you receive Social Security Disability Insurance (SSDI) simultaneously, your combined benefits may be subject to taxation through the "workers comp offset." Always consult a tax professional for your specific situation.' },
+  { q: 'Can I be fired while on workers comp?', a: 'Technically, most states allow employers to terminate employees for legitimate business reasons while on workers comp — but you cannot legally be fired solely BECAUSE you filed a workers comp claim. This is called workers comp retaliation and is illegal in all states. If fired while on workers comp, your benefits typically continue. Consult a workers comp attorney immediately if you suspect retaliation.' },
+  { q: 'What is a workers comp settlement?', a: 'A workers comp settlement is a lump-sum payment that closes your workers comp claim. There are two types: Compromise and Release (C&R) — you receive a lump sum and give up all future benefits including medical. Stipulation with Request for Award — you receive payments but keep rights to future medical treatment. Settlement amounts depend on your impairment rating, future wage loss, and future medical costs. Always consult a workers comp attorney before settling.' },
+  { q: 'What is a permanent disability rating in workers comp?', a: 'After reaching Maximum Medical Improvement (MMI), a doctor assigns a permanent impairment rating — a percentage that reflects how much function you permanently lost. This percentage, combined with your AWW and age, determines your Permanent Partial Disability (PPD) benefit. For example, a 10% whole body impairment rating might entitle you to 30–100 weeks of benefits depending on your state.' },
+  { q: 'How do I calculate my workers comp settlement value?', a: 'Settlement value is influenced by: future medical costs for the injury, permanent disability rating ×  weeks of benefits per state schedule, future lost wages if you cannot return to your previous job, pain and suffering (in states that allow it in third-party claims), attorney fees (typically 15–25% of the settlement). Use our calculator as a starting estimate, but consult a licensed workers comp attorney for accurate valuation.' },
+  { q: 'What injuries are covered by workers compensation?', a: 'Workers comp covers injuries and illnesses that arise out of and occur in the course of employment. This includes: workplace accidents (falls, machinery accidents, vehicle accidents), repetitive motion injuries (carpal tunnel, back strain), occupational diseases (asbestosis, chemical exposure), mental health conditions caused by work in some states, and aggravation of pre-existing conditions. It does not cover injuries from intoxication, intentional self-harm, or off-duty activities.' },
+  { q: 'How long do I have to file a workers comp claim?', a: 'Statutes of limitations vary by state but are typically 1–3 years from the date of injury or the date you knew (or should have known) the injury was work-related. Some states: California — 1 year, Texas — 1 year, Florida — 2 years, New York — 2 years, Illinois — 3 years. Missing the deadline usually bars your claim entirely. Report your injury to your employer immediately — most states require notice within 30–90 days.' },
+  { q: 'What should I do immediately after a workplace injury?', a: 'Step 1: Seek immediate medical attention — always tell the doctor this is a work injury. Step 2: Report the injury to your employer in writing as soon as possible. Step 3: File a workers comp claim with your state board. Step 4: Document everything — photos, witness names, medical records, all communications. Step 5: Do not give a recorded statement to the insurance company without consulting an attorney. Step 6: Follow all medical advice and attend all appointments — gaps in treatment hurt your claim.' },
+];
+
+// State workers comp data: [maxWeeklyBenefit, replacementRate, state]
+const stateData: Record<string, { max: number; rate: number; name: string; maxWeeks?: number }> = {
+  AL: { max: 1073, rate: 0.6667, name: 'Alabama' },
+  AK: { max: 1426, rate: 0.80, name: 'Alaska' },
+  AZ: { max: 1323, rate: 0.6667, name: 'Arizona' },
+  AR: { max: 818, rate: 0.6667, name: 'Arkansas' },
+  CA: { max: 1620, rate: 0.6667, name: 'California' },
+  CO: { max: 1336, rate: 0.6667, name: 'Colorado' },
+  CT: { max: 1488, rate: 0.75, name: 'Connecticut' },
+  DE: { max: 912, rate: 0.6667, name: 'Delaware' },
+  FL: { max: 1206, rate: 0.6667, name: 'Florida' },
+  GA: { max: 800, rate: 0.6667, name: 'Georgia' },
+  HI: { max: 1155, rate: 0.6667, name: 'Hawaii' },
+  ID: { max: 849, rate: 0.6667, name: 'Idaho' },
+  IL: { max: 1898, rate: 0.6667, name: 'Illinois' },
+  IN: { max: 1026, rate: 0.6667, name: 'Indiana' },
+  IA: { max: 2065, rate: 0.80, name: 'Iowa' },
+  KS: { max: 789, rate: 0.6667, name: 'Kansas' },
+  KY: { max: 1122, rate: 0.6667, name: 'Kentucky' },
+  LA: { max: 705, rate: 0.6667, name: 'Louisiana' },
+  ME: { max: 1055, rate: 0.80, name: 'Maine' },
+  MD: { max: 1400, rate: 0.6667, name: 'Maryland' },
+  MA: { max: 1765, rate: 0.60, name: 'Massachusetts' },
+  MI: { max: 1168, rate: 0.80, name: 'Michigan' },
+  MN: { max: 1427, rate: 0.6667, name: 'Minnesota' },
+  MS: { max: 633, rate: 0.6667, name: 'Mississippi' },
+  MO: { max: 1082, rate: 0.6667, name: 'Missouri' },
+  MT: { max: 942, rate: 0.6667, name: 'Montana' },
+  NE: { max: 1021, rate: 0.6667, name: 'Nebraska' },
+  NV: { max: 1136, rate: 0.6667, name: 'Nevada' },
+  NH: { max: 1781, rate: 0.60, name: 'New Hampshire' },
+  NJ: { max: 1131, rate: 0.70, name: 'New Jersey' },
+  NM: { max: 1051, rate: 0.6667, name: 'New Mexico' },
+  NY: { max: 1145, rate: 0.6667, name: 'New York' },
+  NC: { max: 1254, rate: 0.6667, name: 'North Carolina' },
+  ND: { max: 1233, rate: 0.6667, name: 'North Dakota' },
+  OH: { max: 1221, rate: 0.6667, name: 'Ohio' },
+  OK: { max: 987, rate: 0.70, name: 'Oklahoma' },
+  OR: { max: 1600, rate: 0.6667, name: 'Oregon' },
+  PA: { max: 1273, rate: 0.6667, name: 'Pennsylvania' },
+  RI: { max: 1819, rate: 0.75, name: 'Rhode Island' },
+  SC: { max: 1013, rate: 0.6667, name: 'South Carolina' },
+  SD: { max: 1094, rate: 0.6667, name: 'South Dakota' },
+  TN: { max: 1204, rate: 0.6667, name: 'Tennessee' },
+  TX: { max: 1066, rate: 0.70, name: 'Texas' },
+  UT: { max: 1215, rate: 0.6667, name: 'Utah' },
+  VT: { max: 1467, rate: 0.6667, name: 'Vermont' },
+  VA: { max: 1400, rate: 0.6667, name: 'Virginia' },
+  WA: { max: 1654, rate: 0.60, name: 'Washington' },
+  WV: { max: 978, rate: 0.6667, name: 'West Virginia' },
+  WI: { max: 1451, rate: 0.6667, name: 'Wisconsin' },
+  WY: { max: 1190, rate: 0.6667, name: 'Wyoming' },
+  DC: { max: 1856, rate: 0.6667, name: 'Washington D.C.' },
+};
+
+// PPD weeks per body part per AMA schedule (simplified)
+const bodyPartWeeks: Record<string, number> = {
+  'thumb': 75, 'index_finger': 46, 'middle_finger': 40, 'ring_finger': 25, 'little_finger': 20,
+  'hand': 244, 'wrist': 244, 'forearm': 280, 'elbow': 280, 'upper_arm': 312, 'shoulder': 312,
+  'great_toe': 38, 'other_toe': 16, 'foot': 205, 'ankle': 205, 'lower_leg': 288, 'knee': 288,
+  'upper_leg': 320, 'hip': 320, 'eye': 160, 'hearing_one': 52, 'hearing_both': 200,
+  'back_lumbar': 400, 'neck': 400, 'whole_body': 500,
+};
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Workers Comp Calculator',
+    description: 'Free workers compensation calculator. Estimate your weekly workers comp benefits, total disability payments, and settlement value by state. Covers all 50 US states with accurate maximum benefit rates.',
+    url: '/workers-comp-calculator',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Annuity Calculator', href: '/annuity-calculator', icon: '📈', desc: 'Estimate annuity payments' },
+  { name: '401(k) Calculator', href: '/401k-calculator', icon: '🏦', desc: 'Retirement savings planner' },
+  { name: 'Loan EMI Calculator', href: '/loan-emi-calculator', icon: '💰', desc: 'Calculate loan payments' },
+];
+---
+
+<CalculatorLayout
+  title="Workers Comp Calculator — Estimate Weekly Benefits by State (2024)"
+  description="Free workers compensation calculator for all 50 US states. Estimate your weekly workers comp benefits, temporary disability payments, permanent disability value, and settlement amount. Uses accurate 2024 state maximum rates."
+  canonical="/workers-comp-calculator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Workers Comp Calculator', url: '/workers-comp-calculator' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Disclaimer Banner -->
+  <div class="disclaimer-banner fade-up" role="alert" style="margin-bottom:24px;">
+    <span style="font-size:16px;">⚠️</span>
+    <p style="margin:0;font-size:13px;line-height:1.5;color:var(--color-body);">
+      <strong>Legal Disclaimer:</strong> This calculator provides estimates for informational purposes only. Workers compensation laws vary by state and individual circumstances. This is not legal advice. Consult a licensed workers compensation attorney for guidance on your specific claim.
+    </p>
+  </div>
+
+  <!-- Header -->
+  <div style="margin-bottom:32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom:8px;">Legal & Financial Tools</div>
+    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">Workers Comp Calculator</h1>
+    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
+      Estimate your workers compensation weekly benefits, total payments, and settlement value for all 50 US states. Based on 2024 state maximum rates and standard disability calculations.
+    </p>
+  </div>
+
+  <!-- MAIN CALCULATOR -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom:40px;">
+    <div class="calc-form">
+
+      <!-- State selector -->
+      <div>
+        <label for="state-select" class="label">Your State</label>
+        <select id="state-select" class="input-base input-lg" style="height:48px;padding:0 14px;" aria-label="Select your state">
+          <option value="">— Select State —</option>
+          {Object.entries(stateData).sort((a,b)=>a[1].name.localeCompare(b[1].name)).map(([code, s]) => (
+            <option value={code}>{s.name} ({code})</option>
+          ))}
+        </select>
+        <div id="state-info" class="state-info-bar" hidden>
+          <span id="state-rate-display"></span>
+          <span id="state-max-display"></span>
+        </div>
+      </div>
+
+      <!-- Pay type + wages -->
+      <div>
+        <label class="label" style="margin-bottom:8px;">How Are You Paid?</label>
+        <div class="pay-type-grid" role="group" aria-label="Pay type">
+          <button class="pay-btn active" data-pay="weekly" aria-pressed="true">💵 Weekly Wage</button>
+          <button class="pay-btn" data-pay="hourly" aria-pressed="false">⏱️ Hourly + Hours</button>
+          <button class="pay-btn" data-pay="annual" aria-pressed="false">📅 Annual Salary</button>
+        </div>
+      </div>
+
+      <!-- Weekly wage input -->
+      <div id="pay-weekly-wrap">
+        <label for="weekly-wage" class="label">Average Weekly Wage (before injury)</label>
+        <div class="input-dollar-wrap">
+          <span class="dollar-sign">$</span>
+          <input type="number" id="weekly-wage" class="input-base input-lg input-dollar"
+            placeholder="e.g. 1200" min="1" step="0.01"
+            aria-label="Average weekly wage" />
+        </div>
+        <p style="font-size:12px;color:var(--color-muted);margin-top:5px;">Your gross (pre-tax) weekly earnings in the 52 weeks before injury</p>
+      </div>
+
+      <!-- Hourly input -->
+      <div id="pay-hourly-wrap" hidden>
+        <div class="two-col">
+          <div>
+            <label for="hourly-rate" class="label">Hourly Rate</label>
+            <div class="input-dollar-wrap">
+              <span class="dollar-sign">$</span>
+              <input type="number" id="hourly-rate" class="input-base input-dollar" placeholder="e.g. 25.00" min="1" step="0.01" aria-label="Hourly rate" />
+            </div>
+          </div>
+          <div>
+            <label for="hours-per-week" class="label">Hours Per Week</label>
+            <input type="number" id="hours-per-week" class="input-base" placeholder="e.g. 40" min="1" max="84" step="0.5" aria-label="Hours per week" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Annual salary input -->
+      <div id="pay-annual-wrap" hidden>
+        <label for="annual-salary" class="label">Annual Salary</label>
+        <div class="input-dollar-wrap">
+          <span class="dollar-sign">$</span>
+          <input type="number" id="annual-salary" class="input-base input-lg input-dollar"
+            placeholder="e.g. 62400" min="1" step="100"
+            aria-label="Annual salary" />
+        </div>
+      </div>
+
+      <!-- Disability type -->
+      <div>
+        <label class="label" style="margin-bottom:10px;">Type of Disability</label>
+        <div class="disability-list" role="radiogroup" aria-label="Disability type">
+          {[
+            { key:'ttd', label:'Temporary Total Disability (TTD)', desc:'Completely unable to work during recovery', icon:'🏥' },
+            { key:'tpd', label:'Temporary Partial Disability (TPD)', desc:'Working light duty at reduced wages', icon:'💼' },
+            { key:'ppd', label:'Permanent Partial Disability (PPD)', desc:'Permanent impairment after reaching MMI', icon:'🩺' },
+            { key:'ptd', label:'Permanent Total Disability (PTD)', desc:'Cannot return to any work — lifetime benefits', icon:'♿' },
+          ].map((d, i) => (
+            <label class={`disability-radio ${i===0?'active':''}`} data-type={d.key}>
+              <input type="radio" name="disability-type" value={d.key} checked={i===0} class="sr-only" />
+              <div class="dr-icon">{d.icon}</div>
+              <div class="dr-body">
+                <div class="dr-label">{d.label}</div>
+                <div class="dr-desc">{d.desc}</div>
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <!-- TTD duration -->
+      <div id="ttd-duration-wrap">
+        <label for="ttd-weeks" class="label">Expected Recovery Duration</label>
+        <div class="input-with-unit-row">
+          <input type="number" id="ttd-weeks" class="input-base input-lg" placeholder="e.g. 12" min="1" max="520" step="1" aria-label="Recovery weeks" style="flex:1;" />
+          <span class="unit-label-text">weeks</span>
+        </div>
+        <div class="quick-weeks" style="margin-top:8px;">
+          {[4,8,12,26,52,104].map(w => (
+            <button class="quick-week-btn" data-weeks={w} aria-label={`${w} weeks`}>{w}w</button>
+          ))}
+        </div>
+      </div>
+
+      <!-- TPD fields -->
+      <div id="tpd-wrap" hidden>
+        <label for="tpd-current-wage" class="label">Current Light-Duty Weekly Wage</label>
+        <div class="input-dollar-wrap">
+          <span class="dollar-sign">$</span>
+          <input type="number" id="tpd-current-wage" class="input-base input-lg input-dollar"
+            placeholder="e.g. 600" min="1" step="0.01"
+            aria-label="Current light duty wage" />
+        </div>
+        <div style="margin-top:12px;">
+          <label for="tpd-weeks" class="label">Duration (weeks)</label>
+          <input type="number" id="tpd-weeks" class="input-base" placeholder="e.g. 8" min="1" max="260" style="max-width:160px;" aria-label="TPD duration weeks" />
+        </div>
+      </div>
+
+      <!-- PPD fields -->
+      <div id="ppd-wrap" hidden>
+        <div class="two-col">
+          <div>
+            <label for="impairment-rating" class="label">Impairment Rating (%)</label>
+            <div style="position:relative;display:flex;align-items:center;">
+              <input type="number" id="impairment-rating" class="input-base input-lg" placeholder="e.g. 15" min="1" max="100" step="1" aria-label="Impairment rating percentage" style="padding-right:40px;" />
+              <span class="unit-badge">%</span>
+            </div>
+          </div>
+          <div>
+            <label for="body-part-select" class="label">Injured Body Part</label>
+            <select id="body-part-select" class="input-base" style="height:44px;padding:0 10px;" aria-label="Injured body part">
+              <option value="whole_body">Whole Body / Back (General)</option>
+              <option value="back_lumbar">Back / Lumbar Spine</option>
+              <option value="neck">Neck / Cervical</option>
+              <option value="shoulder">Shoulder</option>
+              <option value="upper_arm">Upper Arm</option>
+              <option value="elbow">Elbow</option>
+              <option value="forearm">Forearm</option>
+              <option value="wrist">Wrist</option>
+              <option value="hand">Hand</option>
+              <option value="thumb">Thumb</option>
+              <option value="index_finger">Index Finger</option>
+              <option value="middle_finger">Middle Finger</option>
+              <option value="ring_finger">Ring Finger</option>
+              <option value="little_finger">Little Finger</option>
+              <option value="hip">Hip</option>
+              <option value="upper_leg">Upper Leg / Thigh</option>
+              <option value="knee">Knee</option>
+              <option value="lower_leg">Lower Leg</option>
+              <option value="ankle">Ankle</option>
+              <option value="foot">Foot</option>
+              <option value="great_toe">Great Toe</option>
+              <option value="other_toe">Other Toe</option>
+              <option value="eye">Eye (one)</option>
+              <option value="hearing_one">Hearing Loss (one ear)</option>
+              <option value="hearing_both">Hearing Loss (both ears)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- PTD duration -->
+      <div id="ptd-wrap" hidden>
+        <label for="ptd-years" class="label">Expected Years Receiving Benefits</label>
+        <div class="input-with-unit-row">
+          <input type="number" id="ptd-years" class="input-base input-lg" placeholder="e.g. 20" min="1" max="60" step="1" aria-label="Years receiving PTD benefits" style="flex:1;" />
+          <span class="unit-label-text">years</span>
+        </div>
+        <p style="font-size:12px;color:var(--color-muted);margin-top:5px;">Many states provide PTD benefits for life. Enter your estimated remaining working years or life expectancy.</p>
+      </div>
+
+      <!-- Additional weekly comp (for offset) -->
+      <div>
+        <label for="other-income" class="label">
+          Other Disability Income (SSDI, pension, etc.) <span style="font-size:11px;font-weight:400;color:var(--color-muted);">(optional — for offset calculation)</span>
+        </label>
+        <div class="input-dollar-wrap">
+          <span class="dollar-sign">$</span>
+          <input type="number" id="other-income" class="input-base input-dollar"
+            placeholder="0" min="0" step="1"
+            aria-label="Other weekly disability income" />
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button id="calc-wc-btn" class="btn-primary" style="flex:1;">Calculate Workers Comp Benefits</button>
+        <button id="clear-wc-btn" class="btn-secondary">Reset</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="wc-error" class="calc-error" role="alert" aria-live="polite" hidden>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M8 5v3M8 11h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <span id="wc-error-msg"></span>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="wc-results" hidden aria-live="polite">
+      <div class="results-divider" style="margin:28px 0;"></div>
+
+      <!-- State + type banner -->
+      <div class="result-state-banner">
+        <span id="res-state-name">—</span>
+        <span class="result-type-badge" id="res-type-badge">TTD</span>
+      </div>
+
+      <!-- Hero cards -->
+      <div class="wc-hero-grid" style="margin-top:16px;">
+        <div class="wc-hero-card wc-primary">
+          <div class="wc-hero-label">Weekly Benefit</div>
+          <div class="wc-hero-value" id="res-weekly-benefit">$—</div>
+          <div class="wc-hero-sub" id="res-replacement-rate">—% wage replacement</div>
+        </div>
+        <div class="wc-hero-card">
+          <div class="wc-hero-label">Total Estimated Benefit</div>
+          <div class="wc-hero-value" id="res-total-benefit">$—</div>
+          <div class="wc-hero-sub" id="res-duration-label">—</div>
+        </div>
+        <div class="wc-hero-card">
+          <div class="wc-hero-label">Monthly Equivalent</div>
+          <div class="wc-hero-value" id="res-monthly">$—</div>
+          <div class="wc-hero-sub">per month (approx.)</div>
+        </div>
+      </div>
+
+      <!-- Detailed breakdown -->
+      <div class="result-panel" style="margin-top:20px;">
+        <div class="result-row">
+          <span class="result-row-label">📊 Average Weekly Wage (AWW)</span>
+          <span class="result-row-value" id="res-aww">$—</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">⚖️ State Replacement Rate</span>
+          <span class="result-row-value" id="res-rate-pct">—%</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">🧮 Calculated Benefit</span>
+          <span class="result-row-value" id="res-calc-benefit">$—/week</span>
+        </div>
+        <div class="result-row">
+          <span class="result-row-label">🏛️ State Maximum Benefit</span>
+          <span class="result-row-value" id="res-state-max">$—/week</span>
+        </div>
+        <div class="result-row" id="offset-row" hidden>
+          <span class="result-row-label">➖ SSDI / Other Income Offset</span>
+          <span class="result-row-value" id="res-offset" style="color:#e5241a;">−$—/week</span>
+        </div>
+        <div class="result-row" style="border-bottom:none;">
+          <span class="result-row-label" style="font-weight:600;font-size:15px;">✅ Final Weekly Benefit</span>
+          <span class="result-row-value" id="res-final-weekly" style="font-size:18px;font-weight:700;color:var(--color-link);">$—</span>
+        </div>
+      </div>
+
+      <!-- Wage comparison bar -->
+      <div class="wage-bar-wrap" style="margin-top:20px;">
+        <div style="font-size:13px;font-weight:600;color:var(--color-ink);margin-bottom:8px;">Wage Replacement Visualization</div>
+        <div class="wage-bar-labels">
+          <span>Workers Comp Benefit</span>
+          <span>Pre-Injury Weekly Wage</span>
+        </div>
+        <div class="wage-bar-track">
+          <div class="wage-bar-comp" id="wage-bar-comp"></div>
+          <div class="wage-bar-gap" id="wage-bar-gap"></div>
+        </div>
+        <div class="wage-bar-amounts">
+          <span style="color:var(--color-link);" id="bar-comp-amount">$—</span>
+          <span style="color:var(--color-muted);" id="bar-gap-amount">$— gap</span>
+          <span id="bar-total-amount">$—</span>
+        </div>
+      </div>
+
+      <!-- Settlement estimate -->
+      <div class="settlement-card" style="margin-top:20px;">
+        <div class="settlement-header">
+          <span style="font-size:22px;">⚖️</span>
+          <div style="flex:1;">
+            <div style="font-size:15px;font-weight:600;color:var(--color-ink);">Rough Settlement Range Estimate</div>
+            <div style="font-size:12px;color:var(--color-muted);">Settlements typically range 1–3× total benefit value. Highly variable by case.</div>
+          </div>
+        </div>
+        <div class="settlement-range">
+          <div class="settlement-num">
+            <div class="sn-label">Low Estimate</div>
+            <div class="sn-value" id="settle-low">$—</div>
+          </div>
+          <div class="settlement-arrow">→</div>
+          <div class="settlement-num">
+            <div class="sn-label">Mid Estimate</div>
+            <div class="sn-value sn-mid" id="settle-mid">$—</div>
+          </div>
+          <div class="settlement-arrow">→</div>
+          <div class="settlement-num">
+            <div class="sn-label">High Estimate</div>
+            <div class="sn-value" id="settle-high">$—</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--color-muted);margin-top:10px;margin-bottom:0;line-height:1.5;">⚠️ Settlement values depend heavily on future medical costs, attorney representation, jurisdiction, and case facts. Always consult a workers comp attorney.</p>
+      </div>
+
+      <!-- Next steps -->
+      <div class="next-steps" style="margin-top:20px;">
+        <div style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:10px;">📋 Important Next Steps</div>
+        <div class="steps-grid">
+          {[
+            { icon:'📋', step:'File your claim', desc:'Report injury to employer immediately in writing. File with state workers comp board within the deadline.' },
+            { icon:'🏥', step:'Document medical treatment', desc:'Attend all appointments. Tell every doctor this is a work injury. Keep all records.' },
+            { icon:'⚖️', step:'Consult an attorney', desc:'Workers comp attorneys work on contingency (no upfront cost). They typically recover 15–25% more.' },
+            { icon:'📵', step:'Do not give recorded statements', desc:'Do not speak to the insurance company adjuster without legal counsel present.' },
+          ].map(s => (
+            <div class="step-card">
+              <div style="font-size:20px;margin-bottom:5px;">{s.icon}</div>
+              <div style="font-size:13px;font-weight:600;color:var(--color-ink);margin-bottom:3px;">{s.step}</div>
+              <div style="font-size:12px;color:var(--color-muted);line-height:1.5;">{s.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Disclaimer inside results -->
+      <div class="disclaimer-banner" style="margin-top:16px;" role="note">
+        <span style="font-size:16px;">⚠️</span>
+        <p style="margin:0;font-size:12px;line-height:1.5;color:var(--color-body);">
+          This is an estimate only. Actual benefits depend on your specific state's laws, injury details, employer insurance carrier, and legal representation. State maximums and rates shown are approximate 2024 figures and may vary.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE MAXIMUM REFERENCE TABLE -->
+  <div style="margin-bottom:40px;" class="fade-up">
+    <h2 style="color:var(--color-ink);margin-bottom:8px;font-size:22px;font-weight:600;">Workers Comp Maximum Weekly Benefits by State (2024)</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Maximum weekly temporary total disability (TTD) benefit amounts for all 50 states.</p>
+    <div style="overflow-x:auto;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:11px 14px;">State</th>
+            <th style="padding:11px 14px;text-align:right;">Max Weekly</th>
+            <th style="padding:11px 14px;text-align:center;">Rate</th>
+            <th style="padding:11px 14px;">State</th>
+            <th style="padding:11px 14px;text-align:right;">Max Weekly</th>
+            <th style="padding:11px 14px;text-align:center;">Rate</th>
+          </tr>
+        </thead>
+        <tbody id="state-table-body"></tbody>
+      </table>
+    </div>
+    <p style="font-size:11px;color:var(--color-muted);margin-top:6px;">* Rates are approximate 2024 figures. Replacement rates shown are for TTD. Actual rates may be adjusted annually.</p>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:48px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Workers Compensation: Complete Guide to Benefits & Claims</h2>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Workers compensation is a state-mandated insurance program that provides wage replacement and medical benefits to employees injured on the job. In exchange for these guaranteed benefits, injured workers generally give up the right to sue their employer for negligence. Understanding how <strong>workers comp benefits are calculated</strong> helps you verify that you're receiving the correct amount and plan your finances during recovery.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">How Weekly Workers Comp Benefits Are Calculated</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The standard formula used in most states is: <strong>Weekly Benefit = Average Weekly Wage × Replacement Rate</strong>, subject to the state's maximum weekly benefit. Your Average Weekly Wage (AWW) is typically your total gross wages in the 52 weeks before injury divided by 52. Most states replace 66.67% (two-thirds) of your AWW — though some states like Iowa (80%), Connecticut (75%), and Massachusetts (60%) use different rates. If your calculated benefit exceeds the state maximum, you receive the maximum.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Types of Workers Comp Disability Benefits Explained</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      <strong>Temporary Total Disability (TTD)</strong> is the most common benefit — paid while you are completely off work recovering, at 66.67% AWW up to the state maximum. <strong>Temporary Partial Disability (TPD)</strong> is paid when you return to light duty at reduced wages — typically two-thirds of the difference between your pre-injury and current wages. <strong>Permanent Partial Disability (PPD)</strong> is awarded after you reach Maximum Medical Improvement (MMI) and have a permanent impairment — calculated as a percentage of the affected body part's maximum benefit weeks. <strong>Permanent Total Disability (PTD)</strong> provides ongoing benefits, sometimes for life, when the worker cannot return to any employment.
+    </p>
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Workers Comp vs Personal Injury Lawsuit</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Workers comp is a no-fault system — you do not need to prove your employer was negligent to receive benefits. However, you also cannot sue your employer for pain and suffering damages in most cases. A <strong>third-party lawsuit</strong> is possible if someone other than your employer caused the injury — for example, a negligent driver in a work vehicle accident, or a defective product manufacturer. Third-party claims can recover pain and suffering, full lost wages, and other damages not available through workers comp. An experienced workers comp attorney can advise whether a third-party claim applies to your situation.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`wc-faq-${i}`} id={`wc-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`wc-faq-${i}`} role="region" aria-labelledby={`wc-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .calc-form{display:flex;flex-direction:column;gap:20px;}
+  .results-divider{height:1px;background:var(--color-hairline);}
+  .result-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--color-hairline);}
+  .result-row-label{font-size:14px;color:var(--color-body);}
+  .result-row-value{font-size:14px;font-weight:600;color:var(--color-ink);}
+  .calc-error{display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-error-soft);border:1px solid var(--color-hairline);border-radius:var(--radius-md);margin-top:16px;font-size:14px;color:var(--color-error);}
+  .prose-section{padding:32px;background:var(--color-canvas);border-radius:var(--radius-lg);border:1px solid var(--color-hairline);}
+  .unit-badge{position:absolute;right:14px;font-size:13px;font-weight:600;color:var(--color-muted);pointer-events:none;user-select:none;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+
+  /* Disclaimer */
+  .disclaimer-banner{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--radius-md);}
+
+  /* State info bar */
+  .state-info-bar{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;}
+  .state-info-bar span{font-size:13px;font-weight:500;padding:4px 12px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:99px;color:var(--color-body);}
+
+  /* Pay type */
+  .pay-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .pay-btn{padding:10px 8px;font-size:13px;font-weight:500;border:1px solid var(--color-hairline);border-radius:var(--radius-md);background:var(--color-canvas-soft-2);color:var(--color-body);cursor:pointer;transition:all 0.15s;}
+  .pay-btn:hover{border-color:var(--color-link);background:var(--color-canvas);}
+  .pay-btn.active{border-color:var(--color-link);background:var(--color-canvas);font-weight:600;box-shadow:0 0 0 2px rgba(99,102,241,0.1);}
+
+  /* Dollar input */
+  .input-dollar-wrap{position:relative;}
+  .dollar-sign{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--color-muted);font-weight:600;z-index:1;}
+  .input-dollar{padding-left:30px !important;}
+
+  /* Input with unit row */
+  .input-with-unit-row{display:flex;align-items:center;gap:10px;}
+  .unit-label-text{font-size:14px;font-weight:500;color:var(--color-muted);flex-shrink:0;}
+
+  /* Quick weeks */
+  .quick-weeks{display:flex;gap:6px;flex-wrap:wrap;}
+  .quick-week-btn{padding:4px 10px;font-size:12px;font-weight:500;border:1px solid var(--color-hairline);border-radius:99px;background:var(--color-canvas-soft-2);color:var(--color-body);cursor:pointer;transition:all 0.15s;}
+  .quick-week-btn:hover{border-color:var(--color-link);color:var(--color-link);}
+  .quick-week-btn.active{border-color:var(--color-link);background:var(--color-link);color:#fff;}
+
+  /* Disability radio */
+  .disability-list{display:flex;flex-direction:column;gap:6px;}
+  .disability-radio{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--color-hairline);border-radius:var(--radius-lg);background:var(--color-canvas-soft-2);cursor:pointer;transition:all 0.15s;}
+  .disability-radio:hover{border-color:var(--color-link);}
+  .disability-radio.active{border-color:var(--color-link);background:var(--color-canvas);}
+  .dr-icon{font-size:20px;flex-shrink:0;}
+  .dr-body{flex:1;}
+  .dr-label{font-size:14px;font-weight:600;color:var(--color-ink);}
+  .dr-desc{font-size:12px;color:var(--color-muted);}
+
+  /* Result state banner */
+  .result-state-banner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:10px 14px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+  #res-state-name{font-size:15px;font-weight:600;color:var(--color-ink);}
+  .result-type-badge{font-size:12px;font-weight:700;padding:3px 12px;background:var(--color-link);color:#fff;border-radius:99px;}
+
+  /* WC hero grid */
+  .wc-hero-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+  .wc-hero-card{padding:18px 14px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);text-align:center;}
+  .wc-primary{background:var(--color-link);border-color:var(--color-link);}
+  .wc-primary .wc-hero-label,.wc-primary .wc-hero-sub{color:rgba(255,255,255,0.8);}
+  .wc-primary .wc-hero-value{color:#fff;}
+  .wc-hero-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:6px;}
+  .wc-hero-value{font-size:clamp(20px,4vw,32px);font-weight:700;color:var(--color-ink);letter-spacing:-0.5px;font-family:var(--font-mono);line-height:1.1;}
+  .wc-hero-sub{font-size:12px;color:var(--color-muted);margin-top:4px;}
+
+  /* Wage bar */
+  .wage-bar-wrap{padding:14px 16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .wage-bar-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--color-body);font-weight:500;margin-bottom:6px;}
+  .wage-bar-track{display:flex;height:14px;border-radius:99px;overflow:hidden;background:var(--color-hairline);}
+  .wage-bar-comp{background:var(--color-link);transition:width 0.5s ease;}
+  .wage-bar-gap{background:#fca5a5;transition:width 0.5s ease;}
+  .wage-bar-amounts{display:flex;justify-content:space-between;font-size:12px;font-family:var(--font-mono);margin-top:6px;font-weight:600;}
+
+  /* Settlement */
+  .settlement-card{padding:18px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .settlement-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .settlement-range{display:flex;align-items:center;justify-content:space-around;gap:8px;flex-wrap:wrap;}
+  .settlement-num{text-align:center;}
+  .sn-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-muted);font-family:var(--font-mono);margin-bottom:4px;}
+  .sn-value{font-size:20px;font-weight:700;color:var(--color-ink);font-family:var(--font-mono);}
+  .sn-mid{font-size:26px;color:var(--color-link);}
+  .settlement-arrow{font-size:18px;color:var(--color-muted);}
+
+  /* Next steps */
+  .next-steps{padding:16px;background:var(--color-canvas-soft-2);border:1px solid var(--color-hairline);border-radius:var(--radius-lg);}
+  .steps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .step-card{padding:12px;background:var(--color-canvas);border:1px solid var(--color-hairline);border-radius:var(--radius-md);}
+
+  @media(max-width:700px){
+    .wc-hero-grid{grid-template-columns:1fr;}
+    .two-col{grid-template-columns:1fr;}
+    .pay-type-grid{grid-template-columns:1fr;}
+    .steps-grid{grid-template-columns:1fr;}
+    .settlement-range{flex-direction:column;align-items:center;}
+    .settlement-arrow{transform:rotate(90deg);}
+    .prose-section{padding:20px 16px;}
+  }
+  @media(max-width:480px){
+    .state-info-bar{flex-direction:column;gap:6px;}
+  }
+</style>
+
+<script>
+  // State data (mirrors Astro frontmatter for client-side use)
+  const STATE_DATA: Record<string, {max:number;rate:number;name:string}> = {
+    AL:{max:1073,rate:0.6667,name:'Alabama'},AK:{max:1426,rate:0.80,name:'Alaska'},
+    AZ:{max:1323,rate:0.6667,name:'Arizona'},AR:{max:818,rate:0.6667,name:'Arkansas'},
+    CA:{max:1620,rate:0.6667,name:'California'},CO:{max:1336,rate:0.6667,name:'Colorado'},
+    CT:{max:1488,rate:0.75,name:'Connecticut'},DE:{max:912,rate:0.6667,name:'Delaware'},
+    FL:{max:1206,rate:0.6667,name:'Florida'},GA:{max:800,rate:0.6667,name:'Georgia'},
+    HI:{max:1155,rate:0.6667,name:'Hawaii'},ID:{max:849,rate:0.6667,name:'Idaho'},
+    IL:{max:1898,rate:0.6667,name:'Illinois'},IN:{max:1026,rate:0.6667,name:'Indiana'},
+    IA:{max:2065,rate:0.80,name:'Iowa'},KS:{max:789,rate:0.6667,name:'Kansas'},
+    KY:{max:1122,rate:0.6667,name:'Kentucky'},LA:{max:705,rate:0.6667,name:'Louisiana'},
+    ME:{max:1055,rate:0.80,name:'Maine'},MD:{max:1400,rate:0.6667,name:'Maryland'},
+    MA:{max:1765,rate:0.60,name:'Massachusetts'},MI:{max:1168,rate:0.80,name:'Michigan'},
+    MN:{max:1427,rate:0.6667,name:'Minnesota'},MS:{max:633,rate:0.6667,name:'Mississippi'},
+    MO:{max:1082,rate:0.6667,name:'Missouri'},MT:{max:942,rate:0.6667,name:'Montana'},
+    NE:{max:1021,rate:0.6667,name:'Nebraska'},NV:{max:1136,rate:0.6667,name:'Nevada'},
+    NH:{max:1781,rate:0.60,name:'New Hampshire'},NJ:{max:1131,rate:0.70,name:'New Jersey'},
+    NM:{max:1051,rate:0.6667,name:'New Mexico'},NY:{max:1145,rate:0.6667,name:'New York'},
+    NC:{max:1254,rate:0.6667,name:'North Carolina'},ND:{max:1233,rate:0.6667,name:'North Dakota'},
+    OH:{max:1221,rate:0.6667,name:'Ohio'},OK:{max:987,rate:0.70,name:'Oklahoma'},
+    OR:{max:1600,rate:0.6667,name:'Oregon'},PA:{max:1273,rate:0.6667,name:'Pennsylvania'},
+    RI:{max:1819,rate:0.75,name:'Rhode Island'},SC:{max:1013,rate:0.6667,name:'South Carolina'},
+    SD:{max:1094,rate:0.6667,name:'South Dakota'},TN:{max:1204,rate:0.6667,name:'Tennessee'},
+    TX:{max:1066,rate:0.70,name:'Texas'},UT:{max:1215,rate:0.6667,name:'Utah'},
+    VT:{max:1467,rate:0.6667,name:'Vermont'},VA:{max:1400,rate:0.6667,name:'Virginia'},
+    WA:{max:1654,rate:0.60,name:'Washington'},WV:{max:978,rate:0.6667,name:'West Virginia'},
+    WI:{max:1451,rate:0.6667,name:'Wisconsin'},WY:{max:1190,rate:0.6667,name:'Wyoming'},
+    DC:{max:1856,rate:0.6667,name:'Washington D.C.'},
+  };
+
+  const BODY_PART_WEEKS: Record<string,number> = {
+    thumb:75,index_finger:46,middle_finger:40,ring_finger:25,little_finger:20,
+    hand:244,wrist:244,forearm:280,elbow:280,upper_arm:312,shoulder:312,
+    great_toe:38,other_toe:16,foot:205,ankle:205,lower_leg:288,knee:288,
+    upper_leg:320,hip:320,eye:160,hearing_one:52,hearing_both:200,
+    back_lumbar:400,neck:400,whole_body:500,
+  };
+
+  const fmt = (n:number) => '$' + Math.round(n).toLocaleString();
+  const fmt2 = (n:number) => '$' + n.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+
+  // Pay type
+  let payType = 'weekly';
+  let disabilityType = 'ttd';
+
+  document.querySelectorAll('.pay-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      payType = (btn as HTMLElement).dataset.pay!;
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      (document.getElementById('pay-weekly-wrap') as HTMLElement).hidden = payType !== 'weekly';
+      (document.getElementById('pay-hourly-wrap') as HTMLElement).hidden = payType !== 'hourly';
+      (document.getElementById('pay-annual-wrap') as HTMLElement).hidden = payType !== 'annual';
+    });
+  });
+
+  // Disability type
+  document.querySelectorAll('.disability-radio').forEach(lbl => {
+    lbl.addEventListener('click', () => {
+      const radio = lbl.querySelector('input') as HTMLInputElement;
+      disabilityType = radio.value;
+      radio.checked = true;
+      document.querySelectorAll('.disability-radio').forEach(x => x.classList.remove('active'));
+      lbl.classList.add('active');
+      (document.getElementById('ttd-duration-wrap') as HTMLElement).hidden = disabilityType !== 'ttd';
+      (document.getElementById('tpd-wrap') as HTMLElement).hidden = disabilityType !== 'tpd';
+      (document.getElementById('ppd-wrap') as HTMLElement).hidden = disabilityType !== 'ppd';
+      (document.getElementById('ptd-wrap') as HTMLElement).hidden = disabilityType !== 'ptd';
+    });
+  });
+
+  // State selector
+  document.getElementById('state-select')!.addEventListener('change', (e) => {
+    const code = (e.target as HTMLSelectElement).value;
+    const infoBar = document.getElementById('state-info') as HTMLElement;
+    if (code && STATE_DATA[code]) {
+      const s = STATE_DATA[code];
+      (document.getElementById('state-rate-display') as HTMLElement).textContent = `Replacement Rate: ${(s.rate*100).toFixed(1)}%`;
+      (document.getElementById('state-max-display') as HTMLElement).textContent = `Max Weekly: ${fmt(s.max)}`;
+      infoBar.hidden = false;
+    } else {
+      infoBar.hidden = true;
+    }
+  });
+
+  // Quick week buttons
+  document.querySelectorAll('.quick-week-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const w = (btn as HTMLElement).dataset.weeks!;
+      (document.getElementById('ttd-weeks') as HTMLInputElement).value = w;
+      document.querySelectorAll('.quick-week-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Build state table
+  function buildStateTable() {
+    const sorted = Object.entries(STATE_DATA).sort((a,b)=>a[1].name.localeCompare(b[1].name));
+    const half = Math.ceil(sorted.length / 2);
+    const left = sorted.slice(0, half);
+    const right = sorted.slice(half);
+    const tbody = document.getElementById('state-table-body') as HTMLElement;
+    const maxRows = Math.max(left.length, right.length);
+    for (let i = 0; i < maxRows; i++) {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--color-hairline)';
+      const renderCell = (entry: [string, {max:number;rate:number;name:string}] | undefined) => {
+        if (!entry) return '<td colspan="3"></td>';
+        const [code, s] = entry;
+        return `<td style="padding:8px 14px;font-weight:500;">${s.name}</td>
+                <td style="padding:8px 14px;text-align:right;font-family:var(--font-mono);font-weight:600;color:var(--color-link);">${fmt(s.max)}</td>
+                <td style="padding:8px 14px;text-align:center;font-family:var(--font-mono);">${(s.rate*100).toFixed(0)}%</td>`;
+      };
+      tr.innerHTML = renderCell(left[i]) + renderCell(right[i]);
+      tbody.appendChild(tr);
+    }
+  }
+  buildStateTable();
+
+  // MAIN CALCULATE
+  document.getElementById('calc-wc-btn')!.addEventListener('click', () => {
+    const errorEl = document.getElementById('wc-error') as HTMLElement;
+    const resultsEl = document.getElementById('wc-results') as HTMLElement;
+    errorEl.hidden = true;
+
+    const stateCode = (document.getElementById('state-select') as HTMLSelectElement).value;
+    if (!stateCode || !STATE_DATA[stateCode]) {
+      document.getElementById('wc-error-msg')!.textContent = 'Please select your state.';
+      errorEl.hidden = false; return;
+    }
+    const state = STATE_DATA[stateCode];
+
+    // Get AWW
+    let aww = 0;
+    if (payType === 'weekly') {
+      aww = parseFloat((document.getElementById('weekly-wage') as HTMLInputElement).value);
+    } else if (payType === 'hourly') {
+      const rate = parseFloat((document.getElementById('hourly-rate') as HTMLInputElement).value);
+      const hrs = parseFloat((document.getElementById('hours-per-week') as HTMLInputElement).value);
+      if (!isNaN(rate) && !isNaN(hrs)) aww = rate * hrs;
+    } else {
+      const annual = parseFloat((document.getElementById('annual-salary') as HTMLInputElement).value);
+      if (!isNaN(annual)) aww = annual / 52;
+    }
+
+    if (!aww || aww <= 0) {
+      document.getElementById('wc-error-msg')!.textContent = 'Please enter your wage information.';
+      errorEl.hidden = false; return;
+    }
+
+    const otherIncome = parseFloat((document.getElementById('other-income') as HTMLInputElement).value) || 0;
+
+    // Calculate base weekly benefit
+    let calcBenefit = aww * state.rate;
+    const cappedBenefit = Math.min(calcBenefit, state.max);
+
+    // Apply offset
+    const totalDisability = cappedBenefit + otherIncome;
+    const offsetThreshold = aww * 0.80; // 80% AWW rule
+    let offset = 0;
+    if (totalDisability > offsetThreshold) {
+      offset = Math.max(0, totalDisability - offsetThreshold);
+    }
+    const finalWeekly = Math.max(0, cappedBenefit - offset);
+
+    // Duration and totals
+    let totalBenefit = 0;
+    let durationLabel = '';
+    let typeLabel = '';
+
+    if (disabilityType === 'ttd') {
+      const weeks = parseFloat((document.getElementById('ttd-weeks') as HTMLInputElement).value) || 0;
+      if (weeks <= 0) { document.getElementById('wc-error-msg')!.textContent = 'Enter expected recovery duration in weeks.'; errorEl.hidden=false; return; }
+      totalBenefit = finalWeekly * weeks;
+      durationLabel = `${weeks} weeks of benefits`;
+      typeLabel = 'Temporary Total Disability';
+    } else if (disabilityType === 'tpd') {
+      const currentWage = parseFloat((document.getElementById('tpd-current-wage') as HTMLInputElement).value) || 0;
+      const weeks = parseFloat((document.getElementById('tpd-weeks') as HTMLInputElement).value) || 0;
+      if (weeks <= 0) { document.getElementById('wc-error-msg')!.textContent = 'Enter TPD duration in weeks.'; errorEl.hidden=false; return; }
+      const wageDiff = Math.max(0, aww - currentWage);
+      const tpdBenefit = wageDiff * state.rate;
+      totalBenefit = Math.min(tpdBenefit, state.max) * weeks;
+      durationLabel = `${weeks} weeks TPD benefits`;
+      typeLabel = 'Temporary Partial Disability';
+    } else if (disabilityType === 'ppd') {
+      const impRating = parseFloat((document.getElementById('impairment-rating') as HTMLInputElement).value) || 0;
+      const bodyPart = (document.getElementById('body-part-select') as HTMLSelectElement).value;
+      if (impRating <= 0) { document.getElementById('wc-error-msg')!.textContent = 'Enter impairment rating percentage.'; errorEl.hidden=false; return; }
+      const maxWeeks = BODY_PART_WEEKS[bodyPart] || 500;
+      const ppdWeeks = (impRating / 100) * maxWeeks;
+      totalBenefit = finalWeekly * ppdWeeks;
+      durationLabel = `${ppdWeeks.toFixed(1)} weeks PPD (${impRating}% of ${maxWeeks} max weeks)`;
+      typeLabel = 'Permanent Partial Disability';
+    } else {
+      const years = parseFloat((document.getElementById('ptd-years') as HTMLInputElement).value) || 0;
+      if (years <= 0) { document.getElementById('wc-error-msg')!.textContent = 'Enter expected years of PTD benefits.'; errorEl.hidden=false; return; }
+      totalBenefit = finalWeekly * 52 * years;
+      durationLabel = `${years} years of PTD benefits`;
+      typeLabel = 'Permanent Total Disability';
+    }
+
+    // Populate results
+    (document.getElementById('res-state-name') as HTMLElement).textContent = `${state.name} Workers Compensation`;
+    (document.getElementById('res-type-badge') as HTMLElement).textContent = typeLabel;
+    (document.getElementById('res-weekly-benefit') as HTMLElement).textContent = fmt(finalWeekly);
+    (document.getElementById('res-replacement-rate') as HTMLElement).textContent = `${(finalWeekly/aww*100).toFixed(1)}% wage replacement`;
+    (document.getElementById('res-total-benefit') as HTMLElement).textContent = fmt(totalBenefit);
+    (document.getElementById('res-duration-label') as HTMLElement).textContent = durationLabel;
+    (document.getElementById('res-monthly') as HTMLElement).textContent = fmt(finalWeekly * 4.333);
+    (document.getElementById('res-aww') as HTMLElement).textContent = fmt(aww) + '/week';
+    (document.getElementById('res-rate-pct') as HTMLElement).textContent = (state.rate*100).toFixed(2) + '%';
+    (document.getElementById('res-calc-benefit') as HTMLElement).textContent = fmt(calcBenefit) + '/week';
+    (document.getElementById('res-state-max') as HTMLElement).textContent = fmt(state.max) + '/week';
+    (document.getElementById('res-final-weekly') as HTMLElement).textContent = fmt(finalWeekly) + '/week';
+
+    // Offset row
+    const offsetRow = document.getElementById('offset-row') as HTMLElement;
+    if (offset > 0) {
+      (document.getElementById('res-offset') as HTMLElement).textContent = `−${fmt(offset)}/week`;
+      offsetRow.hidden = false;
+    } else {
+      offsetRow.hidden = true;
+    }
+
+    // Wage bar
+    const compPct = Math.min((finalWeekly / aww) * 100, 100);
+    const gapPct = Math.max(0, 100 - compPct);
+    (document.getElementById('wage-bar-comp') as HTMLElement).style.width = compPct + '%';
+    (document.getElementById('wage-bar-gap') as HTMLElement).style.width = gapPct + '%';
+    (document.getElementById('bar-comp-amount') as HTMLElement).textContent = fmt(finalWeekly);
+    (document.getElementById('bar-gap-amount') as HTMLElement).textContent = fmt(aww - finalWeekly) + ' gap';
+    (document.getElementById('bar-total-amount') as HTMLElement).textContent = fmt(aww);
+
+    // Settlement estimate
+    (document.getElementById('settle-low') as HTMLElement).textContent = fmt(totalBenefit * 0.8);
+    (document.getElementById('settle-mid') as HTMLElement).textContent = fmt(totalBenefit * 1.5);
+    (document.getElementById('settle-high') as HTMLElement).textContent = fmt(totalBenefit * 3.0);
+
+    resultsEl.hidden = false;
+    resultsEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  });
+
+  document.getElementById('clear-wc-btn')!.addEventListener('click', () => {
+    (document.getElementById('state-select') as HTMLSelectElement).value = '';
+    (document.getElementById('state-info') as HTMLElement).hidden = true;
+    ['weekly-wage','hourly-rate','hours-per-week','annual-salary','ttd-weeks',
+     'tpd-current-wage','tpd-weeks','impairment-rating','ptd-years','other-income'].forEach(id => {
+      const el = document.getElementById(id) as HTMLInputElement;
+      if (el) el.value = '';
+    });
+    (document.getElementById('wc-results') as HTMLElement).hidden = true;
+    (document.getElementById('wc-error') as HTMLElement).hidden = true;
+    document.querySelectorAll('.quick-week-btn').forEach(b => b.classList.remove('active'));
+  });
+
+  // FAQ
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>
