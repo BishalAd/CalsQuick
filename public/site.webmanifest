@@ -1,0 +1,27 @@
+{
+  "name": "CalcQuick",
+  "short_name": "CalcQuick",
+  "description": "19+ free online calculators and tools for health, finance, and productivity. Fast, private, and mobile-friendly.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#171717",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180"
+    }
+  ],
+  "categories": ["utilities", "productivity", "health", "finance"],
+  "lang": "en",
+  "dir": "ltr",
+  "orientation": "any",
+  "scope": "/"
+}

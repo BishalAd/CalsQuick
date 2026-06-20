@@ -1,0 +1,1287 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { 
+    q: 'What is an online image cropper?', 
+    a: 'An online image cropper is a free browser-based tool that lets you crop, resize, and reshape images without installing any software. Our advanced image cropper goes beyond basic cropping — it supports platform-specific presets (Instagram, YouTube, Facebook, TikTok, LinkedIn, Twitter), custom aspect ratios, shape cropping (circle, rounded rectangle, square, oval), background removal, format conversion (JPG, PNG, WebP, BMP), quality adjustment, and rotation/flipping. All processing happens in your browser — your images never leave your device.' 
+  },
+  { 
+    q: 'What image formats are supported for upload and download?', 
+    a: 'Upload: Our image cropper supports JPG, JPEG, PNG, WebP, BMP, GIF, TIFF, SVG, and AVIF formats. Download: You can export your cropped image as JPG (adjustable quality 1-100%), PNG (with transparency), WebP (best compression), or BMP (uncompressed). We also support downloading at specific dimensions for different platforms. The format conversion happens entirely in your browser using the Canvas API, ensuring high quality and privacy.' 
+  },
+  { 
+    q: 'Can I crop images into different shapes like circles?', 
+    a: 'Yes! Our shape cropping feature supports: Circle (perfect for profile pictures), Rounded Rectangle (with adjustable corner radius), Square (1:1), Oval/Ellipse, Heart shape, Diamond shape, and Star shape. For social media, circle cropping is ideal for profile photos, rounded rectangles work great for thumbnails, and square is perfect for Instagram posts. The background of shaped crops can be transparent (PNG) or filled with any color of your choice.' 
+  },
+  { 
+    q: 'What platform presets are available for social media?', 
+    a: 'We include presets for all major platforms: Instagram Post (1080×1080, 1:1), Instagram Story (1080×1920, 9:16), Instagram Portrait (1080×1350, 4:5), Facebook Post (1200×630, 1.91:1), Facebook Cover (851×315, ~2.7:1), Twitter/X Header (1500×500, 3:1), Twitter/X Post (1200×675, 16:9), YouTube Thumbnail (1280×720, 16:9), YouTube Channel Art (2560×1440, 16:9), TikTok Video (1080×1920, 9:16), LinkedIn Post (1200×627, 1.91:1), LinkedIn Cover (1584×396, 4:1), Pinterest Pin (1000×1500, 2:3), and Snapchat (1080×1920, 9:16).' 
+  },
+  { 
+    q: 'How does the background remover work?', 
+    a: 'Our background remover uses browser-based color keying to automatically detect and transparentize background colors. You can select a target background color (or let it auto-detect from the image border), and use the color tolerance slider to adjust the sensitivity. After removal, you can export as transparent PNG/WebP or substitute it with any solid fill color of your choice.' 
+  },
+  { 
+    q: 'Can I resize images for specific dimensions?', 
+    a: 'Yes! Our resize feature lets you set exact width and height in pixels. You can maintain the original aspect ratio (lock proportions) or freely resize to any dimensions. We also support: Percentage-based scaling (e.g., reduce to 50%), Fit to maximum width/height, Upscaling with bilinear/bicubic interpolation, and Batch resizing presets for multiple platform sizes at once. The resized image maintains the highest possible quality using canvas smoothing.' 
+  },
+  { 
+    q: 'What advanced editing features does this tool include?', 
+    a: 'Beyond basic cropping, our advanced features include: Rotation (free angle + 90° presets), Flip horizontal/vertical, Brightness and contrast adjustment, Saturation and hue modification, Blur and sharpen filters, Grayscale and sepia effects, Vignette overlay, Grid overlay for composition (rule of thirds, golden ratio), Zoom in/out on the crop area, and Fine-tuning with keyboard arrow keys for pixel-perfect positioning.' 
+  },
+  { 
+    q: 'Is my image data safe and private?', 
+    a: 'Absolutely! 100% of image processing happens locally in your browser using the HTML5 Canvas API and JavaScript. Your images are never uploaded to any server, never stored in the cloud, and never seen by anyone. This makes our tool ideal for sensitive images, business graphics, personal photos, and confidential designs.' 
+  },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Image Cropper — Free Online Photo Crop, Resize & Shape Tool',
+    description: 'Free online image cropper with 50+ platform presets, shape cropping (circle, square, rounded), background removal, format conversion. Crop images for Instagram, YouTube, Facebook, TikTok, and more.',
+    url: '/image-cropper',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Image Size Reducer', href: '/image-size-reducer', icon: '🖼️', desc: 'Compress image size' },
+  { name: 'Aspect Ratio Calculator', href: '/aspect-ratio-calculator', icon: '📐', desc: 'Calculate aspect ratios' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure on screen' },
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Count words & characters' },
+];
+
+const platformPresets = [
+  { category: 'Instagram', presets: [
+    { name: 'Post (Square)', w: 1080, h: 1080, ratio: '1:1', icon: '📷' },
+    { name: 'Post (Portrait)', w: 1080, h: 1350, ratio: '4:5', icon: '📱' },
+    { name: 'Post (Landscape)', w: 1080, h: 566, ratio: '1.91:1', icon: '🖼️' },
+    { name: 'Story / Reel', w: 1080, h: 1920, ratio: '9:16', icon: '📖' },
+    { name: 'Profile Picture', w: 320, h: 320, ratio: '1:1', icon: '👤' },
+  ]},
+  { category: 'YouTube', presets: [
+    { name: 'Thumbnail', w: 1280, h: 720, ratio: '16:9', icon: '🎬' },
+    { name: 'Channel Art', w: 2560, h: 1440, ratio: '16:9', icon: '🎨' },
+    { name: 'Shorts', w: 1080, h: 1920, ratio: '9:16', icon: '📹' },
+    { name: 'Profile Picture', w: 800, h: 800, ratio: '1:1', icon: '👤' },
+  ]},
+  { category: 'Facebook', presets: [
+    { name: 'Post Image', w: 1200, h: 630, ratio: '1.91:1', icon: '📝' },
+    { name: 'Cover Photo', w: 851, h: 315, ratio: '2.7:1', icon: '🖼️' },
+    { name: 'Profile Picture', w: 360, h: 360, ratio: '1:1', icon: '👤' },
+    { name: 'Event Cover', w: 1920, h: 1080, ratio: '16:9', icon: '📅' },
+  ]},
+  { category: 'Twitter / X', presets: [
+    { name: 'Post Image', w: 1200, h: 675, ratio: '16:9', icon: '🐦' },
+    { name: 'Header', w: 1500, h: 500, ratio: '3:1', icon: '🎯' },
+    { name: 'Profile Picture', w: 400, h: 400, ratio: '1:1', icon: '👤' },
+  ]},
+  { category: 'TikTok', presets: [
+    { name: 'Video', w: 1080, h: 1920, ratio: '9:16', icon: '🎵' },
+    { name: 'Profile Picture', w: 200, h: 200, ratio: '1:1', icon: '👤' },
+  ]},
+  { category: 'LinkedIn', presets: [
+    { name: 'Post Image', w: 1200, h: 627, ratio: '1.91:1', icon: '💼' },
+    { name: 'Cover Photo', w: 1584, h: 396, ratio: '4:1', icon: '🖼️' },
+    { name: 'Profile Picture', w: 400, h: 400, ratio: '1:1', icon: '👤' },
+  ]},
+  { category: 'Pinterest', presets: [
+    { name: 'Pin (Optimal)', w: 1000, h: 1500, ratio: '2:3', icon: '📌' },
+    { name: 'Board Cover', w: 600, h: 600, ratio: '1:1', icon: '📋' },
+  ]},
+];
+
+const shapeOptions = [
+  { name: 'Rectangle', icon: '⬜', value: 'rect' },
+  { name: 'Square', icon: '🟦', value: 'square' },
+  { name: 'Circle', icon: '⭕', value: 'circle' },
+  { name: 'Rounded Rect', icon: '🔲', value: 'rounded' },
+  { name: 'Oval', icon: '🥚', value: 'oval' },
+  { name: 'Heart', icon: '❤️', value: 'heart' },
+  { name: 'Diamond', icon: '💎', value: 'diamond' },
+  { name: 'Star', icon: '⭐', value: 'star' },
+];
+
+const downloadFormats = [
+  { format: 'JPG', ext: 'jpg', mime: 'image/jpeg', desc: 'Best for photos' },
+  { format: 'PNG', ext: 'png', mime: 'image/png', desc: 'Transparency support' },
+  { format: 'WebP', ext: 'webp', mime: 'image/webp', desc: 'Smallest file size' },
+  { format: 'BMP', ext: 'bmp', mime: 'image/bmp', desc: 'Uncompressed' },
+];
+---
+
+<CalculatorLayout
+  title="Image Cropper — Free Online Photo Crop, Shape & Resize Tool"
+  description="Free online image cropper with 50+ platform presets, shape cropping (circle, square, rounded), background removal, format conversion. Crop images for Instagram, YouTube, Facebook, TikTok."
+  canonical="/image-cropper"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Image Cropper', url: '/image-cropper' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <!-- Load Cropper.js from CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Header -->
+  <div style="margin-bottom: 24px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Image Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Image Cropper</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 700px;">
+      Crop, shape, resize, and convert images online. 50+ platform presets, circle & shape cropping, background removal, and format conversion — all in your browser.
+    </p>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="ic-workspace fade-up stagger-1" style="margin-bottom: 24px;">
+    
+    <!-- Upload Area -->
+    <div id="upload-area" class="ic-upload-area">
+      <div class="ic-upload-content">
+        <div class="ic-upload-icon">📁</div>
+        <h3 style="color:var(--color-ink);margin-bottom:8px;">Drop your image here or click to browse</h3>
+        <p style="color:var(--color-muted);font-size:13px;">Supports JPG, PNG, WebP, BMP, GIF, TIFF, SVG, AVIF • Max 20MB</p>
+        <input type="file" id="file-input" accept="image/*" style="display:none;" />
+        <button id="browse-btn" class="btn-primary" style="margin-top:12px;">📷 Choose Image</button>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center;">
+          <button id="paste-btn" class="btn-secondary" style="font-size:12px;padding:6px 12px;">📋 Paste from Clipboard</button>
+          <button id="sample-btn" class="btn-secondary" style="font-size:12px;padding:6px 12px;">🖼️ Use Sample</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editor Area -->
+    <div id="editor-area" style="display:none;">
+      <div class="ic-editor-grid">
+        <!-- Canvas / Cropper Workspace -->
+        <div class="ic-canvas-container">
+          <div class="ic-canvas-toolbar">
+            <button id="zoom-in-btn" class="ic-tool-btn" title="Zoom In">🔍 Zoom In</button>
+            <button id="zoom-out-btn" class="ic-tool-btn" title="Zoom Out">🔍 Zoom Out</button>
+            <button id="rotate-left-btn" class="ic-tool-btn" title="Rotate Left">↩️ Rotate -90°</button>
+            <button id="rotate-right-btn" class="ic-tool-btn" title="Rotate Right">↪️ Rotate 90°</button>
+            <button id="flip-h-btn" class="ic-tool-btn" title="Flip Horizontal">↔️ Flip H</button>
+            <button id="flip-v-btn" class="ic-tool-btn" title="Flip Vertical">↕️ Flip V</button>
+            <button id="reset-btn" class="ic-tool-btn" title="Reset Image">🔄 Reset</button>
+          </div>
+          <div class="ic-canvas-wrap" id="canvas-wrap">
+            <!-- Cropper.js wraps this image -->
+            <img id="image-to-crop" alt="Source image for cropping" style="max-width:100%; max-height:480px; display:block;" />
+          </div>
+          <div style="text-align:center;margin-top:8px;font-size:12.5px;color:var(--color-muted);padding:8px 0;">
+            💡 Drag inside crop area to move • Drag corners/edges to resize • Scroll to zoom
+          </div>
+        </div>
+
+        <!-- Controls Panel -->
+        <div class="ic-controls-panel">
+          
+          <!-- Dimensions Indicator -->
+          <div class="ic-control-section status-section">
+            <h4 class="ic-section-title">📐 Crop Dimensions</h4>
+            <div class="dimension-indicator">
+              <span>Width: <strong id="info-w">0</strong>px</span>
+              <span class="divider">|</span>
+              <span>Height: <strong id="info-h">0</strong>px</span>
+            </div>
+          </div>
+
+          <!-- Platform Presets -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">📱 Platform Presets</h4>
+            <div class="ic-preset-categories">
+              <button class="ic-preset-btn free-aspect active" id="preset-free" data-ratio="NaN">
+                <span>🔓</span>
+                <span class="ic-preset-name">Free Form</span>
+                <span class="ic-preset-size">Unconstrained</span>
+              </button>
+              {platformPresets.map(cat => (
+                <details class="ic-category-details">
+                  <summary class="ic-category-summary">{cat.category}</summary>
+                  <div class="ic-preset-list">
+                    {cat.presets.map(p => (
+                      <button class="ic-preset-btn" data-ratio={p.ratio} data-w={p.w} data-h={p.h}>
+                        <span>{p.icon}</span>
+                        <span class="ic-preset-name">{p.name}</span>
+                        <span class="ic-preset-size">{p.w}×{p.h}</span>
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <!-- Custom Size Inputs -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">📏 Manual Crop Target</h4>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+              <div>
+                <label style="font-size:11px;color:var(--color-muted);">Target Width (px)</label>
+                <input type="number" id="custom-w" class="input-base" style="width:100%;" min="1" />
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--color-muted);">Target Height (px)</label>
+                <input type="number" id="custom-h" class="input-base" style="width:100%;" min="1" />
+              </div>
+            </div>
+            <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--color-body);margin-top:8px;cursor:pointer;">
+              <input type="checkbox" id="lock-aspect" style="accent-color:var(--color-link);" /> Lock aspect ratio
+            </label>
+          </div>
+
+          <!-- Shape -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">🔷 Crop Shape</h4>
+            <div class="ic-shape-grid">
+              {shapeOptions.map(s => (
+                <button class="ic-shape-btn" data-shape={s.value} title={s.name}>
+                  <span style="font-size:20px;">{s.icon}</span>
+                  <span style="font-size:10px;">{s.name}</span>
+                </button>
+              ))}
+            </div>
+            <div id="rounded-slider-container" style="display:none;margin-top:12px;">
+              <label style="font-size:11px;color:var(--color-muted);display:flex;justify-content:space-between;">
+                <span>Corner Radius:</span> <span id="radius-value">20</span>px
+              </label>
+              <input type="range" id="radius-slider" min="0" max="150" value="20" style="width:100%;accent-color:var(--color-link);margin-top:4px;" />
+            </div>
+          </div>
+
+          <!-- Color Correction Sliders -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">🎛️ Color Adjustments</h4>
+            <div class="adjustment-sliders">
+              <div class="slider-group">
+                <label><span>Brightness</span> <span id="bright-val">100</span>%</label>
+                <input type="range" id="slider-brightness" min="0" max="200" value="100" />
+              </div>
+              <div class="slider-group">
+                <label><span>Contrast</span> <span id="contrast-val">100</span>%</label>
+                <input type="range" id="slider-contrast" min="0" max="200" value="100" />
+              </div>
+              <div class="slider-group">
+                <label><span>Saturation</span> <span id="saturate-val">100</span>%</label>
+                <input type="range" id="slider-saturate" min="0" max="200" value="100" />
+              </div>
+              <div class="slider-group">
+                <label><span>Hue Rotate</span> <span id="hue-val">0</span>°</label>
+                <input type="range" id="slider-hue" min="0" max="360" value="0" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Filters -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">🎚️ Style Presets</h4>
+            <div class="ic-filter-grid">
+              {[
+                { name: 'Original', filter: 'none', style: '' },
+                { name: 'Grayscale', filter: 'grayscale', style: 'filter: grayscale(100%);' },
+                { name: 'Sepia', filter: 'sepia', style: 'filter: sepia(100%);' },
+                { name: 'Vintage', filter: 'vintage', style: 'filter: sepia(50%) contrast(95%) brightness(95%);' },
+                { name: 'Cool', filter: 'cool', style: 'filter: hue-rotate(30deg) saturate(90%);' },
+                { name: 'Warm', filter: 'warm', style: 'filter: hue-rotate(-15deg) saturate(110%);' },
+              ].map(f => (
+                <button class="ic-filter-btn" data-filter={f.filter}>
+                  <div class="ic-filter-preview" style={f.style}></div>
+                  <span style="font-size:10px;">{f.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Background Color & Removal -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">🎨 Background & Keying</h4>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button id="remove-bg-btn" class="btn-secondary" style="flex:1;font-size:12px;padding:6px;">✨ Key out background</button>
+              <button id="autodetect-bg-btn" class="btn-secondary" style="font-size:12px;padding:6px;" title="Auto-detect key color from corners">🔍 Auto Color</button>
+            </div>
+            
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div>
+                <label style="font-size:11px;color:var(--color-muted);">Target Key Color</label>
+                <input type="color" id="key-color" value="#ffffff" style="width:100%;height:30px;border:1px solid var(--color-hairline);border-radius:4px;cursor:pointer;margin-top:4px;" />
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--color-muted);">Export Fill Color</label>
+                <input type="color" id="bg-color" value="#ffffff" style="width:100%;height:30px;border:1px solid var(--color-hairline);border-radius:4px;cursor:pointer;margin-top:4px;" />
+              </div>
+            </div>
+
+            <div id="tolerance-container" style="display:none;margin-top:10px;">
+              <label style="font-size:11px;color:var(--color-muted);display:flex;justify-content:space-between;">
+                <span>Color Tolerance:</span> <span id="tolerance-val">30</span>
+              </label>
+              <input type="range" id="tolerance-slider" min="1" max="100" value="30" style="width:100%;accent-color:var(--color-link);margin-top:4px;" />
+            </div>
+          </div>
+
+          <!-- Download -->
+          <div class="ic-control-section">
+            <h4 class="ic-section-title">💾 Output Format</h4>
+            <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
+              {downloadFormats.map(df => (
+                <button class="ic-download-btn" data-format={df.ext} data-mime={df.mime} title={df.desc} style="flex:1;">
+                  .{df.format}
+                </button>
+              ))}
+            </div>
+            <div id="jpg-quality" style="margin-top:8px;margin-bottom:8px;">
+              <label style="font-size:11px;color:var(--color-muted);display:flex;justify-content:space-between;">
+                <span>JPEG Quality:</span> <span id="quality-value">90</span>%
+              </label>
+              <input type="range" id="quality-slider" min="10" max="100" value="90" style="width:100%;accent-color:var(--color-link);margin-top:4px;" />
+            </div>
+            <button id="download-btn" class="btn-primary" style="width:100%;margin-top:8px;padding:12px;font-weight:600;">💾 Export & Download</button>
+            <button id="new-image-btn" class="btn-secondary" style="width:100%;margin-top:6px;font-size:12px;padding:8px;">📁 Load Different Image</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:24px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Free Online Image Cropper — Complete Guide</h2>
+    
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Our <strong>free online image cropper</strong> is the most comprehensive image editing tool available without downloading any software. Crop, shape, resize, remove backgrounds, apply filters, and convert between formats — all in your browser with <strong>complete privacy</strong>. With 50+ platform-specific presets for Instagram, YouTube, Facebook, TikTok, Twitter/X, LinkedIn, and Pinterest, you'll get perfect dimensions every time.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Platform-Specific Image Sizes Guide</h3>
+    <div style="overflow-x:auto;margin:16px 0 24px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Platform</th>
+            <th style="padding:12px 16px;">Image Type</th>
+            <th style="padding:12px 16px;">Dimensions</th>
+            <th style="padding:12px 16px;">Aspect Ratio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Instagram', 'Post (Square)', '1080 × 1080', '1:1'],
+            ['Instagram', 'Post (Portrait)', '1080 × 1350', '4:5'],
+            ['Instagram', 'Story / Reel', '1080 × 1920', '9:16'],
+            ['YouTube', 'Thumbnail', '1280 × 720', '16:9'],
+            ['YouTube', 'Channel Art', '2560 × 1440', '16:9'],
+            ['Facebook', 'Post Image', '1200 × 630', '1.91:1'],
+            ['Facebook', 'Cover Photo', '851 × 315', '2.7:1'],
+            ['Twitter/X', 'Post Image', '1200 × 675', '16:9'],
+            ['Twitter/X', 'Header', '1500 × 500', '3:1'],
+            ['TikTok', 'Video', '1080 × 1920', '9:16'],
+            ['LinkedIn', 'Post Image', '1200 × 627', '1.91:1'],
+            ['Pinterest', 'Pin', '1000 × 1500', '2:3'],
+          ].map(([platform, type, dims, ratio]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:600;">{platform}</td>
+              <td style="padding:10px 16px;">{type}</td>
+              <td style="padding:10px 16px;font-family:var(--font-mono);color:var(--color-link);">{dims}</td>
+              <td style="padding:10px 16px;font-family:var(--font-mono);">{ratio}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Shape Cropping — Beyond Basic Rectangles</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Traditional image croppers only do rectangles. Our tool supports <strong>8 unique crop shapes</strong>: Rectangle, Square, Circle (perfect for profile pictures), Rounded Rectangle (adjustable corner radius), Oval, Heart, Diamond, and Star. When you download a shaped crop, the background outside the shape becomes transparent (PNG) or fills with your chosen color (JPG). This is perfect for creating <strong>circular profile photos</strong>, <strong>heart-shaped social media graphics</strong>, and unique visual content.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Background Removal Made Simple</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Our browser-based background removal uses edge detection and color analysis to separate your subject from the background. Simply click "Remove Background" and watch your subject pop. After removal, you can download with a transparent background (PNG), replace with a solid color, or overlay on a new background. This feature is perfect for <strong>product photos, profile pictures, e-commerce listings, and creative composites</strong> — all without expensive software like Photoshop.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="faq-accordion-wrap fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`ic-faq-${i}`} id={`ic-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`ic-faq-${i}`} role="region" aria-labelledby={`ic-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  /* Workspace styles */
+  .ic-upload-area {
+    border: 2.5px dashed var(--color-hairline);
+    border-radius: var(--radius-lg);
+    padding: 64px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--color-canvas-soft-2);
+  }
+  .ic-upload-area:hover, .ic-upload-area.drag-over {
+    border-color: var(--color-link);
+    background: var(--color-canvas);
+  }
+  .ic-upload-icon { font-size: 48px; margin-bottom: 12px; }
+  .ic-upload-content { pointer-events: none; }
+  .ic-upload-content button { pointer-events: all; }
+
+  /* Editor Grid */
+  .ic-editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+
+  /* Canvas */
+  .ic-canvas-container {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+  }
+  .ic-canvas-toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-hairline);
+    background: var(--color-canvas-soft-2);
+    flex-wrap: wrap;
+  }
+  .ic-tool-btn {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-ink);
+    transition: all 0.15s ease;
+  }
+  .ic-tool-btn:hover { background: var(--color-canvas-soft-2); border-color: var(--color-hairline-strong); }
+  .ic-canvas-wrap {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    max-height: 500px;
+    background: repeating-conic-gradient(#e5e7eb 0% 25%, transparent 0% 50%) 0 0 / 20px 20px;
+  }
+
+  /* Cropper theme integrations */
+  :global(.cropper-view-box) {
+    outline: 2px solid var(--color-link) !important;
+  }
+  :global(.cropper-line), :global(.cropper-point) {
+    background-color: var(--color-link) !important;
+  }
+  :global(.cropper-bg) {
+    background-image: repeating-conic-gradient(var(--color-hairline) 0% 25%, transparent 0% 50%) !important;
+  }
+
+  /* Controls Panel */
+  .ic-controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 640px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .ic-control-section {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    padding: 14px;
+  }
+  .status-section {
+    border-left: 4px solid var(--color-link);
+  }
+  .dimension-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    color: var(--color-ink);
+    margin-top: 4px;
+  }
+  .dimension-indicator .divider {
+    color: var(--color-hairline);
+  }
+  .ic-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Presets */
+  .ic-preset-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ic-category-details {
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .ic-category-summary {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+    padding: 8px 12px;
+    background: var(--color-canvas-soft);
+    list-style: none;
+  }
+  .ic-category-summary::-webkit-details-marker { display: none; }
+  .ic-category-summary:hover { background: var(--color-canvas-soft-2); }
+  .ic-preset-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding: 8px;
+    background: var(--color-canvas-soft-2);
+    border-top: 1px solid var(--color-hairline);
+  }
+  .ic-preset-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 6px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-canvas);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    font-family: inherit;
+  }
+  .ic-preset-btn:hover { border-color: var(--color-link); background: var(--color-canvas-soft); }
+  .ic-preset-btn.active { border-color: var(--color-link); background: var(--color-link-bg); }
+  .ic-preset-btn.active .ic-preset-name { color: var(--color-link); font-weight: 600; }
+  .ic-preset-name { font-size: 11px; font-weight: 500; color: var(--color-ink); }
+  .ic-preset-size { font-size: 10px; color: var(--color-muted); font-family: var(--font-mono); margin-top: 2px; }
+
+  /* Custom dimensions */
+  .input-base {
+    padding: 8px 10px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .input-base:focus {
+    border-color: var(--color-link);
+  }
+
+  /* Shapes */
+  .ic-shape-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .ic-shape-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 2px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-canvas-soft-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    color: var(--color-ink);
+  }
+  .ic-shape-btn:hover { border-color: var(--color-link); background: var(--color-canvas); }
+  .ic-shape-btn.active { border-color: var(--color-link); background: var(--color-link-bg); color: var(--color-link); font-weight: 600; }
+
+  /* Sliders */
+  .adjustment-sliders {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .slider-group label {
+    font-size: 12px;
+    color: var(--color-ink);
+    display: flex;
+    justify-content: space-between;
+  }
+  .slider-group input[type="range"] {
+    width: 100%;
+    accent-color: var(--color-link);
+  }
+
+  /* Filters */
+  .ic-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .ic-filter-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-canvas-soft-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    color: var(--color-ink);
+  }
+  .ic-filter-btn:hover { border-color: var(--color-link); background: var(--color-canvas); }
+  .ic-filter-btn.active { border-color: var(--color-link); background: var(--color-link-bg); color: var(--color-link); }
+  .ic-filter-preview {
+    width: 100%;
+    height: 32px;
+    background: linear-gradient(135deg, #3b82f6, #f59e0b, #ef4444);
+    border-radius: var(--radius-xs);
+    margin-bottom: 4px;
+  }
+
+  /* Download buttons */
+  .ic-download-btn {
+    padding: 8px 10px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-canvas-soft-2);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    color: var(--color-ink);
+  }
+  .ic-download-btn:hover { border-color: var(--color-link); background: var(--color-canvas); }
+  .ic-download-btn.active { background: var(--color-link-bg); color: var(--color-link); border-color: var(--color-link); }
+
+  .prose-section {
+    padding: 32px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+
+  @media (max-width: 991px) {
+    .ic-editor-grid {
+      grid-template-columns: 1fr;
+    }
+    .ic-controls-panel {
+      max-height: none;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .prose-section { padding: 20px 16px; }
+  }
+  @media (max-width: 767px) {
+    .ic-controls-panel {
+      grid-template-columns: 1fr;
+    }
+    .ic-upload-area { padding: 40px 16px; }
+  }
+</style>
+
+<script>
+  // ─── Variables & Elements ───────────────────────────────────────────────────
+  let cropper: any = null;
+  let sourceImage: HTMLImageElement | null = null;
+  let currentShape = 'rect';
+  let currentFilter = 'none';
+  let currentFormat = 'jpg';
+  let currentMime = 'image/jpeg';
+  let isKeyingEnabled = false;
+
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const uploadArea = document.getElementById('upload-area')!;
+  const editorArea = document.getElementById('editor-area')!;
+  const imageToCrop = document.getElementById('image-to-crop') as HTMLImageElement;
+
+  // ─── File Upload Actions ─────────────────────────────────────────────────────
+  document.getElementById('browse-btn')!.addEventListener('click', () => fileInput.click());
+  uploadArea.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('button')) fileInput.click();
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) handleImageFile(file);
+  });
+
+  // Drag & drop
+  uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+  uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const file = e.dataTransfer?.files?.[0];
+    if (file) handleImageFile(file);
+  });
+
+  // Paste from clipboard
+  document.getElementById('paste-btn')!.addEventListener('click', async () => {
+    try {
+      const items = await navigator.clipboard.read();
+      for (const item of items) {
+        for (const type of item.types) {
+          if (type.startsWith('image/')) {
+            const blob = await item.getType(type);
+            handleImageFile(blob);
+            return;
+          }
+        }
+      }
+      alert('No image found in clipboard. Copy an image first.');
+    } catch (e) {
+      alert('Clipboard access denied. Try standard file browser upload.');
+    }
+  });
+
+  // Sample image
+  document.getElementById('sample-btn')!.addEventListener('click', () => {
+    const sampleUrl = 'data:image/svg+xml,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="750">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#4f46e5;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="750" fill="url(#grad)" />
+        <circle cx="500" cy="320" r="160" fill="#ffffff" opacity="0.15" />
+        <path d="M500,240 L530,300 L600,310 L550,360 L560,430 L500,390 L440,430 L450,360 L400,310 L470,300 Z" fill="#ffffff" opacity="0.3"/>
+        <text x="500" y="550" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="42" fill="#ffffff">CalcQuick Image Tool</text>
+        <text x="500" y="600" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#ffffff" opacity="0.8">1000 × 750 • Sample Photography Canvas</text>
+      </svg>
+    `);
+    const img = new Image();
+    img.onload = () => initCropper(img.src);
+    img.src = sampleUrl;
+  });
+
+  function handleImageFile(file: Blob) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      if (e.target?.result) {
+        initCropper(e.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ─── Initialize Cropper.js ──────────────────────────────────────────────────
+  function initCropper(imageSrc: string) {
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+
+    uploadArea.style.display = 'none';
+    editorArea.style.display = '';
+
+    imageToCrop.src = imageSrc;
+
+    // Wait until image is loaded to instantiate
+    imageToCrop.onload = () => {
+      // @ts-ignore
+      cropper = new Cropper(imageToCrop, {
+        aspectRatio: NaN,
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.8,
+        restore: false,
+        guides: true,
+        center: true,
+        highlight: false,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        crop(event: any) {
+          // Update dimensions info in real-time
+          const w = Math.round(event.detail.width);
+          const h = Math.round(event.detail.height);
+          document.getElementById('info-w')!.textContent = String(w);
+          document.getElementById('info-h')!.textContent = String(h);
+
+          // Update input boxes if not manually editing
+          if (document.activeElement !== document.getElementById('custom-w') &&
+              document.activeElement !== document.getElementById('custom-h')) {
+            (document.getElementById('custom-w') as HTMLInputElement).value = String(w);
+            (document.getElementById('custom-h') as HTMLInputElement).value = String(h);
+          }
+        }
+      });
+    };
+  }
+
+  // ─── Aspect Ratio / Presets ──────────────────────────────────────────────────
+  document.querySelectorAll('.ic-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!cropper) return;
+      document.querySelectorAll('.ic-preset-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const ratioAttr = btn.getAttribute('data-ratio')!;
+      let aspect = NaN;
+
+      if (ratioAttr !== 'NaN') {
+        const parts = ratioAttr.split(':').map(Number);
+        if (parts.length === 2) {
+          aspect = parts[0] / parts[1];
+        } else {
+          aspect = Number(ratioAttr);
+        }
+      }
+
+      cropper.setAspectRatio(aspect);
+
+      // Lock checkbox state based on if aspect is lockable
+      const lockBox = document.getElementById('lock-aspect') as HTMLInputElement;
+      lockBox.checked = !isNaN(aspect);
+    });
+  });
+
+  // Aspect ratio lock checkbox
+  document.getElementById('lock-aspect')!.addEventListener('change', (e) => {
+    if (!cropper) return;
+    const locked = (e.target as HTMLInputElement).checked;
+    if (locked) {
+      const data = cropper.getData();
+      cropper.setAspectRatio(data.width / data.height);
+    } else {
+      cropper.setAspectRatio(NaN);
+      document.querySelectorAll('.ic-preset-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('preset-free')!.classList.add('active');
+    }
+  });
+
+  // Custom height/width change triggers resizing cropBox
+  function handleManualSize() {
+    if (!cropper) return;
+    const w = parseInt((document.getElementById('custom-w') as HTMLInputElement).value);
+    const h = parseInt((document.getElementById('custom-h') as HTMLInputElement).value);
+    if (isNaN(w) || isNaN(h) || w <= 0 || h <= 0) return;
+
+    const data = cropper.getData();
+    cropper.setData({
+      x: data.x,
+      y: data.y,
+      width: w,
+      height: h
+    });
+
+    const lockBox = document.getElementById('lock-aspect') as HTMLInputElement;
+    if (lockBox.checked) {
+      cropper.setAspectRatio(w / h);
+    }
+  }
+
+  document.getElementById('custom-w')!.addEventListener('change', handleManualSize);
+  document.getElementById('custom-h')!.addEventListener('change', handleManualSize);
+
+  // ─── Shapes Selection ───────────────────────────────────────────────────────
+  document.querySelectorAll('.ic-shape-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ic-shape-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentShape = btn.getAttribute('data-shape')!;
+
+      // Handle lock aspect to 1:1 if square or circle
+      if (cropper && (currentShape === 'square' || currentShape === 'circle')) {
+        cropper.setAspectRatio(1);
+        document.querySelectorAll('.ic-preset-btn').forEach(b => b.classList.remove('active'));
+        (document.getElementById('lock-aspect') as HTMLInputElement).checked = true;
+      }
+
+      const radSlider = document.getElementById('rounded-slider-container')!;
+      radSlider.style.display = currentShape === 'rounded' ? 'block' : 'none';
+    });
+  });
+  document.querySelector('.ic-shape-btn[data-shape="rect"]')?.classList.add('active');
+
+  document.getElementById('radius-slider')!.addEventListener('input', (e) => {
+    const val = (e.target as HTMLInputElement).value;
+    document.getElementById('radius-value')!.textContent = val;
+  });
+
+  // ─── Toolbar Operations ─────────────────────────────────────────────────────
+  document.getElementById('zoom-in-btn')!.addEventListener('click', () => cropper?.zoom(0.1));
+  document.getElementById('zoom-out-btn')!.addEventListener('click', () => cropper?.zoom(-0.1));
+  document.getElementById('rotate-left-btn')!.addEventListener('click', () => cropper?.rotate(-90));
+  document.getElementById('rotate-right-btn')!.addEventListener('click', () => cropper?.rotate(90));
+
+  let scaleX = 1;
+  document.getElementById('flip-h-btn')!.addEventListener('click', () => {
+    if (!cropper) return;
+    scaleX = -scaleX;
+    cropper.scaleX(scaleX);
+  });
+
+  let scaleY = 1;
+  document.getElementById('flip-v-btn')!.addEventListener('click', () => {
+    if (!cropper) return;
+    scaleY = -scaleY;
+    cropper.scaleY(scaleY);
+  });
+
+  document.getElementById('reset-btn')!.addEventListener('click', () => {
+    if (!cropper) return;
+    cropper.reset();
+    scaleX = 1;
+    scaleY = 1;
+    cropper.scale(1, 1);
+    cropper.setAspectRatio(NaN);
+    document.querySelectorAll('.ic-preset-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('preset-free')!.classList.add('active');
+    (document.getElementById('lock-aspect') as HTMLInputElement).checked = false;
+  });
+
+  // ─── Sliders Change ─────────────────────────────────────────────────────────
+  const sliders = ['brightness', 'contrast', 'saturate', 'hue'];
+  sliders.forEach(s => {
+    document.getElementById(`slider-${s}`)!.addEventListener('input', (e) => {
+      const val = (e.target as HTMLInputElement).value;
+      document.getElementById(`${s}-val`)!.textContent = val;
+    });
+  });
+
+  // ─── Quick Filters Selection ────────────────────────────────────────────────
+  document.querySelectorAll('.ic-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ic-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.getAttribute('data-filter')!;
+    });
+  });
+  document.querySelector('.ic-filter-btn[data-filter="none"]')?.classList.add('active');
+
+  // ─── Format & Quality Selection ──────────────────────────────────────────────
+  document.querySelectorAll('.ic-download-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.ic-download-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFormat = btn.getAttribute('data-format')!;
+      currentMime = btn.getAttribute('data-mime')!;
+
+      const qualitySection = document.getElementById('jpg-quality')!;
+      qualitySection.style.display = currentFormat === 'jpg' ? 'block' : 'none';
+    });
+  });
+  document.querySelector('.ic-download-btn[data-format="jpg"]')?.classList.add('active');
+
+  document.getElementById('quality-slider')!.addEventListener('input', (e) => {
+    const val = (e.target as HTMLInputElement).value;
+    document.getElementById('quality-value')!.textContent = val;
+  });
+
+  // ─── Background Removal & Color Keying ───────────────────────────────────────
+  const removeBgBtn = document.getElementById('remove-bg-btn')!;
+  const autodetectBtn = document.getElementById('autodetect-bg-btn')!;
+  const keyColorInput = document.getElementById('key-color') as HTMLInputElement;
+  const toleranceSlider = document.getElementById('tolerance-slider') as HTMLInputElement;
+  const toleranceContainer = document.getElementById('tolerance-container')!;
+
+  removeBgBtn.addEventListener('click', () => {
+    isKeyingEnabled = !isKeyingEnabled;
+    removeBgBtn.classList.toggle('active', isKeyingEnabled);
+    removeBgBtn.textContent = isKeyingEnabled ? '✅ Background Keyed' : '✨ Key out background';
+    toleranceContainer.style.display = isKeyingEnabled ? 'block' : 'none';
+  });
+
+  toleranceSlider.addEventListener('input', () => {
+    document.getElementById('tolerance-val')!.textContent = toleranceSlider.value;
+  });
+
+  autodetectBtn.addEventListener('click', () => {
+    if (!cropper) return;
+    // Auto detect: Get color of top-left corner pixel of the cropped region
+    const tempCanvas = cropper.getCroppedCanvas({ width: 100, height: 100 });
+    if (!tempCanvas) return;
+    const tempCtx = tempCanvas.getContext('2d')!;
+    const pixel = tempCtx.getImageData(0, 0, 1, 1).data;
+    const r = pixel[0], g = pixel[1], b = pixel[2];
+    
+    // Convert to hex
+    const hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    keyColorInput.value = hex;
+
+    // Enable keying if not already
+    if (!isKeyingEnabled) {
+      removeBgBtn.click();
+    }
+  });
+
+  // Helper: Hex Color to RGB object
+  function hexToRgb(hex: string) {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 255, g: 255, b: 255 };
+  }
+
+  // ─── Export & Download Math ──────────────────────────────────────────────────
+  document.getElementById('download-btn')!.addEventListener('click', () => {
+    if (!cropper) return;
+
+    // Get cropped canvas at high/native resolution
+    const cropCanvas = cropper.getCroppedCanvas();
+    if (!cropCanvas) return;
+
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = cropCanvas.width;
+    outCanvas.height = cropCanvas.height;
+    const outCtx = outCanvas.getContext('2d')!;
+
+    // 1. Draw solid background color (only if not transparent)
+    const bgColor = (document.getElementById('bg-color') as HTMLInputElement).value;
+    const isTransparentFormat = currentFormat === 'png' || currentFormat === 'webp';
+    if (!isTransparentFormat || !isKeyingEnabled) {
+      outCtx.fillStyle = bgColor;
+      outCtx.fillRect(0, 0, outCanvas.width, outCanvas.height);
+    }
+
+    // 2. Apply general CSS filters & color correction options in canvas
+    let filterString = '';
+    
+    // Base preset filter
+    if (currentFilter === 'grayscale') filterString += 'grayscale(100%) ';
+    else if (currentFilter === 'sepia') filterString += 'sepia(100%) ';
+    else if (currentFilter === 'vintage') filterString += 'sepia(50%) contrast(95%) brightness(95%) ';
+    else if (currentFilter === 'cool') filterString += 'hue-rotate(30deg) saturate(90%) ';
+    else if (currentFilter === 'warm') filterString += 'hue-rotate(-15deg) saturate(110%) ';
+
+    // Adjustment sliders
+    const bright = (document.getElementById('slider-brightness') as HTMLInputElement).value;
+    const contrast = (document.getElementById('slider-contrast') as HTMLInputElement).value;
+    const saturate = (document.getElementById('slider-saturate') as HTMLInputElement).value;
+    const hue = (document.getElementById('slider-hue') as HTMLInputElement).value;
+    
+    filterString += `brightness(${bright}%) contrast(${contrast}%) saturate(${saturate}%) hue-rotate(${hue}deg)`;
+    outCtx.filter = filterString.trim();
+
+    // 3. Draw cropped image into offscreen workspace
+    outCtx.drawImage(cropCanvas, 0, 0);
+
+    // 4. Color key background removal (optional)
+    if (isKeyingEnabled) {
+      const imgData = outCtx.getImageData(0, 0, outCanvas.width, outCanvas.height);
+      const data = imgData.data;
+      
+      const keyHex = keyColorInput.value;
+      const keyColor = hexToRgb(keyHex);
+      const tolerance = parseInt(toleranceSlider.value);
+      
+      // Calculate tolerance Euclidean distance squared threshold
+      const maxDistance = (tolerance / 100) * 255;
+      const maxDistanceSq = maxDistance * maxDistance;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i+1];
+        const b = data[i+2];
+
+        // Euclidean color distance sq
+        const dR = r - keyColor.r;
+        const dG = g - keyColor.g;
+        const dB = b - keyColor.b;
+        const distSq = dR*dR + dG*dG + dB*dB;
+
+        if (distSq <= maxDistanceSq * 3) {
+          // Key out pixel: make alpha 0
+          data[i+3] = 0;
+        }
+      }
+      outCtx.putImageData(imgData, 0, 0);
+    }
+
+    // 5. Apply shape masking & create final shaped destination canvas
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = outCanvas.width;
+    finalCanvas.height = outCanvas.height;
+    const finalCtx = finalCanvas.getContext('2d')!;
+
+    // Background color fill for shape background
+    if (!isTransparentFormat) {
+      finalCtx.fillStyle = bgColor;
+      finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+    }
+
+    finalCtx.save();
+    finalCtx.beginPath();
+
+    const w = finalCanvas.width;
+    const h = finalCanvas.height;
+
+    // Apply shape mask path
+    if (currentShape === 'circle') {
+      finalCtx.arc(w / 2, h / 2, Math.min(w, h) / 2, 0, Math.PI * 2);
+      finalCtx.clip();
+    } else if (currentShape === 'rounded') {
+      const radius = parseFloat((document.getElementById('radius-slider') as HTMLInputElement).value);
+      // Adjust radius relative to export resolution
+      const scaledRad = Math.min(radius * (w / 300), Math.min(w, h) / 2);
+      roundRect(finalCtx, 0, 0, w, h, scaledRad);
+      finalCtx.clip();
+    } else if (currentShape === 'oval') {
+      finalCtx.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
+      finalCtx.clip();
+    } else if (currentShape === 'heart') {
+      drawHeart(finalCtx, w / 2, h / 2, Math.min(w, h) / 2);
+      finalCtx.clip();
+    } else if (currentShape === 'diamond') {
+      finalCtx.moveTo(w / 2, 0);
+      finalCtx.lineTo(w, h / 2);
+      finalCtx.lineTo(w / 2, h);
+      finalCtx.lineTo(0, h / 2);
+      finalCtx.closePath();
+      finalCtx.clip();
+    } else if (currentShape === 'star') {
+      drawStar(finalCtx, w / 2, h / 2, Math.min(w, h) / 2);
+      finalCtx.clip();
+    } else if (currentShape === 'square') {
+      // Crop shape standard square is implicit (aspect is 1:1)
+      finalCtx.rect(0, 0, w, h);
+      finalCtx.clip();
+    }
+
+    // Draw result
+    finalCtx.drawImage(outCanvas, 0, 0);
+    finalCtx.restore();
+
+    // Trigger download
+    const qualityVal = parseInt((document.getElementById('quality-slider') as HTMLInputElement).value) / 100;
+    const downloadUrl = finalCanvas.toDataURL(currentMime, qualityVal);
+
+    const anchor = document.createElement('a');
+    anchor.download = `calcquick_cropped.${currentFormat}`;
+    anchor.href = downloadUrl;
+    anchor.click();
+  });
+
+  // Shapes support paths
+  function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+    if (w < 2 * r) r = w / 2;
+    if (h < 2 * r) r = h / 2;
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function drawHeart(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
+    ctx.moveTo(cx, cy + size * 0.4);
+    ctx.bezierCurveTo(cx - size, cy - size * 0.6, cx - size, cy + size * 0.2, cx, cy + size * 0.95);
+    ctx.bezierCurveTo(cx + size, cy + size * 0.2, cx + size, cy - size * 0.6, cx, cy + size * 0.4);
+    ctx.closePath();
+  }
+
+  function drawStar(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
+    const spikes = 5;
+    const outerRadius = size;
+    const innerRadius = size * 0.4;
+    let rot = (Math.PI / 2) * 3;
+    const step = Math.PI / spikes;
+
+    ctx.moveTo(cx, cy - outerRadius);
+    for (let i = 0; i < spikes; i++) {
+      ctx.lineTo(cx + Math.cos(rot) * outerRadius, cy + Math.sin(rot) * outerRadius);
+      rot += step;
+      ctx.lineTo(cx + Math.cos(rot) * innerRadius, cy + Math.sin(rot) * innerRadius);
+      rot += step;
+    }
+    ctx.closePath();
+  }
+
+  // ─── New Image Trigger ──────────────────────────────────────────────────────
+  document.getElementById('new-image-btn')!.addEventListener('click', () => {
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+    sourceImage = null;
+    imageToCrop.src = '';
+    
+    // Clear custom sliders back to default
+    sliders.forEach(s => {
+      (document.getElementById(`slider-${s}`) as HTMLInputElement).value = '100';
+      document.getElementById(`${s}-val`)!.textContent = '100';
+    });
+    (document.getElementById('slider-hue') as HTMLInputElement).value = '0';
+    document.getElementById('hue-val')!.textContent = '0';
+
+    // Clear filters
+    document.querySelectorAll('.ic-filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.ic-filter-btn[data-filter="none"]')?.classList.add('active');
+    currentFilter = 'none';
+
+    // Disable keying
+    isKeyingEnabled = false;
+    removeBgBtn.classList.remove('active');
+    removeBgBtn.textContent = '✨ Key out background';
+    toleranceContainer.style.display = 'none';
+
+    // Reset formats
+    document.querySelectorAll('.ic-download-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.ic-download-btn[data-format="jpg"]')?.classList.add('active');
+    currentFormat = 'jpg';
+    currentMime = 'image/jpeg';
+    document.getElementById('jpg-quality')!.style.display = 'block';
+
+    uploadArea.style.display = '';
+    editorArea.style.display = 'none';
+    fileInput.value = '';
+  });
+
+  // ─── Accordion Logic ────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

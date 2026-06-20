@@ -12,9 +12,12 @@ export interface Props {
   author: string;
   tags?: string[];
   canonical: string;
+  keywords?: string;
 }
 
-const { title, description, pubDate, category, author, tags, canonical } = Astro.props;
+const { title, description, pubDate, category, author, tags, canonical, keywords } = Astro.props;
+
+const blogKeywords = keywords || (tags && tags.length > 0 ? tags.join(', ') : undefined);
 
 const formattedDate = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -53,7 +56,7 @@ const articleSchema = {
 };
 ---
 
-<BaseLayout {title} {description} {canonical} schema={articleSchema} ogType="article">
+<BaseLayout {title} {description} {canonical} schema={articleSchema} ogType="article" keywords={blogKeywords}>
   <Header />
   <main id="main-content">
     <div class="container-site" style="padding-top: 24px; padding-bottom: 8px;">

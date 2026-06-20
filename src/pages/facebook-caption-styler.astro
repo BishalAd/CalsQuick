@@ -1,0 +1,1339 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { 
+    q: 'What is a Facebook caption styler?', 
+    a: 'A Facebook caption styler is a free online tool that transforms your plain text into eye-catching styled text using Unicode characters. It converts regular text into bold, italic, cursive, gothic, bubble, monospace, and many other styles that work perfectly on Facebook, Instagram, Twitter, TikTok, and most social media platforms. Unlike standard formatting, Unicode-styled text maintains its formatting when pasted anywhere — no special app needed.' 
+  },
+  { 
+    q: 'How does Unicode text styling work?', 
+    a: 'Unicode text styling uses special mathematical and decorative Unicode characters that look like stylized versions of regular letters. For example, the letter "A" becomes "𝗔" (bold), "𝘈" (italic), or "𝔄" (gothic). These characters are part of the Unicode standard and display correctly on virtually all modern devices, apps, and websites. Our styler automatically converts your text to these Unicode equivalents, making your captions stand out.' 
+  },
+  { 
+    q: 'Will styled text work on Facebook posts and comments?', 
+    a: 'Yes! Unicode-styled text works perfectly on Facebook posts, comments, Messenger, and Facebook Stories. It also works on Instagram captions, bios, comments, Twitter/X posts, LinkedIn, TikTok captions, WhatsApp messages, and virtually any platform that supports Unicode text. The styling remains intact when you copy and paste — no formatting loss, no special characters breaking.' 
+  },
+  { 
+    q: 'What text styles are available?', 
+    a: 'Our Facebook caption styler offers 13+ unique text styles: Bold (𝗕𝗼𝗹𝗱), Italic (𝘐𝘵𝘢𝘭𝘪𝘤), Bold Italic (𝘽𝙤𝙡𝙙 𝙄𝙩), Cursive (𝒞𝓊𝓇𝓈𝒾𝓋𝑒), Gothic (𝔊𝔬𝔱𝔥𝔦𝔠), Double Struck (𝔻𝕠𝕦𝕓𝕝𝕖), Monospace (𝙼𝚘𝚗𝚘), Circled/Bubble (Ⓒⓘⓡⓒⓛⓔ), Wide (Ｗｉｄｅ), Sparkle (✨ text ✨), Decorative (꧁text꧂), Underline (t̲e̲x̲t̲), and Strikethrough (t̶e̶x̶t̶). Each style gives your captions a unique look that grabs attention.' 
+  },
+  { 
+    q: 'Can I use multiple styles in one Facebook caption?', 
+    a: 'Yes! Our Multi-Line Styler lets you apply different text styles to each line of your caption. For example, make your first line bold for impact, the second line cursive for elegance, and add a sparkle effect to your call-to-action. This creates visually dynamic Facebook posts that get more engagement and stand out in crowded feeds.' 
+  },
+  { 
+    q: 'Will my text lose its style when I copy it?', 
+    a: 'No! Unlike formatted text (which uses HTML or rich text), Unicode-styled characters are actual characters that persist when copied. When you paste styled text from our tool into Facebook, Instagram, or any other platform, the styling remains intact because it\'s not formatting — it\'s the actual characters themselves.' 
+  },
+  { 
+    q: 'Does Unicode styling affect SEO or readability?', 
+    a: 'Screen readers may read Unicode-styled text differently, and search engines may not index it the same as regular text. Unicode styling is best for social media posts, visual content, and creative captions where visual impact matters more than search optimization. For accessibility, consider adding a plain-text version for screen readers.' 
+  },
+  { 
+    q: 'How do I make my Facebook captions more engaging?', 
+    a: 'Engaging Facebook captions combine several elements: (1) Use styled text to make key phrases stand out, (2) Include emojis naturally (2-4 per post), (3) Ask questions to encourage comments, (4) Keep captions between 40-80 characters for best engagement (Facebook\'s sweet spot), (5) Add a clear call-to-action like "Share this!" or "Tag a friend." Our Multi-Line Styler helps you create visually dynamic captions that get more likes, comments, and shares.' 
+  },
+  { 
+    q: 'Is this Facebook caption styler free to use?', 
+    a: 'Yes! Our Facebook caption styler is completely free with no sign-up required. All text processing happens directly in your browser — your text never leaves your device. We don\'t store, track, or collect any of your content. You can use it unlimited times for Facebook posts, Instagram captions, Twitter posts, TikTok captions, YouTube descriptions, and anywhere else you want styled text.' 
+  },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Facebook Caption Styler — Free Unicode Text Styler for Social Media',
+    description: 'Free Facebook caption styler and Unicode text generator. Create bold, italic, cursive, gothic, bubble text for Facebook, Instagram, Twitter, and TikTok. Multi-line styling with 13+ unique font styles.',
+    url: '/facebook-caption-styler',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Count words & characters' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure on your screen' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your exact age' },
+  { name: 'What Is My IP', href: '/what-is-my-ip', icon: '🌐', desc: 'Find your IP address' },
+];
+
+const stylesCatalog = [
+  { key: 'bold', name: 'Bold', sample: '𝗕𝗼𝗹𝗱' },
+  { key: 'italic', name: 'Italic', sample: '𝘐𝘵𝘢𝘭𝘪𝘤' },
+  { key: 'boldItalic', name: 'Bold Italic', sample: '𝘽𝙤𝙡𝙙 𝙄𝙩' },
+  { key: 'cursive', name: 'Cursive', sample: '𝒞𝓊𝓇𝓈𝒾𝓋𝑒' },
+  { key: 'gothic', name: 'Gothic', sample: '𝔊𝔬𝔱𝔥𝔦𝔠' },
+  { key: 'doubleStruck', name: 'Double', sample: 'Double' },
+  { key: 'mono', name: 'Monospace', sample: 'Monospace' },
+  { key: 'bubble', name: 'Circled', sample: 'Ⓒⓘⓡⓒⓛⓔ' },
+  { key: 'wide', name: 'Wide', sample: 'Ｗｉｄｅ' },
+  { key: 'spark', name: 'Sparkle', sample: '✨ Spark ✨' },
+  { key: 'deco', name: 'Decor', sample: '꧁Deco꧂' },
+  { key: 'underline', name: 'Underline', sample: 'U̲n̲d̲e̲r̲' },
+  { key: 'strike', name: 'Strike', sample: 'S̶t̶r̶i̶k̶e̶' },
+];
+
+const socialPlatforms = [
+  { platform: 'Facebook', icon: '👤', bestLength: '40-80 chars', worksWith: 'Posts, comments, stories, Messenger' },
+  { platform: 'Instagram', icon: '📸', bestLength: '138-150 chars', worksWith: 'Captions, bio, comments, stories' },
+  { platform: 'Twitter / X', icon: '🐦', bestLength: '71-100 chars', worksWith: 'Posts, bio, DMs' },
+  { platform: 'TikTok', icon: '🎵', bestLength: '100-150 chars', worksWith: 'Captions, comments' },
+  { platform: 'LinkedIn', icon: '💼', bestLength: '100-140 chars', worksWith: 'Posts, articles, comments' },
+  { platform: 'WhatsApp', icon: '💬', bestLength: 'Any length', worksWith: 'Messages, status' },
+  { platform: 'YouTube', icon: '▶️', bestLength: '157 chars visible', worksWith: 'Titles, descriptions, comments' },
+  { platform: 'Pinterest', icon: '📌', bestLength: '100-200 chars', worksWith: 'Pin titles, descriptions' },
+];
+
+const emojiCategories = [
+  { name: '🔥 Popular', emojis: ['✨', '🔥', '🚀', '❤️', '💡', '📌', '✅', '⚠️', '⏰', '💬', '👀', '💯'] },
+  { name: '💼 Business', emojis: ['💼', '📈', '💰', '🎯', '🤝', '📢', '📞', '📧', '💡', '🎉', '📅', '📝'] },
+  { name: '📸 Lifestyle', emojis: ['📸', '✈️', '🌴', '☕', '🍕', '🎧', '🎉', '🌟', '🌈', '🛍️', '🏃', '🐶'] },
+  { name: '👉 CTA', emojis: ['👇', '👉', '🗳️', '🚨', '🔍', '🙌', '🔔', '💥', '📣', '👇', '🎯', '🛒'] }
+];
+
+const presetHashtags = [
+  { category: 'Growth', tags: ['#motivation', '#success', '#goals', '#growth', '#mindset'] },
+  { category: 'Marketing', tags: ['#marketing', '#branding', '#business', '#socialmedia', '#entrepreneur'] },
+  { category: 'Lifestyle', tags: ['#love', '#lifestyle', '#travel', '#photography', '#goodvibes'] },
+  { category: 'Viral', tags: ['#trending', '#viral', '#instagood', '#foryou', '#explorepage'] }
+];
+---
+
+<CalculatorLayout
+  title="Facebook Caption Styler — Free Unicode Text Generator (13+ Styles)"
+  description="Free Facebook caption styler with 13+ unique text styles. Create bold, italic, cursive, gothic, bubble, and more styled text for Facebook, Instagram, TikTok, and Twitter. Multi-line styling included."
+  canonical="/facebook-caption-styler"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Facebook Caption Styler', url: '/facebook-caption-styler' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 24px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Social Media Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Facebook Caption Styler</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 700px;">
+      Transform plain text into eye-catching styled captions with 13+ unique Unicode text styles. Create bold, italic, cursive, gothic, and bubble text that works on Facebook, Instagram, TikTok, and everywhere else.
+    </p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap fade-up stagger-1" style="margin-bottom: 24px;">
+    <button class="fc-tab active" data-tab="single">✧ Single Styler</button>
+    <button class="fc-tab" data-tab="multi">📝 Multi-Line Styler</button>
+  </div>
+
+  <!-- STYLER WORKSPACE -->
+  <div class="fc-editor-grid fade-up stagger-1">
+    
+    <!-- Left column: Editor Controls -->
+    <div class="fc-editor-controls">
+      
+      <!-- SINGLE STYLER PANEL -->
+      <div id="single-panel" class="calc-panel" style="margin-bottom: 16px;">
+        <label for="styler-input" class="label" style="margin-bottom:10px;">Enter your text</label>
+        <textarea 
+          id="styler-input" 
+          class="fc-textarea" 
+          placeholder="Type or paste your caption here... e.g., Good morning, world!"
+          rows="4"
+          aria-label="Text input for styling"
+        ></textarea>
+        <div class="char-counter" id="styler-char-count">0 characters</div>
+
+        <!-- Emoji & Hashtag Helpers -->
+        <div class="helper-tabs-container">
+          <div class="helper-tabs">
+            <button class="helper-tab active" data-helper="emojis">😀 Emojis</button>
+            <button class="helper-tab" data-helper="hashtags">🏷️ Hashtags</button>
+          </div>
+          
+          <div class="helper-panel active" id="helper-emojis">
+            {emojiCategories.map(cat => (
+              <div class="emoji-category-row">
+                <span class="category-label">{cat.name}</span>
+                <div class="emoji-buttons">
+                  {cat.emojis.map(e => (
+                    <button class="emoji-btn" data-insert={e}>{e}</button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="helper-panel" id="helper-hashtags">
+            {presetHashtags.map(cat => (
+              <div class="hashtag-category-row">
+                <span class="category-label">{cat.category}</span>
+                <div class="hashtag-buttons">
+                  {cat.tags.map(t => (
+                    <button class="hashtag-btn" data-insert={t}>{t}</button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button id="clear-styler-btn" class="btn-secondary" style="margin-top:12px;width:100%;font-size:12px;padding:8px;">🗑️ Clear Text</button>
+
+        <!-- Style Selection -->
+        <div style="margin-top:20px;">
+          <label class="label" style="margin-bottom:10px;">Choose a Text Style</label>
+          <div class="style-grid" id="style-grid">
+            {stylesCatalog.map(s => (
+              <button class="style-chip" data-style={s.key} aria-label={`Apply ${s.name} style`}>
+                <span class="style-sample">{s.sample}</span>
+                <span class="style-name">{s.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTI-LINE STYLER PANEL -->
+      <div id="multi-panel" class="calc-panel" style="margin-bottom: 16px; display: none;">
+        
+        <div class="multi-toolbar">
+          <button id="import-paragraph-btn" class="btn-secondary" style="font-size:12px; padding:6px 12px;">📂 Import Paragraph</button>
+          <button id="reset-multi-btn" class="btn-secondary" style="font-size:12px; padding:6px 12px;">🔄 Reset Styles to Bold</button>
+          <button id="clear-multi-btn" class="btn-secondary" style="font-size:12px; padding:6px 12px;">🗑️ Clear All</button>
+        </div>
+
+        <!-- Import drawer container -->
+        <div id="import-container" class="import-drawer" style="display: none; margin-bottom: 16px; padding: 12px; border: 1px dashed var(--color-hairline); border-radius: 8px; background: var(--color-canvas-soft-2);">
+          <label for="import-textarea" class="label" style="font-size: 12px; margin-bottom: 6px;">Paste paragraph text to import:</label>
+          <textarea id="import-textarea" class="fc-textarea" rows="3" placeholder="Paste your text here... each paragraph break will become a new line."></textarea>
+          <button id="do-import-btn" class="btn-primary" style="margin-top:8px; font-size:12px; padding:6px 12px; width: 100%;">Split and Import</button>
+        </div>
+
+        <div class="multi-instructions" style="font-size: 11.5px; color: var(--color-muted); margin-bottom: 12px; background: var(--color-canvas-soft); padding: 8px 12px; border-radius: 6px;">
+          💡 <strong>Tip:</strong> Type directly in the line inputs below. Press <strong>Enter</strong> to quickly add a new line underneath. Press <strong>Backspace</strong> on an empty line to delete it.
+        </div>
+
+        <!-- Notion-style interactive lines editor -->
+        <div id="multi-lines-list" class="multi-lines-list">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <button id="add-line-btn" class="btn-primary" style="width: 100%; margin-top: 12px; font-size:13.5px; font-weight:600; padding: 10px;">➕ Add New Line</button>
+      </div>
+
+    </div>
+
+    <!-- Right column: Facebook Feed Preview & Actions -->
+    <div class="fc-preview-sidebar">
+      
+      <!-- Facebook Feed Mockup Card -->
+      <div class="facebook-mock-card">
+        <div class="mock-header">
+          <div class="mock-avatar">⚡</div>
+          <div class="mock-user-meta">
+            <div class="mock-user-name">
+              <span id="mock-profile-name">CalcQuick</span>
+              <span class="mock-badge" id="mock-verified-badge">✓</span>
+            </div>
+            <div class="mock-timestamp">Just now • 🌐</div>
+          </div>
+        </div>
+
+        <div class="mock-content" id="mock-content-text">
+          Your styled caption preview will render here...
+        </div>
+
+        <div class="mock-likes-count">
+          <span>👍❤️ 1.2K</span>
+          <span>48 Comments • 12 Shares</span>
+        </div>
+
+        <div class="mock-action-buttons">
+          <div class="mock-action">👍 Like</div>
+          <div class="mock-action">💬 Comment</div>
+          <div class="mock-action">🔄 Share</div>
+        </div>
+      </div>
+
+      <!-- Preview Options -->
+      <div class="calc-panel" style="margin-top: 12px; padding: 14px;">
+        <h4 style="font-size:11px; font-weight:700; color:var(--color-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px;">Mockup Settings</h4>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--color-body); cursor:pointer;">
+            <input type="checkbox" id="toggle-verified" checked style="accent-color:var(--color-link);" /> Show Blue Verified Badge
+          </label>
+          <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px;">
+            <label for="profile-name-input" style="font-size:11px; color:var(--color-muted);">Customize Profile Name</label>
+            <input type="text" id="profile-name-input" class="input-base" value="CalcQuick" style="padding:6px 10px; font-size:12.5px;" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Copy & Actions Panel -->
+      <div class="calc-panel" style="margin-top: 12px;">
+        <label class="label" style="margin-bottom:8px;">Copy Actions</label>
+        <button id="copy-styled-btn" class="btn-primary" style="width:100%;font-size:13.5px;padding:12px;font-weight:600;">📋 Copy All Styled Text</button>
+        <button id="copy-plain-btn" class="btn-secondary" style="width:100%;margin-top:6px;font-size:12px;padding:8px;">📄 Copy Plain Text Only</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PLATFORM COMPATIBILITY -->
+  <div class="calc-panel fade-up" style="margin-bottom:24px; margin-top:24px;">
+    <h2 style="color:var(--color-ink);font-size:18px;font-weight:600;margin-bottom:12px;">📱 Where Styled Text Works</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:16px;">Unicode-styled text works on all major social media platforms. Here's where you can use it:</p>
+    <div class="platform-compat-grid">
+      {socialPlatforms.map(p => (
+        <div class="compat-card">
+          <div class="compat-icon">{p.icon}</div>
+          <div class="compat-name">{p.platform}</div>
+          <div class="compat-detail">Best: {p.bestLength}</div>
+          <div class="compat-detail" style="color:var(--color-muted);font-size:11px;">{p.worksWith}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- TIPS CARDS -->
+  <div class="tips-grid fade-up" style="margin-bottom:40px;">
+    <div class="tip-card">
+      <div class="tip-icon">💡</div>
+      <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:6px;">Hook First Line</h3>
+      <p style="font-size:13px;color:var(--color-body);line-height:1.5;">Make your first line bold to grab attention in the feed. Facebook truncates captions after 125 characters.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🎨</div>
+      <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:6px;">Mix Styles</h3>
+      <p style="font-size:13px;color:var(--color-body);line-height:1.5;">Use Multi-Line Styler to combine bold headlines with cursive body text for a professional look.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📊</div>
+      <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:6px;">Optimal Length</h3>
+      <p style="font-size:13px;color:var(--color-body);line-height:1.5;">Facebook posts with 40-80 characters get highest engagement. Keep it concise with styled keywords.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔑</div>
+      <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:6px;">CTA Line</h3>
+      <p style="font-size:13px;color:var(--color-body);line-height:1.5;">Style your call-to-action differently — try Sparkle or Bubble style to make it stand out.</p>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="faq-accordion-wrap fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`fcs-faq-${i}`} id={`fcs-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`fcs-faq-${i}`} role="region" aria-labelledby={`fcs-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  /* Tabs switching */
+  .fc-tab {
+    border: none;
+    background: transparent;
+    padding: 0.7rem 1.8rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--color-body);
+    font-family: inherit;
+  }
+  .fc-tab.active {
+    background: var(--color-link);
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 112, 243, 0.2);
+  }
+  .fc-tab:hover:not(.active) {
+    background: var(--color-canvas-soft-2);
+    color: var(--color-ink);
+  }
+  .tabs-wrap {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--color-canvas);
+    border-radius: 60px;
+    padding: 0.35rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03), 0 8px 20px -8px rgba(0,0,0,0.08);
+    width: fit-content;
+  }
+
+  /* Grid Editor & Preview */
+  .fc-editor-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+  }
+
+  .fc-textarea {
+    width: 100%;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    background: var(--color-canvas);
+    resize: vertical;
+    outline: none;
+    color: var(--color-ink);
+    min-height: 110px;
+  }
+  .fc-textarea:focus {
+    border-color: var(--color-link);
+    box-shadow: 0 0 0 3px var(--color-link-bg);
+  }
+
+  .char-counter {
+    font-size: 11px;
+    color: var(--color-muted);
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* Helper tabs for Emojis & Hashtags */
+  .helper-tabs-container {
+    margin-top: 12px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-canvas-soft);
+  }
+  .helper-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+  .helper-tab {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--color-body);
+    transition: all 0.15s ease;
+  }
+  .helper-tab.active {
+    background: var(--color-canvas);
+    color: var(--color-link);
+    border-bottom: 2px solid var(--color-link);
+  }
+  .helper-panel {
+    display: none;
+    padding: 12px;
+    max-height: 160px;
+    overflow-y: auto;
+    background: var(--color-canvas);
+  }
+  .helper-panel.active {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .emoji-category-row, .hashtag-category-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .category-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-muted);
+    min-width: 75px;
+  }
+  .emoji-buttons, .hashtag-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .emoji-btn {
+    border: 1px solid var(--color-hairline);
+    background: var(--color-canvas-soft-2);
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.1s ease;
+  }
+  .emoji-btn:hover {
+    transform: scale(1.15);
+    background: var(--color-canvas);
+    border-color: var(--color-hairline-strong);
+  }
+  .hashtag-btn {
+    border: 1px solid var(--color-hairline);
+    background: var(--color-canvas-soft-2);
+    border-radius: 20px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-body);
+    transition: all 0.1s ease;
+  }
+  .hashtag-btn:hover {
+    border-color: var(--color-link);
+    background: var(--color-link-bg);
+    color: var(--color-link);
+  }
+
+  /* Facebook Mock Card */
+  .facebook-mock-card {
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card-md);
+    overflow: hidden;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .mock-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .mock-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #1877f2, #0056b3);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  .mock-user-meta {
+    display: flex;
+    flex-direction: column;
+  }
+  .mock-user-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-ink);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .mock-badge {
+    background: #1877f2;
+    color: white;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    font-size: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+  .mock-timestamp {
+    font-size: 11px;
+    color: var(--color-muted);
+  }
+  .mock-content {
+    font-size: 14.5px;
+    color: var(--color-ink);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 80px;
+  }
+  .mock-likes-count {
+    border-top: 1px solid var(--color-hairline);
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+  .mock-action-buttons {
+    border-top: 1px solid var(--color-hairline);
+    padding-top: 8px;
+    display: flex;
+    justify-content: space-around;
+  }
+  .mock-action {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-body);
+    cursor: pointer;
+  }
+  .mock-action:hover {
+    color: #1877f2;
+  }
+
+  /* Style grid */
+  .style-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 8px;
+  }
+  .style-chip, .multi-style-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px 8px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas-soft-2);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+    font-family: inherit;
+    color: var(--color-ink);
+  }
+  .style-chip:hover, .multi-style-chip:hover {
+    border-color: var(--color-link);
+    background: var(--color-canvas);
+  }
+  .style-chip.active, .multi-style-chip.active {
+    background: var(--color-link-bg);
+    border-color: var(--color-link);
+    color: var(--color-link);
+    font-weight: 600;
+  }
+  .style-sample {
+    font-size: 14.5px;
+  }
+  .style-name {
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  /* Custom input */
+  .input-base {
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-sm);
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    outline: none;
+  }
+  .input-base:focus {
+    border-color: var(--color-link);
+  }
+
+  /* Modern Notion-Style multi-line list */
+  .multi-toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .multi-lines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--color-canvas-soft-2);
+    padding: 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-hairline);
+    min-height: 120px;
+  }
+  
+  .multi-line-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    padding: 10px 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
+  }
+  .multi-line-row.active {
+    border-color: var(--color-link);
+    box-shadow: 0 0 0 3px var(--color-link-bg);
+  }
+  
+  .line-row-num {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .line-row-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14.5px;
+    color: var(--color-ink);
+    resize: none;
+    line-height: 1.5;
+    min-height: 24px;
+    overflow-y: hidden;
+    padding: 2px 0;
+  }
+  
+  /* Styled Inline Dropdown Wrapper */
+  .line-row-select-wrapper {
+    position: relative;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .line-row-select {
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: 20px;
+    padding: 5px 24px 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 100px;
+    text-align: left;
+  }
+  .line-row-select:hover {
+    border-color: var(--color-link);
+    background: var(--color-link-bg);
+    color: var(--color-link);
+  }
+  .line-row-select-wrapper::after {
+    content: "▼";
+    font-size: 8px;
+    color: var(--color-muted);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .line-row-delete {
+    background: transparent;
+    border: none;
+    color: var(--color-muted);
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    transition: all 0.1s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .line-row-delete:hover {
+    background: #fee2e2;
+    color: #dc2626;
+  }
+
+  /* Platform compat */
+  .platform-compat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  .compat-card {
+    padding: 16px 12px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas-soft-2);
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .compat-card:hover {
+    border-color: var(--color-link);
+  }
+  .compat-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .compat-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 4px;
+  }
+  .compat-detail {
+    font-size: 11px;
+    color: var(--color-body);
+  }
+
+  /* Tips grid */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .tip-card {
+    padding: 20px 16px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas);
+    text-align: center;
+  }
+  .tip-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .prose-section {
+    padding: 32px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+  .calc-panel {
+    padding: 24px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+
+  /* Toast */
+  .fc-toast {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%) translateY(30px);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+    padding: 0.7rem 1.4rem;
+    border-radius: 60px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: 0.2s;
+    pointer-events: none;
+    z-index: 1000;
+  }
+  .fc-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 991px) {
+    .fc-editor-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .fc-tab {
+      padding: 0.55rem 1.2rem;
+      font-size: 0.8rem;
+    }
+    .style-grid {
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    }
+    .platform-compat-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .tips-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .prose-section {
+      padding: 20px 16px;
+    }
+    .calc-panel {
+      padding: 16px;
+    }
+  }
+  @media (max-width: 400px) {
+    .style-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .platform-compat-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .tips-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<div id="fc-toast" class="fc-toast">✓ Copied!</div>
+
+<script>
+  // ─── Unicode Style Map ──────────────────────────────────────────────────────
+  const styleMap: Record<string, (txt: string) => string> = {
+    bold: (txt) => [...txt].map(ch => {
+      if (/[A-Z]/.test(ch)) return String.fromCodePoint(0x1D400 + ch.charCodeAt(0) - 65);
+      if (/[a-z]/.test(ch)) return String.fromCodePoint(0x1D41A + ch.charCodeAt(0) - 97);
+      if (/[0-9]/.test(ch)) return String.fromCodePoint(0x1D7CE + ch.charCodeAt(0) - 48);
+      return ch;
+    }).join(''),
+    italic: (txt) => [...txt].map(ch => {
+      if (/[A-Z]/.test(ch)) return String.fromCodePoint(0x1D434 + ch.charCodeAt(0) - 65);
+      if (/[a-z]/.test(ch)) return String.fromCodePoint(0x1D44E + ch.charCodeAt(0) - 97);
+      return ch;
+    }).join(''),
+    boldItalic: (txt) => [...txt].map(ch => {
+      if (/[A-Z]/.test(ch)) return String.fromCodePoint(0x1D468 + ch.charCodeAt(0) - 65);
+      if (/[a-z]/.test(ch)) return String.fromCodePoint(0x1D482 + ch.charCodeAt(0) - 97);
+      return ch;
+    }).join(''),
+    cursive: (txt) => [...txt].map(ch => {
+      const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const lower = 'abcdefghijklmnopqrstuvwxyz';
+      const cU = [...'𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵'];
+      const cL = [...'𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏'];
+      const i = upper.indexOf(ch);
+      if (i !== -1) return cU[i];
+      const il = lower.indexOf(ch);
+      if (il !== -1) return cL[il];
+      return ch;
+    }).join(''),
+    gothic: (txt) => [...txt].map(ch => {
+      const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const lower = 'abcdefghijklmnopqrstuvwxyz';
+      const gU = [...'𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ'];
+      const gL = [...'𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷'];
+      const i = upper.indexOf(ch);
+      if (i !== -1) return gU[i];
+      const il = lower.indexOf(ch);
+      if (il !== -1) return gL[il];
+      return ch;
+    }).join(''),
+    doubleStruck: (txt) => [...txt].map(ch => {
+      if (/[A-Z]/.test(ch)) return String.fromCodePoint(0x1D538 + ch.charCodeAt(0) - 65);
+      if (/[a-z]/.test(ch)) return String.fromCodePoint(0x1D552 + ch.charCodeAt(0) - 97);
+      if (/[0-9]/.test(ch)) return String.fromCodePoint(0x1D7D8 + ch.charCodeAt(0) - 48);
+      return ch;
+    }).join(''),
+    mono: (txt) => [...txt].map(ch => {
+      if (/[A-Z]/.test(ch)) return String.fromCodePoint(0x1D670 + ch.charCodeAt(0) - 65);
+      if (/[a-z]/.test(ch)) return String.fromCodePoint(0x1D68A + ch.charCodeAt(0) - 97);
+      if (/[0-9]/.test(ch)) return String.fromCodePoint(0x1D7F6 + ch.charCodeAt(0) - 48);
+      return ch;
+    }).join(''),
+    bubble: (txt) => [...txt].map(ch => {
+      const map: Record<string, string> = {};
+      [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].forEach((l, i) => map[l] = String.fromCodePoint(0x24B6 + i));
+      [...'abcdefghijklmnopqrstuvwxyz'].forEach((l, i) => map[l] = String.fromCodePoint(0x24D0 + i));
+      [...'0123456789'].forEach((d, i) => map[d] = String.fromCodePoint(0x2460 + i));
+      return map[ch] || ch;
+    }).join(''),
+    wide: (txt) => [...txt].map(ch => /[A-Za-z0-9]/.test(ch) ? String.fromCodePoint(ch.charCodeAt(0) + 0xFEE0) : ch).join(''),
+    spark: (txt) => `✨ ${txt} ✨`,
+    deco: (txt) => `꧁ ${txt} ꧂`,
+    underline: (txt) => [...txt].map(ch => ch === ' ' ? ' ' : ch + '\u0332').join(''),
+    strike: (txt) => [...txt].map(ch => ch === ' ' ? ' ' : ch + '\u0336').join(''),
+  };
+
+  const styleLabels: Record<string, string> = {
+    bold: '𝗕𝗼𝗹𝗱',
+    italic: '𝘐𝘵𝘢𝘭𝘪𝘤',
+    boldItalic: '𝘽𝙤𝙡𝙙 𝙄𝙩',
+    cursive: '𝒞𝓊𝓇𝓈𝒾𝓋𝑒',
+    gothic: '𝔊𝔬𝔱𝔥𝔦𝔠',
+    doubleStruck: '𝔻𝕠𝕦𝕓𝕝𝕖',
+    mono: '𝙼𝚘𝚗𝚘',
+    bubble: 'Ⓒⓘⓡⓒⓛⓔ',
+    wide: 'Ｗｉｄｅ',
+    spark: '✨ Sparkle',
+    deco: '꧁ Decor ꧂',
+    underline: 'U̲n̲d̲e̲r̲',
+    strike: 'S̶t̶r̶i̶k̶e̶'
+  };
+
+  function applyStyle(text: string, styleKey: string): string {
+    if (!text.trim()) return text;
+    const fn = styleMap[styleKey];
+    return fn ? fn(text) : text;
+  }
+
+  // ─── Toast Helper ───────────────────────────────────────────────────────────
+  function showToast(msg: string) {
+    const toast = document.getElementById('fc-toast')!;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  }
+
+  // ─── Tab Switcher (Single vs Multi-Line) ─────────────────────────────────────
+  let activeTab = 'single';
+  const singlePanel = document.getElementById('single-panel')!;
+  const multiPanel = document.getElementById('multi-panel')!;
+
+  document.querySelectorAll('.fc-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.fc-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeTab = (tab as HTMLElement).dataset.tab!;
+      if (activeTab === 'single') {
+        singlePanel.style.display = '';
+        multiPanel.style.display = 'none';
+        updateStylerPreview();
+      } else {
+        singlePanel.style.display = 'none';
+        multiPanel.style.display = '';
+        updateMultiLinePreview();
+      }
+    });
+  });
+
+  // ─── Helper Panel Tabs (Emojis vs Hashtags) ─────────────────────────────────
+  document.querySelectorAll('.helper-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.helper-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.helper-panel').forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      const targetId = `helper-${(tab as HTMLElement).dataset.helper}`;
+      document.getElementById(targetId)!.classList.add('active');
+    });
+  });
+
+  // Cursor Insert Helper
+  const stylerInput = document.getElementById('styler-input') as HTMLTextAreaElement;
+
+  function insertAtCursor(textarea: HTMLTextAreaElement, text: string) {
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentVal = textarea.value;
+    textarea.value = currentVal.substring(0, start) + text + currentVal.substring(end);
+    textarea.selectionStart = textarea.selectionEnd = start + text.length;
+    textarea.focus();
+    textarea.dispatchEvent(new Event('input'));
+  }
+
+  // Bind Emojis click
+  document.querySelectorAll('.emoji-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-insert')!;
+      if (activeTab === 'single') {
+        insertAtCursor(stylerInput, val);
+      } else {
+        // For Multi-Line active input
+        const activeTextarea = document.querySelector('.multi-line-row.active .line-row-input') as HTMLTextAreaElement;
+        if (activeTextarea) {
+          insertAtCursor(activeTextarea, val);
+        } else {
+          showToast('⚠️ Click on a line in Multi-Line editor first');
+        }
+      }
+    });
+  });
+
+  // Bind Hashtags click
+  document.querySelectorAll('.hashtag-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = btn.getAttribute('data-insert')! + ' ';
+      if (activeTab === 'single') {
+        insertAtCursor(stylerInput, val);
+      } else {
+        // For Multi-Line active input
+        const activeTextarea = document.querySelector('.multi-line-row.active .line-row-input') as HTMLTextAreaElement;
+        if (activeTextarea) {
+          insertAtCursor(activeTextarea, val);
+        } else {
+          showToast('⚠️ Click on a line in Multi-Line editor first');
+        }
+      }
+    });
+  });
+
+  // ─── Single Styler Preview and Controls ─────────────────────────────────────
+  let currentStyle = 'bold';
+  const mockContent = document.getElementById('mock-content-text')!;
+  const stylerCharCount = document.getElementById('styler-char-count')!;
+
+  function updateStylerPreview() {
+    if (activeTab !== 'single') return;
+    const text = stylerInput.value;
+    stylerCharCount.textContent = `${text.length} characters`;
+    if (!text.trim()) {
+      mockContent.textContent = 'Your styled caption preview will render here...';
+    } else {
+      mockContent.textContent = applyStyle(text, currentStyle);
+    }
+  }
+
+  stylerInput.addEventListener('input', updateStylerPreview);
+
+  document.getElementById('clear-styler-btn')!.addEventListener('click', () => {
+    stylerInput.value = '';
+    updateStylerPreview();
+    showToast('🗑️ Input cleared');
+  });
+
+  // Style chips selection
+  document.querySelectorAll('#style-grid .style-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#style-grid .style-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentStyle = chip.getAttribute('data-style')!;
+      updateStylerPreview();
+    });
+  });
+
+  // ─── Notion-Style Multi-Line Styler ─────────────────────────────────────────
+  interface Line { text: string; style: string; }
+  let multiLines: Line[] = [
+    { text: 'The sun set behind the mountains, painting the sky in orange.', style: 'bold' },
+    { text: 'A gentle breeze carried the scent of pine through the valley.', style: 'cursive' },
+    { text: 'In that moment, everything felt perfectly still.', style: 'spark' }
+  ];
+  let activeLineIndex = 0;
+  let multiStyle = 'bold';
+
+  const multiLinesContainer = document.getElementById('multi-lines-list')!;
+
+  function renderMultiLines() {
+    multiLinesContainer.innerHTML = '';
+    multiLines.forEach((line, idx) => {
+      const row = document.createElement('div');
+      row.className = `multi-line-row${idx === activeLineIndex ? ' active' : ''}`;
+      
+      // Inline styles dropdown list
+      const selectHtml = `
+        <div class="line-row-select-wrapper">
+          <select class="line-row-select" data-line="${idx}">
+            ${Object.keys(styleLabels).map(key => 
+              `<option value="${key}" ${line.style === key ? 'selected' : ''}>${styleLabels[key]}</option>`
+            ).join('')}
+          </select>
+        </div>
+      `;
+
+      row.innerHTML = `
+        <span class="line-row-num">${String(idx + 1).padStart(2, '0')}</span>
+        <textarea class="line-row-input" placeholder="Type line ${idx + 1}...">${line.text}</textarea>
+        ${selectHtml}
+        <button class="line-row-delete" title="Delete Line">✕</button>
+      `;
+
+      const textarea = row.querySelector('.line-row-input') as HTMLTextAreaElement;
+      const select = row.querySelector('.line-row-select') as HTMLSelectElement;
+      const deleteBtn = row.querySelector('.line-row-delete') as HTMLButtonElement;
+
+      // Auto-resize height
+      setTimeout(() => {
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+      }, 0);
+
+      textarea.addEventListener('input', () => {
+        multiLines[idx].text = textarea.value;
+        textarea.style.height = 'auto';
+        textarea.style.height = textarea.scrollHeight + 'px';
+        updateMultiLinePreview();
+      });
+
+      textarea.addEventListener('focus', () => {
+        activeLineIndex = idx;
+        multiStyle = multiLines[idx].style;
+        document.querySelectorAll('.multi-line-row').forEach((r, rIdx) => {
+          r.classList.toggle('active', rIdx === idx);
+        });
+        updateMultiStyleGridHighlight();
+      });
+
+      textarea.addEventListener('keydown', (e) => {
+        // Enter adds line below
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          multiLines.splice(idx + 1, 0, { text: '', style: 'bold' });
+          activeLineIndex = idx + 1;
+          renderMultiLines();
+          
+          const textareas = document.querySelectorAll('.line-row-input');
+          (textareas[activeLineIndex] as HTMLTextAreaElement)?.focus();
+        }
+
+        // Backspace empty line deletes it
+        if (e.key === 'Backspace' && textarea.value === '' && multiLines.length > 1) {
+          e.preventDefault();
+          multiLines.splice(idx, 1);
+          activeLineIndex = Math.max(0, idx - 1);
+          renderMultiLines();
+
+          const textareas = document.querySelectorAll('.line-row-input');
+          (textareas[activeLineIndex] as HTMLTextAreaElement)?.focus();
+        }
+      });
+
+      select.addEventListener('change', () => {
+        multiLines[idx].style = select.value;
+        updateMultiLinePreview();
+        if (idx === activeLineIndex) {
+          multiStyle = select.value;
+          updateMultiStyleGridHighlight();
+        }
+      });
+
+      deleteBtn.addEventListener('click', () => {
+        if (multiLines.length > 1) {
+          multiLines.splice(idx, 1);
+          activeLineIndex = Math.max(0, idx - 1);
+          renderMultiLines();
+          updateMultiLinePreview();
+        } else {
+          multiLines[0].text = '';
+          renderMultiLines();
+          updateMultiLinePreview();
+        }
+      });
+
+      multiLinesContainer.appendChild(row);
+    });
+  }
+
+  function updateMultiLinePreview() {
+    if (activeTab !== 'multi') return;
+    if (multiLines.length === 0) {
+      mockContent.textContent = 'Your multi-line styled caption preview will render here...';
+    } else {
+      mockContent.textContent = multiLines.map(l => applyStyle(l.text, l.style)).join('\n');
+    }
+  }
+
+  // Add Line button
+  document.getElementById('add-line-btn')!.addEventListener('click', () => {
+    multiLines.push({ text: '', style: 'bold' });
+    activeLineIndex = multiLines.length - 1;
+    renderMultiLines();
+    const textareas = document.querySelectorAll('.line-row-input');
+    (textareas[activeLineIndex] as HTMLTextAreaElement)?.focus();
+  });
+
+  // Clear Multi Lines
+  document.getElementById('clear-multi-btn')!.addEventListener('click', () => {
+    multiLines = [{ text: '', style: 'bold' }];
+    activeLineIndex = 0;
+    renderMultiLines();
+    updateMultiLinePreview();
+    showToast('🗑️ Cleared');
+  });
+
+  // Reset Styles to Bold
+  document.getElementById('reset-multi-btn')!.addEventListener('click', () => {
+    multiLines.forEach(l => l.style = 'bold');
+    multiStyle = 'bold';
+    renderMultiLines();
+    updateMultiLinePreview();
+    showToast('🔄 All lines reset to Bold');
+  });
+
+  // ─── Import Logic ──────────────────────────────────────────────────────────
+  const importBtn = document.getElementById('import-paragraph-btn')!;
+  const importContainer = document.getElementById('import-container')!;
+  const importTextArea = document.getElementById('import-textarea') as HTMLTextAreaElement;
+  const doImportBtn = document.getElementById('do-import-btn')!;
+
+  importBtn.addEventListener('click', () => {
+    importContainer.style.display = importContainer.style.display === 'none' ? 'block' : 'none';
+  });
+
+  doImportBtn.addEventListener('click', () => {
+    const text = importTextArea.value;
+    if (!text.trim()) {
+      showToast('⚠️ Paste some text first');
+      return;
+    }
+    const raw = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+    if (raw.length > 0) {
+      multiLines = raw.map(l => ({ text: l.trim(), style: 'bold' }));
+      activeLineIndex = 0;
+      renderMultiLines();
+      updateMultiLinePreview();
+      importContainer.style.display = 'none';
+      importTextArea.value = '';
+      showToast(`✅ Imported ${raw.length} lines`);
+    }
+  });
+
+  // ─── Mockup Customizable Options ───────────────────────────────────────────
+  const verifiedCheckbox = document.getElementById('toggle-verified') as HTMLInputElement;
+  const verifiedBadge = document.getElementById('mock-verified-badge')!;
+  const nameInput = document.getElementById('profile-name-input') as HTMLInputElement;
+  const profileNameSpan = document.getElementById('mock-profile-name')!;
+
+  verifiedCheckbox.addEventListener('change', (e) => {
+    verifiedBadge.style.display = (e.target as HTMLInputElement).checked ? 'inline-flex' : 'none';
+  });
+
+  nameInput.addEventListener('input', () => {
+    const val = nameInput.value.trim();
+    profileNameSpan.textContent = val || 'CalcQuick';
+  });
+
+  // ─── Copy Actions ──────────────────────────────────────────────────────────
+  document.getElementById('copy-styled-btn')!.addEventListener('click', () => {
+    let resultText = '';
+    if (activeTab === 'single') {
+      resultText = stylerInput.value.trim() ? applyStyle(stylerInput.value, currentStyle) : '';
+    } else {
+      resultText = multiLines.map(l => applyStyle(l.text, l.style)).join('\n');
+    }
+
+    if (!resultText) {
+      showToast('⚠️ No text to copy');
+      return;
+    }
+    navigator.clipboard.writeText(resultText).then(() => showToast('✓ Styled text copied!'));
+  });
+
+  document.getElementById('copy-plain-btn')!.addEventListener('click', () => {
+    let plain = '';
+    if (activeTab === 'single') {
+      plain = stylerInput.value.trim();
+    } else {
+      plain = multiLines.map(l => l.text).join('\n');
+    }
+
+    if (!plain) {
+      showToast('⚠️ No text to copy');
+      return;
+    }
+    navigator.clipboard.writeText(plain).then(() => showToast('✓ Plain text copied!'));
+  });
+
+  // ─── Init ──────────────────────────────────────────────────────────────────
+  document.querySelector('#style-grid .style-chip[data-style="bold"]')?.classList.add('active');
+
+  renderMultiLines();
+  updateStylerPreview();
+
+  // ─── Accordion Logic ────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

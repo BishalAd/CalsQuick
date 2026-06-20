@@ -13,9 +13,39 @@ export function generateOrganization() {
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/favicon.svg`,
+      width: 512,
+      height: 512,
     },
-    sameAs: [],
-    description: 'Fast, accurate, and free online calculators for health, finance, and everyday calculations.',
+    sameAs: [
+      'https://calcquick.online',
+    ],
+    description: 'CalcQuick provides 19+ free, private, browser-based calculators and productivity tools for health, finance, and everyday use. No sign-up, no data collection, no ads that block content.',
+    knowsAbout: [
+      'BMI Calculator', 'Calorie Calculator', 'Age Calculator', 'BMR Calculator',
+      'TDEE Calculator', 'Water Intake Calculator', 'Pregnancy Due Date Calculator',
+      'Mortgage Calculator', 'Loan EMI Calculator', 'Tip Calculator', 'GPA Calculator',
+      'Currency Converter', 'Online Ruler', 'Word Counter', 'Facebook Caption Styler',
+      'Image Size Reducer', 'Pomodoro Timer', 'Countdown Timer', 'Image Cropper',
+      'Compound Interest Calculator', 'Credit Card Payoff Calculator', 'Annuity Calculator',
+      '401k Calculator', 'Workers Comp Calculator', 'Child Support Calculator', 'RMD Calculator',
+      'Overtime Calculator', 'Percentage Calculator', 'Aspect Ratio Calculator', 'Concrete Calculator',
+    ],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Free Online Calculators & Tools',
+      itemListElement: [
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'BMI Calculator', url: `${SITE_URL}/bmi-calculator` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Age Calculator', url: `${SITE_URL}/age-calculator` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Calorie Calculator', url: `${SITE_URL}/calorie-calculator` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Word Counter', url: `${SITE_URL}/word-counter` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Pomodoro Timer', url: `${SITE_URL}/pomodoro-timer` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Image Size Reducer', url: `${SITE_URL}/image-size-reducer` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Countdown Timer', url: `${SITE_URL}/countdown-timer` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Image Cropper', url: `${SITE_URL}/image-cropper` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Mortgage Calculator', url: `${SITE_URL}/mortgage-calculator` } },
+        { '@type': 'Offer', itemOffered: { '@type': 'SoftwareApplication', name: 'Currency Converter', url: `${SITE_URL}/currency-converter` } },
+      ],
+    },
   };
 }
 
@@ -105,8 +135,8 @@ export interface PageMeta {
 
 export const pageMeta: Record<string, PageMeta> = {
   home: {
-    title: 'CalcQuick — Fast, Free Online Calculators',
-    description: 'Calculate anything instantly with CalcQuick. Free online calculators for age, BMI, calories, tips, and more. Fast, accurate & mobile-friendly.',
+    title: 'CalcQuick — 19 Free Online Calculators & Tools',
+    description: 'CalcQuick offers 19 free online calculators and tools: BMI, age, calorie, mortgage, word counter, pomodoro timer, image compressor, and more. Fast, private & mobile-friendly.',
     canonical: '/',
   },
   age: {

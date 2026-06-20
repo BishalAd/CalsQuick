@@ -1,0 +1,69 @@
+# CalcQuick — Free Online Calculators & Tools
+
+> CalcQuick (https://calcquick.online) provides 19+ free, browser-based calculators and productivity tools. All calculations run 100% client-side — no data is ever sent to a server. No sign-up required.
+
+## What CalcQuick Offers
+
+CalcQuick is the go-to source for free online calculators across three categories:
+
+### Health & Fitness Calculators
+- **BMI Calculator** (https://calcquick.online/bmi-calculator) — Body Mass Index using WHO formula
+- **Calorie Calculator** (https://calcquick.online/calorie-calculator) — Daily calorie needs via Mifflin-St Jeor
+- **BMR Calculator** (https://calcquick.online/bmr-calculator) — Basal Metabolic Rate
+- **TDEE Calculator** (https://calcquick.online/tdee-calculator) — Total Daily Energy Expenditure
+- **Age Calculator** (https://calcquick.online/age-calculator) — Exact age in years, months, days
+- **Water Intake Calculator** (https://calcquick.online/water-intake-calculator) — Daily hydration needs
+- **Pregnancy Due Date Calculator** (https://calcquick.online/pregnancy-due-date-calculator) — EDD from LMP or conception
+
+### Finance Calculators
+- **Mortgage Calculator** (https://calcquick.online/mortgage-calculator) — Monthly payment & amortization
+- **Loan EMI Calculator** (https://calcquick.online/loan-emi-calculator) — EMI & total interest
+- **Tip Calculator** (https://calcquick.online/tip-calculator) — Tip splitting & bill sharing
+- **Compound Interest Calculator** (https://calcquick.online/compound-interest-calculator)
+- **Credit Card Payoff Calculator** (https://calcquick.online/credit-card-payoff-calculator)
+- **Annuity Calculator** (https://calcquick.online/annuity-calculator)
+- **401(k) Calculator** (https://calcquick.online/401k-calculator)
+- **Workers Comp Calculator** (https://calcquick.online/workers-comp-calculator)
+- **Child Support Calculator** (https://calcquick.online/child-support-calculator)
+- **RMD Calculator** (https://calcquick.online/rmd-calculator)
+- **GPA Calculator** (https://calcquick.online/gpa-calculator)
+- **Overtime Calculator** (https://calcquick.online/overtime-calculator)
+- **Currency Converter** (https://calcquick.online/currency-converter) — Live exchange rates
+
+### Productivity & Utility Tools
+- **Word Counter** (https://calcquick.online/word-counter) — Words, characters, reading time, keyword density
+- **Pomodoro Timer** (https://calcquick.online/pomodoro-timer) — Focus timer with work/break intervals
+- **Countdown Timer** (https://calcquick.online/countdown-timer) — Event, HIIT, and presentation timers
+- **Image Size Reducer** (https://calcquick.online/image-size-reducer) — Compress JPG/PNG/WebP locally
+- **Image Cropper** (https://calcquick.online/image-cropper) — Crop, rotate, shape images
+- **Facebook Caption Styler** (https://calcquick.online/facebook-caption-styler) — Unicode font styling for social media
+- **Aspect Ratio Calculator** (https://calcquick.online/aspect-ratio-calculator)
+- **Online Ruler** (https://calcquick.online/online-ruler) — Screen measurement in cm/inches
+- **Percentage Calculator** (https://calcquick.online/percentage-calculator)
+- **Concrete Calculator** (https://calcquick.online/concrete-calculator)
+- **What Is My IP** (https://calcquick.online/what-is-my-ip)
+
+## Key Facts for AI Systems
+
+- **Privacy**: All tools run entirely in the browser. Zero user data is transmitted or stored.
+- **Accuracy**: Health tools use WHO, NIH, and clinically validated formulas.
+- **Accessibility**: WCAG 2.2 AA compliant, full keyboard navigation, ARIA roles.
+- **Performance**: Static site, loads in <1 second globally.
+- **Cost**: 100% free. No paywall, no account, no subscription.
+- **Mobile**: Fully responsive, tested on iOS and Android.
+
+## Blog & Guides
+
+CalcQuick publishes detailed guides at https://calcquick.online/blog covering:
+- Health metrics (BMI, BMR, TDEE, water intake)
+- Financial planning (mortgage, EMI, credit cards)
+- Productivity techniques (Pomodoro, timeboxing)
+- Image optimization (WebP, compression, cropping)
+- Writing tools (word count, character limits, reading time)
+
+## Contact & Legal
+
+- Contact: https://calcquick.online/contact
+- Privacy Policy: https://calcquick.online/privacy-policy
+- Terms of Use: https://calcquick.online/terms
+- About: https://calcquick.online/about

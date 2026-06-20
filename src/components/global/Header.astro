@@ -40,6 +40,12 @@ const toolCategories = [
       { href: '/gpa-calculator', label: 'GPA' },
       { href: '/currency-converter', label: 'Currency' },
       { href: '/what-is-my-ip', label: 'My IP' },
+      { href: '/word-counter', label: 'Word Counter' },
+      { href: '/facebook-caption-styler', label: 'FB Caption Styler' },
+      { href: '/image-size-reducer', label: 'Image Size Reducer' },
+      { href: '/pomodoro-timer', label: 'Pomodoro Timer' },
+      { href: '/countdown-timer', label: 'Countdown Timer' },
+      { href: '/image-cropper', label: 'Image Cropper' },
     ],
   },
 ];
@@ -253,7 +259,7 @@ const otherLinks = [
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 180px;
+    min-width: 200px;
     background: var(--color-canvas);
     border: 1px solid var(--color-hairline);
     border-radius: var(--radius-md);
@@ -263,7 +269,14 @@ const otherLinks = [
     margin-top: 4px;
     z-index: 1001;
   }
+  /* Tools category has many items — use 2-column grid */
+  .nav-dropdown:nth-child(3) .nav-dropdown-menu {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    min-width: 340px;
+  }
   .nav-dropdown:hover .nav-dropdown-menu { display: block; }
+  .nav-dropdown:nth-child(3):hover .nav-dropdown-menu { display: grid; }
   .nav-dropdown-link {
     display: block;
     padding: 8px 14px;
@@ -372,6 +385,8 @@ const otherLinks = [
     background: var(--color-canvas-soft-2);
     border-radius: var(--radius-sm);
     margin-bottom: 4px;
+    max-height: 280px;
+    overflow-y: auto;
   }
   .mobile-dropdown-toggle .dropdown-arrow { transition: transform 0.2s ease; }
   .mobile-dropdown-toggle.open .dropdown-arrow { transform: rotate(180deg); }

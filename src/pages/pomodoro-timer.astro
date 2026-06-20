@@ -1,0 +1,1163 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { 
+    q: 'What is the Pomodoro Technique?', 
+    a: 'The Pomodoro Technique is a time management method developed by Francesco Cirillo in the late 1980s. It uses a timer to break work into focused intervals, traditionally 25 minutes long, separated by short 5-minute breaks. Each interval is called a "pomodoro" (Italian for tomato, inspired by the tomato-shaped kitchen timer Cirillo used). After 4 pomodoros, you take a longer 15-30 minute break. This method helps improve focus, reduce burnout, and increase productivity.' 
+  },
+  { 
+    q: 'How does a Pomodoro Timer improve productivity?', 
+    a: 'A Pomodoro Timer improves productivity through several mechanisms: (1) It creates urgency — knowing you only have 25 minutes helps you start tasks you\'d otherwise procrastinate on. (2) It reduces decision fatigue — you don\'t need to decide when to take breaks. (3) It prevents burnout by enforcing regular rest intervals. (4) It provides a clear metric — "I completed 8 pomodoros today" is more meaningful than "I worked for 4 hours." (5) It minimizes context switching by encouraging single-tasking.' 
+  },
+  { 
+    q: 'What is the best Pomodoro timer length?', 
+    a: 'The traditional Pomodoro is 25 minutes of work followed by a 5-minute break. However, research suggests the "ideal" focus interval varies by person and task: 25 minutes works best for tasks requiring intense concentration or when you\'re feeling unmotivated. 50 minutes (with 10-minute breaks) suits deep work like coding, writing, or studying. 90 minutes aligns with the body\'s natural ultradian rhythm. Our timer lets you customize work sessions from 5 to 90 minutes.' 
+  },
+  { 
+    q: 'How many Pomodoros should I do per day?', 
+    a: 'A productive day typically yields 8-16 pomodoros (4-8 hours of focused work). Beginners should aim for 4-6 pomodoros per day and gradually increase. Elite performers often do 12-16 pomodoros. Remember: Quality matters more than quantity. One focused 25-minute pomodoro is worth more than 2 hours of distracted work. Track your daily pomodoros to find your optimal rhythm.' 
+  },
+  { 
+    q: 'What should I do during Pomodoro breaks?', 
+    a: 'During 5-minute breaks: Stand up, stretch, drink water, look away from screens (20-20-20 rule: look at something 20 feet away for 20 seconds), do quick breathing exercises, or walk around. Avoid: Checking social media, emails, or starting new tasks — these can extend your break and break your flow. During 15-30 minute breaks: Eat a healthy snack, take a short walk, meditate, or do light exercise.' 
+  },
+  { 
+    q: 'Can the Pomodoro Technique help with ADHD?', 
+    a: 'Yes! The Pomodoro Technique is widely recommended for people with ADHD because it: (1) Breaks overwhelming tasks into manageable 25-minute chunks. (2) Creates external structure and accountability. (3) Provides dopamine hits from completing each pomodoro. (4) Reduces the "time blindness" common with ADHD. (5) The timer serves as an external cue to refocus. Many ADHD coaches and therapists recommend starting with shorter 15-20 minute intervals and gradually increasing.' 
+  },
+  { 
+    q: 'Is the Pomodoro Technique effective for studying?', 
+    a: 'The Pomodoro Technique is highly effective for studying because it aligns with how the brain learns best. Studies show that spaced repetition and regular breaks improve long-term retention. A typical study session: 4 pomodoros (2 hours of focused study with breaks) covers significant material while preventing mental fatigue. Pro tip: Use each pomodoro for a specific topic or chapter, and use breaks to quickly review what you just learned.' 
+  },
+  { 
+    q: 'What\'s the difference between Pomodoro and other time management methods?', 
+    a: 'Pomodoro focuses on short, intense work sprints with frequent breaks. It differs from: Time Blocking (which assigns specific tasks to time slots, often 1-2 hours), Eisenhower Matrix (which prioritizes tasks by urgency/importance), Getting Things Done (GTD, which focuses on task organization), and Eat the Frog (which tackles the hardest task first). Pomodoro is unique because it prioritizes sustained focus and regular rest — working with your brain\'s natural attention span rather than against it.' 
+  },
+  { 
+    q: 'Can I use Pomodoro for creative work?', 
+    a: 'Yes, but you may need to adjust the timing. Creative work often requires longer "warm-up" periods before entering flow state. For creative tasks like writing, design, or coding: Try 50-minute work sessions with 10-minute breaks. If you\'re in deep flow when the timer goes off, it\'s okay to continue — but still take your break afterward. Some creatives use "reverse Pomodoro": work until you naturally lose focus, then take a break, using the timer to track rather than enforce.' 
+  },
+  { 
+    q: 'Does this Pomodoro timer work offline?', 
+    a: 'Yes! Our Pomodoro Timer works entirely in your browser. Once the page loads, you can use it without an internet connection. The timer uses your device\'s internal clock and JavaScript, so it\'s 100% accurate even offline. Your settings (work duration, break duration, long break settings) are saved to your browser\'s local storage. No data is sent to any server — complete privacy.' 
+  },
+  { 
+    q: 'How do I stay consistent with the Pomodoro Technique?', 
+    a: 'Consistency tips: (1) Start your day by planning which tasks need pomodoros. (2) Use our task list feature to track what you accomplish each session. (3) Keep a daily pomodoro count — gamify it! (4) Join online "study with me" communities or Pomodoro groups for accountability. (5) Use our timer\'s auto-start feature to eliminate the "I\'ll start in 5 minutes" trap. (6) Celebrate milestones — 100 pomodoros completed deserves a reward!' 
+  },
+  { 
+    q: 'What are common Pomodoro mistakes to avoid?', 
+    a: 'Common mistakes: (1) Skipping breaks — breaks are essential, not optional. (2) Working through the timer — respect the system. (3) Setting sessions too long initially — start with 25 minutes. (4) Not protecting your focus time — mute notifications, close unnecessary tabs. (5) Multitasking during a pomodoro — one task per session. (6) Being too rigid — if you need 50-minute sessions for deep work, adjust accordingly. The technique is a tool, not a prison.' 
+  },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Pomodoro Timer — Free Online Focus Timer for Productivity',
+    description: 'Free online Pomodoro Timer with customizable work sessions, breaks, task tracking, and sound notifications. Boost productivity with the proven Pomodoro Technique. Works offline.',
+    url: '/pomodoro-timer',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Countdown Timer', href: '/countdown-timer', icon: '⏱️', desc: 'Custom countdowns' },
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Count words & characters' },
+  { name: 'Tip Calculator', href: '/tip-calculator', icon: '💵', desc: 'Calculate & split tips' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure on screen' },
+];
+
+const productivityTips = [
+  { title: 'Plan Your Pomodoros', desc: 'Before starting, list tasks you want to complete. Assign 1-4 pomodoros per task.' },
+  { title: 'Protect Your Focus', desc: 'Mute notifications, close social media tabs, and tell others not to interrupt.' },
+  { title: 'Track Your Progress', desc: 'Count daily pomodoros. Aim for 8-12 quality sessions per workday.' },
+  { title: 'Use Breaks Wisely', desc: 'Stand, stretch, hydrate. Avoid screens during breaks to rest your eyes.' },
+];
+---
+
+<CalculatorLayout
+  title="Pomodoro Timer — Free Online Focus Timer for Study & Work"
+  description="Free online Pomodoro Timer with customizable work sessions, short breaks, long breaks, task tracking, and audio notifications. Boost your productivity with the proven Pomodoro Technique."
+  canonical="/pomodoro-timer"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Pomodoro Timer', url: '/pomodoro-timer' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Productivity Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Pomodoro Timer</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 650px;">
+      Stay focused and boost productivity with the Pomodoro Technique. Customizable work sessions, breaks, task tracking, and audio notifications — all in your browser.
+    </p>
+  </div>
+
+  <!-- MAIN TIMER -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom: 24px;">
+    
+    <!-- Mode Tabs -->
+    <div class="timer-modes" style="margin-bottom: 24px;">
+      <button class="timer-mode-btn active" data-mode="work" id="mode-work-btn">
+        <span class="mode-icon">🍅</span> Focus
+      </button>
+      <button class="timer-mode-btn" data-mode="shortBreak" id="mode-short-break-btn">
+        <span class="mode-icon">☕</span> Short Break
+      </button>
+      <button class="timer-mode-btn" data-mode="longBreak" id="mode-long-break-btn">
+        <span class="mode-icon">🌟</span> Long Break
+      </button>
+    </div>
+
+    <!-- Timer Display -->
+    <div class="timer-display-wrap">
+      <div class="timer-ring-container">
+        <svg class="timer-ring" viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="timer-ring-bg" cx="100" cy="100" r="90" />
+          <circle class="timer-ring-progress" cx="100" cy="100" r="90" id="timer-ring-circle" />
+        </svg>
+        <div class="timer-text">
+          <div class="timer-time" id="timer-display">25:00</div>
+          <div class="timer-session-label" id="session-label">Focus Time</div>
+          <div class="timer-session-count" id="session-count">Pomodoro #1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timer Controls -->
+    <div class="timer-controls">
+      <button id="start-btn" class="btn-primary btn-lg" style="min-width:140px;">
+        <span id="start-btn-text">▶ Start</span>
+      </button>
+      <button id="pause-btn" class="btn-secondary btn-lg" style="display:none;min-width:140px;">
+        ⏸ Pause
+      </button>
+      <button id="reset-btn" class="btn-secondary btn-lg">
+        🔄 Reset
+      </button>
+      <button id="skip-btn" class="btn-secondary btn-lg">
+        ⏭ Skip
+      </button>
+    </div>
+
+    <!-- Progress -->
+    <div class="pomodoro-progress" style="margin-top:20px;">
+      <div class="progress-dots" id="progress-dots">
+        <span class="progress-dot"></span>
+        <span class="progress-dot"></span>
+        <span class="progress-dot"></span>
+        <span class="progress-dot"></span>
+      </div>
+      <div class="progress-text" id="progress-text">0 of 4 pomodoros completed</div>
+    </div>
+
+    <!-- Settings -->
+    <div class="timer-settings" style="margin-top:20px;">
+      <details class="settings-details">
+        <summary class="settings-summary">⚙️ Customize Timer Settings</summary>
+        <div class="settings-grid">
+          <div>
+            <label for="work-duration" class="label">Focus Duration (min)</label>
+            <input type="number" id="work-duration" class="input-base" value="25" min="1" max="90" step="1" />
+            <div class="quick-presets" style="margin-top:6px;">
+              {[15, 20, 25, 30, 45, 50, 60].map(m => (
+                <button class="preset-chip" data-target="work-duration" data-value={m}>{m}m</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label for="short-break-duration" class="label">Short Break (min)</label>
+            <input type="number" id="short-break-duration" class="input-base" value="5" min="1" max="30" step="1" />
+            <div class="quick-presets" style="margin-top:6px;">
+              {[3, 5, 10, 15].map(m => (
+                <button class="preset-chip" data-target="short-break-duration" data-value={m}>{m}m</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label for="long-break-duration" class="label">Long Break (min)</label>
+            <input type="number" id="long-break-duration" class="input-base" value="15" min="5" max="60" step="1" />
+            <div class="quick-presets" style="margin-top:6px;">
+              {[10, 15, 20, 25, 30].map(m => (
+                <button class="preset-chip" data-target="long-break-duration" data-value={m}>{m}m</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label for="pomodoros-before-long" class="label">Pomodoros Before Long Break</label>
+            <input type="number" id="pomodoros-before-long" class="input-base" value="4" min="1" max="10" step="1" />
+            <div class="quick-presets" style="margin-top:6px;">
+              {[2, 3, 4, 5, 6].map(m => (
+                <button class="preset-chip" data-target="pomodoros-before-long" data-value={m}>{m}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label for="auto-start" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="auto-start-breaks" style="accent-color:var(--color-link);" />
+              Auto-start breaks
+            </label>
+          </div>
+          <div>
+            <label for="auto-start-pomodoros" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="auto-start-pomodoros" style="accent-color:var(--color-link);" />
+              Auto-start pomodoros
+            </label>
+          </div>
+          <div>
+            <label for="sound-enabled" style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+              <input type="checkbox" id="sound-enabled" checked style="accent-color:var(--color-link);" />
+              Sound notifications
+            </label>
+          </div>
+          <div>
+            <label for="volume" class="label">Volume</label>
+            <input type="range" id="volume" min="0" max="100" value="70" style="width:100%;accent-color:var(--color-link);" />
+          </div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- TASK LIST -->
+  <div class="calc-panel fade-up stagger-1" style="margin-bottom: 24px;">
+    <h2 style="color:var(--color-ink);font-size:18px;font-weight:600;margin-bottom:12px;">📋 Task List</h2>
+    <p class="text-body-sm" style="color:var(--color-body);margin-bottom:12px;">Add tasks and track how many pomodoros each one takes.</p>
+    
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <input type="text" id="task-input" class="input-base" placeholder="What are you working on?" style="flex:1;" />
+      <button id="add-task-btn" class="btn-primary" style="white-space:nowrap;">+ Add Task</button>
+    </div>
+
+    <div id="task-list" style="border:1px solid var(--color-hairline);border-radius:var(--radius-md);overflow:hidden;">
+      <div style="padding:20px;text-align:center;color:var(--color-muted);font-size:14px;">
+        No tasks yet. Add your first task above!
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+      <button id="clear-completed-btn" class="btn-secondary" style="font-size:12px;padding:6px 12px;">🗑️ Clear Completed</button>
+      <button id="clear-all-tasks-btn" class="btn-secondary" style="font-size:12px;padding:6px 12px;">🗑️ Clear All</button>
+    </div>
+
+    <div class="stats-row" style="margin-top:12px;display:flex;gap:16px;flex-wrap:wrap;">
+      <span style="font-size:13px;color:var(--color-body);">📊 <strong id="completed-pomodoros">0</strong> pomodoros completed today</span>
+      <span style="font-size:13px;color:var(--color-body);">✅ <strong id="completed-tasks">0</strong> tasks done</span>
+    </div>
+  </div>
+
+  <!-- PRODUCTIVITY TIPS -->
+  <div class="tips-grid fade-up" style="margin-bottom:40px;">
+    {productivityTips.map(tip => (
+      <div class="tip-card">
+        <div class="tip-icon">💡</div>
+        <h3 style="font-size:15px;font-weight:600;color:var(--color-ink);margin-bottom:6px;">{tip.title}</h3>
+        <p style="font-size:13px;color:var(--color-body);line-height:1.5;">{tip.desc}</p>
+      </div>
+    ))}
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:24px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">The Ultimate Pomodoro Timer Guide — Master Your Productivity</h2>
+    
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The <strong>Pomodoro Technique</strong> is one of the world's most popular productivity methods — and for good reason. By breaking work into focused 25-minute intervals with short breaks, it helps you overcome procrastination, maintain concentration, and accomplish more in less time. Our <strong>free online Pomodoro Timer</strong> makes it easy to implement this proven technique with customizable work sessions, automatic break reminders, task tracking, and audio notifications.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">The Science Behind the Pomodoro Technique</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The Pomodoro Technique works because it aligns with how our brains naturally function. Research in cognitive psychology shows that the average person can maintain <strong>focused attention for about 20-30 minutes</strong> before performance declines. After 25 minutes of intense concentration, the brain needs a brief rest to consolidate information and recharge. The 5-minute break allows your <strong>prefrontal cortex</strong> (responsible for focus) to recover while your <strong>default mode network</strong> (responsible for creative thinking) activates — often leading to insights and problem-solving during breaks.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">How to Use This Pomodoro Timer</h3>
+    <div style="overflow-x:auto;margin:16px 0;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Step</th>
+            <th style="padding:12px 16px;">Action</th>
+            <th style="padding:12px 16px;">Duration</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['1', 'Add tasks to your task list', '1-2 minutes (planning)'],
+            ['2', 'Choose your first task and start the timer', '—'],
+            ['3', 'Work with full focus until the timer rings', '25 minutes (customizable)'],
+            ['4', 'Take a short break — stand, stretch, hydrate', '5 minutes (customizable)'],
+            ['5', 'Repeat steps 2-4 for 4 pomodoros total', '2 hours total'],
+            ['6', 'Take a longer break to recharge', '15-30 minutes'],
+            ['7', 'Repeat the cycle as needed', 'Throughout your workday'],
+          ].map(([step, action, duration]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:700;color:var(--color-link);font-family:var(--font-mono);">{step}</td>
+              <td style="padding:10px 16px;">{action}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{duration}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Customizing Your Pomodoro Settings</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      The traditional 25/5 split works for most people, but you can customize based on your needs: <strong>Students</strong> often prefer 25-30 minute sessions for reviewing and note-taking. <strong>Programmers and writers</strong> may benefit from 45-50 minute sessions for deep work. <strong>Creative professionals</strong> might use 30-40 minute sessions. <strong>Beginners or those with ADHD</strong> should start with 15-20 minutes. Our timer remembers your preferences and saves them to local storage for your next session.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Pomodoro Timer Features Comparison</h3>
+    <div style="overflow-x:auto;margin:16px 0 24px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Feature</th>
+            <th style="padding:12px 16px;">Our Timer</th>
+            <th style="padding:12px 16px;">Other Free Timers</th>
+            <th style="padding:12px 16px;">Paid Apps</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Customizable work/break durations', '✅', '❌ Limited', '✅'],
+            ['Task list with pomodoro tracking', '✅', '❌', '✅'],
+            ['Sound notifications', '✅', '✅', '✅'],
+            ['Auto-start breaks/pomodoros', '✅', '❌', '✅'],
+            ['Works offline', '✅', '❌', '✅'],
+            ['No sign-up required', '✅', '✅', '❌'],
+            ['100% free', '✅', '✅', '❌ ($5-15/mo)'],
+            ['Visual progress ring', '✅', '❌', '✅'],
+            ['Task completion tracking', '✅', '❌', '✅'],
+          ].map(([feature, ours, others, paid]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:500;">{feature}</td>
+              <td style="padding:10px 16px;color:var(--color-link);">{ours}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{others}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{paid}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Who Uses the Pomodoro Technique?</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      The Pomodoro Technique is used by <strong>millions of people worldwide</strong> across every profession. Students use it for exam preparation and essay writing. Software developers use it for focused coding sessions. Writers use it to overcome writer's block. Designers use it for creative projects. Entrepreneurs use it to manage their diverse workload. Remote workers use it to maintain work-life boundaries. Even major companies like <strong>Google, Microsoft, and Apple</strong> have employees who swear by the Pomodoro method for getting deep work done.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`pt-faq-${i}`} id={`pt-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`pt-faq-${i}`} role="region" aria-labelledby={`pt-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Hidden audio element for notifications -->
+  <audio id="timer-audio" preload="auto" style="display:none;">
+    <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4CAf39/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4B/f3+AgH9/f3+Af39/gIB/f39/gH9/f4CA" type="audio/wav">
+  </audio>
+</CalculatorLayout>
+
+<style>
+  /* Timer Modes */
+  .timer-modes {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .timer-mode-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: 1px solid var(--color-hairline);
+    border-radius: 60px;
+    background: var(--color-canvas-soft-2);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-body);
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+  .timer-mode-btn:hover {
+    border-color: var(--color-link);
+    color: var(--color-ink);
+  }
+  .timer-mode-btn.active {
+    background: var(--color-link);
+    color: white;
+    border-color: var(--color-link);
+  }
+  .mode-icon {
+    font-size: 18px;
+  }
+
+  /* Timer Display */
+  .timer-display-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+  .timer-ring-container {
+    position: relative;
+    width: 220px;
+    height: 220px;
+  }
+  .timer-ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .timer-ring-bg {
+    fill: none;
+    stroke: var(--color-hairline);
+    stroke-width: 8;
+  }
+  .timer-ring-progress {
+    fill: none;
+    stroke: var(--color-link);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 565.48;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.3s ease;
+  }
+  .timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .timer-time {
+    font-size: clamp(36px, 8vw, 56px);
+    font-weight: 700;
+    color: var(--color-ink);
+    letter-spacing: -2px;
+    font-family: var(--font-mono);
+    line-height: 1.1;
+  }
+  .timer-session-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 4px;
+  }
+  .timer-session-count {
+    font-size: 11px;
+    color: var(--color-body);
+    margin-top: 2px;
+  }
+
+  /* Controls */
+  .timer-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-lg {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+  }
+
+  /* Progress dots */
+  .pomodoro-progress {
+    text-align: center;
+  }
+  .progress-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .progress-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--color-hairline);
+    transition: all 0.3s ease;
+  }
+  .progress-dot.completed {
+    background: var(--color-link);
+    transform: scale(1.1);
+  }
+  .progress-dot.active {
+    background: var(--color-link);
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .progress-text {
+    font-size: 12px;
+    color: var(--color-muted);
+  }
+
+  /* Settings */
+  .settings-details {
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .settings-summary {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-body);
+    background: var(--color-canvas-soft-2);
+    transition: background 0.15s;
+  }
+  .settings-summary:hover {
+    background: var(--color-canvas);
+  }
+  .settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px;
+  }
+  .quick-presets {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .preset-chip {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid var(--color-hairline);
+    border-radius: 99px;
+    background: var(--color-canvas-soft-2);
+    color: var(--color-body);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .preset-chip:hover {
+    border-color: var(--color-link);
+    color: var(--color-link);
+  }
+  .preset-chip.active {
+    background: var(--color-link);
+    color: white;
+    border-color: var(--color-link);
+  }
+
+  /* Task list */
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-hairline);
+    transition: background 0.15s;
+  }
+  .task-item:last-child {
+    border-bottom: none;
+  }
+  .task-item:hover {
+    background: var(--color-canvas-soft-2);
+  }
+  .task-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid var(--color-hairline);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    appearance: none;
+  }
+  .task-checkbox:checked {
+    background: var(--color-link);
+    border-color: var(--color-link);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .task-text {
+    flex: 1;
+    font-size: 14px;
+    color: var(--color-ink);
+    min-width: 0;
+  }
+  .task-text.completed {
+    text-decoration: line-through;
+    color: var(--color-muted);
+  }
+  .task-pomodoros {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .task-pomo-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-link);
+    font-family: var(--font-mono);
+    background: var(--color-canvas-soft-2);
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+  .task-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--color-muted);
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.1s;
+  }
+  .task-delete:hover {
+    color: #dc2626;
+  }
+  .task-active-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-link);
+    animation: pulse 1s infinite;
+  }
+
+  /* Tips */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .tip-card {
+    padding: 20px 16px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas);
+    text-align: center;
+  }
+  .tip-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .stats-row {
+    font-size: 13px;
+  }
+
+  .prose-section {
+    padding: 32px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+  .calc-panel {
+    padding: 24px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+
+  @media (max-width: 768px) {
+    .settings-grid {
+      grid-template-columns: 1fr;
+    }
+    .tips-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .timer-controls {
+      gap: 8px;
+    }
+    .btn-lg {
+      padding: 10px 18px;
+      font-size: 14px;
+    }
+    .prose-section {
+      padding: 20px 16px;
+    }
+    .calc-panel {
+      padding: 16px;
+    }
+  }
+  @media (max-width: 400px) {
+    .tips-grid {
+      grid-template-columns: 1fr;
+    }
+    .timer-mode-btn {
+      padding: 8px 14px;
+      font-size: 12px;
+    }
+  }
+</style>
+
+<script>
+  // ─── State ────────────────────────────────────────────────────────────────────
+  let timeLeft = 25 * 60; // seconds
+  let totalTime = 25 * 60;
+  let isRunning = false;
+  let timerInterval: ReturnType<typeof setInterval> | null = null;
+  let currentMode: 'work' | 'shortBreak' | 'longBreak' = 'work';
+  let completedPomodoros = 0;
+  let pomodorosBeforeLongBreak = 4;
+  let activeTaskId: string | null = null;
+
+  // Settings
+  let workDuration = 25;
+  let shortBreakDuration = 5;
+  let longBreakDuration = 15;
+
+  interface Task {
+    id: string;
+    text: string;
+    completed: boolean;
+    pomodoros: number;
+  }
+
+  let tasks: Task[] = [];
+
+  // ─── DOM Elements ────────────────────────────────────────────────────────────
+  const timerDisplay = document.getElementById('timer-display')!;
+  const sessionLabel = document.getElementById('session-label')!;
+  const sessionCount = document.getElementById('session-count')!;
+  const startBtn = document.getElementById('start-btn')!;
+  const startBtnText = document.getElementById('start-btn-text')!;
+  const pauseBtn = document.getElementById('pause-btn')!;
+  const resetBtn = document.getElementById('reset-btn')!;
+  const skipBtn = document.getElementById('skip-btn')!;
+  const ringCircle = document.getElementById('timer-ring-circle')!;
+  const progressDots = document.getElementById('progress-dots')!;
+  const progressText = document.getElementById('progress-text')!;
+  const taskList = document.getElementById('task-list')!;
+  const taskInput = document.getElementById('task-input') as HTMLInputElement;
+  const completedPomodorosEl = document.getElementById('completed-pomodoros')!;
+  const completedTasksEl = document.getElementById('completed-tasks')!;
+
+  const CIRCUMFERENCE = 2 * Math.PI * 90; // ~565.48
+
+  // ─── Audio ───────────────────────────────────────────────────────────────────
+  const audioEl = document.getElementById('timer-audio') as HTMLAudioElement;
+  
+  function playSound() {
+    const soundEnabled = (document.getElementById('sound-enabled') as HTMLInputElement).checked;
+    if (!soundEnabled) return;
+    const volume = parseInt((document.getElementById('volume') as HTMLInputElement).value) / 100;
+    audioEl.volume = volume;
+    audioEl.currentTime = 0;
+    audioEl.play().catch(() => {});
+  }
+
+  // ─── Format Time ─────────────────────────────────────────────────────────────
+  function formatTime(seconds: number): string {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  // ─── Update Ring ─────────────────────────────────────────────────────────────
+  function updateRing() {
+    const offset = CIRCUMFERENCE - (timeLeft / totalTime) * CIRCUMFERENCE;
+    ringCircle.setAttribute('stroke-dashoffset', String(offset));
+    
+    // Change ring color based on mode
+    if (currentMode === 'work') {
+      ringCircle.setAttribute('stroke', 'var(--color-link)');
+    } else if (currentMode === 'shortBreak') {
+      ringCircle.setAttribute('stroke', '#10b981');
+    } else {
+      ringCircle.setAttribute('stroke', '#f59e0b');
+    }
+  }
+
+  // ─── Update Display ──────────────────────────────────────────────────────────
+  function updateDisplay() {
+    timerDisplay.textContent = formatTime(timeLeft);
+    updateRing();
+    
+    const modeLabels = { work: 'Focus Time', shortBreak: 'Short Break', longBreak: 'Long Break' };
+    sessionLabel.textContent = modeLabels[currentMode];
+    sessionCount.textContent = currentMode === 'work' ? `Pomodoro #${completedPomodoros + 1}` : '';
+  }
+
+  // ─── Update Progress Dots ────────────────────────────────────────────────────
+  function updateProgressDots() {
+    progressDots.innerHTML = '';
+    for (let i = 0; i < pomodorosBeforeLongBreak; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'progress-dot';
+      if (i < completedPomodoros % pomodorosBeforeLongBreak || (completedPomodoros > 0 && i < pomodorosBeforeLongBreak && completedPomodoros % pomodorosBeforeLongBreak === 0 && i === 0)) {
+        dot.classList.add('completed');
+      }
+      if (currentMode === 'work' && i === completedPomodoros % pomodorosBeforeLongBreak) {
+        dot.classList.add('active');
+      }
+      progressDots.appendChild(dot);
+    }
+    progressText.textContent = `${completedPomodoros % pomodorosBeforeLongBreak} of ${pomodorosBeforeLongBreak} pomodoros completed`;
+  }
+
+  // ─── Switch Mode ─────────────────────────────────────────────────────────────
+  function switchMode(mode: 'work' | 'shortBreak' | 'longBreak') {
+    stopTimer();
+    currentMode = mode;
+    
+    if (mode === 'work') {
+      timeLeft = workDuration * 60;
+      totalTime = workDuration * 60;
+    } else if (mode === 'shortBreak') {
+      timeLeft = shortBreakDuration * 60;
+      totalTime = shortBreakDuration * 60;
+    } else {
+      timeLeft = longBreakDuration * 60;
+      totalTime = longBreakDuration * 60;
+    }
+    
+    updateDisplay();
+    updateProgressDots();
+    updateModeButtons();
+  }
+
+  function updateModeButtons() {
+    document.querySelectorAll('.timer-mode-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`mode-${currentMode === 'shortBreak' ? 'short-break' : currentMode === 'longBreak' ? 'long-break' : 'work'}-btn`)!.classList.add('active');
+  }
+
+  // ─── Handle Timer Complete ───────────────────────────────────────────────────
+  function handleTimerComplete() {
+    playSound();
+    stopTimer();
+    
+    if (currentMode === 'work') {
+      completedPomodoros++;
+      if (activeTaskId) {
+        const task = tasks.find(t => t.id === activeTaskId);
+        if (task) task.pomodoros++;
+      }
+      updateTaskList();
+      updateStats();
+      
+      if (completedPomodoros % pomodorosBeforeLongBreak === 0) {
+        switchMode('longBreak');
+      } else {
+        switchMode('shortBreak');
+      }
+      
+      const autoStartBreaks = (document.getElementById('auto-start-breaks') as HTMLInputElement).checked;
+      if (autoStartBreaks) startTimer();
+      
+    } else if (currentMode === 'shortBreak' || currentMode === 'longBreak') {
+      switchMode('work');
+      const autoStartPomodoros = (document.getElementById('auto-start-pomodoros') as HTMLInputElement).checked;
+      if (autoStartPomodoros) startTimer();
+    }
+    
+    updateProgressDots();
+    // Vibrate if supported
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  }
+
+  // ─── Timer Controls ──────────────────────────────────────────────────────────
+  function startTimer() {
+    if (isRunning) return;
+    isRunning = true;
+    startBtn.style.display = 'none';
+    pauseBtn.style.display = '';
+    
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      updateDisplay();
+      
+      if (timeLeft <= 0) {
+        handleTimerComplete();
+      }
+    }, 1000);
+  }
+
+  function stopTimer() {
+    isRunning = false;
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+    startBtn.style.display = '';
+    pauseBtn.style.display = 'none';
+  }
+
+  function resetCurrentMode() {
+    stopTimer();
+    if (currentMode === 'work') {
+      timeLeft = workDuration * 60;
+      totalTime = workDuration * 60;
+    } else if (currentMode === 'shortBreak') {
+      timeLeft = shortBreakDuration * 60;
+      totalTime = shortBreakDuration * 60;
+    } else {
+      timeLeft = longBreakDuration * 60;
+      totalTime = longBreakDuration * 60;
+    }
+    updateDisplay();
+  }
+
+  // ─── Task List ───────────────────────────────────────────────────────────────
+  function addTask() {
+    const text = taskInput.value.trim();
+    if (!text) return;
+    
+    const task: Task = {
+      id: Date.now().toString(),
+      text,
+      completed: false,
+      pomodoros: 0,
+    };
+    
+    tasks.push(task);
+    taskInput.value = '';
+    updateTaskList();
+    saveTasks();
+  }
+
+  function toggleTask(id: string) {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      task.completed = !task.completed;
+      updateTaskList();
+      updateStats();
+      saveTasks();
+    }
+  }
+
+  function setActiveTask(id: string) {
+    activeTaskId = id;
+    updateTaskList();
+  }
+
+  function deleteTask(id: string) {
+    tasks = tasks.filter(t => t.id !== id);
+    if (activeTaskId === id) activeTaskId = null;
+    updateTaskList();
+    updateStats();
+    saveTasks();
+  }
+
+  function clearCompletedTasks() {
+    tasks = tasks.filter(t => !t.completed);
+    updateTaskList();
+    updateStats();
+    saveTasks();
+  }
+
+  function clearAllTasks() {
+    if (tasks.length === 0) return;
+    if (!confirm('Delete all tasks? This cannot be undone.')) return;
+    tasks = [];
+    activeTaskId = null;
+    updateTaskList();
+    updateStats();
+    saveTasks();
+  }
+
+  function updateTaskList() {
+    if (tasks.length === 0) {
+      taskList.innerHTML = '<div style="padding:20px;text-align:center;color:var(--color-muted);font-size:14px;">No tasks yet. Add your first task above!</div>';
+    } else {
+      taskList.innerHTML = tasks.map(task => `
+        <div class="task-item">
+          <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} data-id="${task.id}" aria-label="Toggle task completion" />
+          <span class="task-text ${task.completed ? 'completed' : ''}" data-id="${task.id}" style="cursor:pointer;">${escapeHTML(task.text)}</span>
+          ${task.pomodoros > 0 ? `<span class="task-pomo-count">🍅×${task.pomodoros}</span>` : ''}
+          ${activeTaskId === task.id && currentMode === 'work' && isRunning ? '<span class="task-active-indicator" title="Currently active"></span>' : ''}
+          <button class="task-delete" data-id="${task.id}" aria-label="Delete task">×</button>
+        </div>
+      `).join('');
+      
+      // Attach event listeners
+      taskList.querySelectorAll('.task-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          toggleTask((e.target as HTMLElement).dataset.id!);
+        });
+      });
+      
+      taskList.querySelectorAll('.task-text').forEach(txt => {
+        txt.addEventListener('click', (e) => {
+          setActiveTask((e.target as HTMLElement).dataset.id!);
+        });
+      });
+      
+      taskList.querySelectorAll('.task-delete').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          deleteTask((e.target as HTMLElement).dataset.id!);
+        });
+      });
+    }
+  }
+
+  function updateStats() {
+    const totalPomodoros = tasks.reduce((sum, t) => sum + t.pomodoros, 0);
+    const totalCompleted = tasks.filter(t => t.completed).length;
+    completedPomodorosEl.textContent = String(totalPomodoros);
+    completedTasksEl.textContent = String(totalCompleted);
+  }
+
+  function escapeHTML(str: string): string {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
+  // ─── Local Storage ───────────────────────────────────────────────────────────
+  function saveTasks() {
+    try {
+      localStorage.setItem('pomodoro_tasks', JSON.stringify(tasks));
+    } catch(e) {}
+  }
+
+  function loadTasks() {
+    try {
+      const saved = localStorage.getItem('pomodoro_tasks');
+      if (saved) tasks = JSON.parse(saved);
+    } catch(e) {}
+  }
+
+  function saveSettings() {
+    try {
+      localStorage.setItem('pomodoro_settings', JSON.stringify({
+        workDuration, shortBreakDuration, longBreakDuration, pomodorosBeforeLongBreak,
+        completedPomodoros
+      }));
+    } catch(e) {}
+  }
+
+  function loadSettings() {
+    try {
+      const saved = localStorage.getItem('pomodoro_settings');
+      if (saved) {
+        const s = JSON.parse(saved);
+        workDuration = s.workDuration || 25;
+        shortBreakDuration = s.shortBreakDuration || 5;
+        longBreakDuration = s.longBreakDuration || 15;
+        pomodorosBeforeLongBreak = s.pomodorosBeforeLongBreak || 4;
+        completedPomodoros = s.completedPomodoros || 0;
+      }
+    } catch(e) {}
+  }
+
+  // ─── Event Listeners ─────────────────────────────────────────────────────────
+  startBtn.addEventListener('click', startTimer);
+  pauseBtn.addEventListener('click', stopTimer);
+  resetBtn.addEventListener('click', resetCurrentMode);
+  skipBtn.addEventListener('click', () => {
+    timeLeft = 0;
+    handleTimerComplete();
+  });
+
+  document.querySelectorAll('.timer-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = (btn as HTMLElement).dataset.mode as 'work' | 'shortBreak' | 'longBreak';
+      switchMode(mode);
+    });
+  });
+
+  // Settings
+  document.getElementById('work-duration')!.addEventListener('change', (e) => {
+    workDuration = parseInt((e.target as HTMLInputElement).value) || 25;
+    if (currentMode === 'work') { timeLeft = workDuration * 60; totalTime = workDuration * 60; }
+    updateDisplay();
+    saveSettings();
+  });
+  
+  document.getElementById('short-break-duration')!.addEventListener('change', (e) => {
+    shortBreakDuration = parseInt((e.target as HTMLInputElement).value) || 5;
+    if (currentMode === 'shortBreak') { timeLeft = shortBreakDuration * 60; totalTime = shortBreakDuration * 60; }
+    updateDisplay();
+    saveSettings();
+  });
+  
+  document.getElementById('long-break-duration')!.addEventListener('change', (e) => {
+    longBreakDuration = parseInt((e.target as HTMLInputElement).value) || 15;
+    if (currentMode === 'longBreak') { timeLeft = longBreakDuration * 60; totalTime = longBreakDuration * 60; }
+    updateDisplay();
+    saveSettings();
+  });
+  
+  document.getElementById('pomodoros-before-long')!.addEventListener('change', (e) => {
+    pomodorosBeforeLongBreak = parseInt((e.target as HTMLInputElement).value) || 4;
+    updateProgressDots();
+    saveSettings();
+  });
+
+  // Quick preset buttons
+  document.querySelectorAll('.preset-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const target = (chip as HTMLElement).dataset.target!;
+      const value = parseInt((chip as HTMLElement).dataset.value!);
+      const input = document.getElementById(target) as HTMLInputElement;
+      if (input) {
+        input.value = String(value);
+        input.dispatchEvent(new Event('change'));
+        
+        // Update active state
+        (chip.parentElement!).querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      }
+    });
+  });
+
+  // Tasks
+  document.getElementById('add-task-btn')!.addEventListener('click', addTask);
+  taskInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addTask(); });
+  document.getElementById('clear-completed-btn')!.addEventListener('click', clearCompletedTasks);
+  document.getElementById('clear-all-tasks-btn')!.addEventListener('click', clearAllTasks);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      isRunning ? stopTimer() : startTimer();
+    }
+  });
+
+  // ─── Init ──────────────────────────────────────────────────────────────────
+  loadSettings();
+  loadTasks();
+  timeLeft = workDuration * 60;
+  totalTime = workDuration * 60;
+  updateDisplay();
+  updateProgressDots();
+  updateTaskList();
+  updateStats();
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

@@ -40,6 +40,12 @@ const toolCategories: Array<{ label: string; links: Array<{ label: string; href:
       { label: 'GPA Calculator', href: '/gpa-calculator' },
       { label: 'Currency Converter', href: '/currency-converter' },
       { label: 'What Is My IP', href: '/what-is-my-ip' },
+      { label: 'Word Counter', href: '/word-counter' },
+      { label: 'Facebook Caption Styler', href: '/facebook-caption-styler' },
+      { label: 'Image Size Reducer', href: '/image-size-reducer' },
+      { label: 'Pomodoro Timer', href: '/pomodoro-timer' },
+      { label: 'Countdown Timer', href: '/countdown-timer' },
+      { label: 'Image Cropper', href: '/image-cropper' },
     ],
   },
 ];
@@ -247,7 +253,7 @@ const legalLinks = [
 
   @media (max-width: 1023px) {
     .footer-inner {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
     .footer-brand {
       grid-column: 1 / -1;
@@ -281,6 +287,8 @@ const legalLinks = [
     .footer-col--tools .footer-list {
       padding-bottom: 12px;
       display: none;
+      max-height: 220px;
+      overflow-y: auto;
     }
     .footer-col--tools .footer-col-title:not(.collapsed) + .footer-list {
       display: flex;

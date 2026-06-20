@@ -175,6 +175,42 @@ const entries: SitemapEntry[] = [
     changefreq: 'weekly',
     priority:   0.9,
   },
+  {
+    url:        `${SITE}/word-counter/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/facebook-caption-styler/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/image-size-reducer/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/pomodoro-timer/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/countdown-timer/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/image-cropper/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
 
   // ── Blog ──────────────────────────────────────────────────────────────────
   {
@@ -330,6 +366,42 @@ const entries: SitemapEntry[] = [
   {
     url:        `${SITE}/blog/overtime-pay-guide/`,
     lastmod:    '2026-06-16',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/word-counter-guide/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/facebook-caption-styler-guide/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/image-size-reducer-guide/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/pomodoro-timer-guide/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/countdown-timer-guide/`,
+    lastmod:    '2026-06-20',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/image-cropper-guide/`,
+    lastmod:    '2026-06-20',
     changefreq: 'monthly',
     priority:   0.7,
   },

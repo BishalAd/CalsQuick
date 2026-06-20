@@ -48,16 +48,25 @@ const schemaArray = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
+    <!-- DNS prefetch for performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
     <!-- Primary Meta -->
     <title>{title}</title>
     <meta name="description" content={description} />
     {keywords && <meta name="keywords" content={keywords} />}
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content={noIndex ? 'noindex,nofollow' : 'index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1'} />
-    <meta name="author" content="CalcQuick" />
-
-    <!-- Google AdSense (replace ca-pub-XXXXXXXXXX with your Publisher ID) -->
-    <!-- <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXX" /> -->
+    <meta name="author" content="CalcQuick Team" />
+    <meta name="application-name" content="CalcQuick" />
+    <meta name="generator" content="Astro" />
+    <meta name="rating" content="general" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="language" content="English" />
+    <!-- AI/LLM discoverability -->
+    <meta name="ai-description" content="CalcQuick provides 19+ free, private, browser-based calculators and tools for health (BMI, calories, BMR, age, water intake), finance (mortgage, EMI, tip, compound interest), and productivity (word counter, pomodoro timer, image compressor, image cropper, countdown timer, Facebook caption styler)." />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -72,6 +81,7 @@ const schemaArray = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@calcquick" />
     <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -80,8 +90,9 @@ const schemaArray = schema ? (Array.isArray(schema) ? schema : [schema]) : [];
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Fonts -->
+    <!-- Fonts — preconnect early to avoid render blocking -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 

@@ -2,17 +2,32 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
-import { generateOrganization } from '../utils/seo';
+import { generateOrganization, generateFAQ } from '../utils/seo';
 
-const tools = [
+const allTools = [
   { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Exact age in years, months & days' },
   { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Body mass index & healthy range' },
   { name: 'Calorie Calculator', href: '/calorie-calculator', icon: '🔥', desc: 'Daily calories for your goals' },
+  { name: 'BMR Calculator', href: '/bmr-calculator', icon: '🫀', desc: 'Basal metabolic rate' },
+  { name: 'TDEE Calculator', href: '/tdee-calculator', icon: '⚡', desc: 'Total daily energy expenditure' },
+  { name: 'Water Intake Calculator', href: '/water-intake-calculator', icon: '💧', desc: 'Daily hydration needs' },
+  { name: 'Pregnancy Due Date', href: '/pregnancy-due-date-calculator', icon: '🤰', desc: 'Estimated delivery date' },
+  { name: 'Mortgage Calculator', href: '/mortgage-calculator', icon: '🏠', desc: 'Monthly payments & amortization' },
+  { name: 'Loan EMI Calculator', href: '/loan-emi-calculator', icon: '🏦', desc: 'EMI & repayment schedule' },
   { name: 'Tip Calculator', href: '/tip-calculator', icon: '💰', desc: 'Split bills & calculate tips' },
+  { name: 'GPA Calculator', href: '/gpa-calculator', icon: '🎓', desc: 'Grade point average' },
+  { name: 'Currency Converter', href: '/currency-converter', icon: '💱', desc: 'Live exchange rates' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'On-screen measurement tool' },
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Words, characters & reading time' },
+  { name: 'FB Caption Styler', href: '/facebook-caption-styler', icon: '✍️', desc: 'Unicode font styles for social media' },
+  { name: 'Image Size Reducer', href: '/image-size-reducer', icon: '🖼️', desc: 'Compress & convert images online' },
+  { name: 'Pomodoro Timer', href: '/pomodoro-timer', icon: '🍅', desc: 'Focus timer with break intervals' },
+  { name: 'Countdown Timer', href: '/countdown-timer', icon: '⏱️', desc: 'Events, HIIT & presentation timers' },
+  { name: 'Image Cropper', href: '/image-cropper', icon: '✂️', desc: 'Crop & shape images to platform sizes' },
 ];
 
 const stats = [
-  { value: '4+', label: 'Free Calculators' },
+  { value: '19+', label: 'Free Tools' },
   { value: '100%', label: 'Browser-Based' },
   { value: '0', label: 'Data Collected' },
   { value: '∞', label: 'Free Forever' },
@@ -50,13 +65,46 @@ const values = [
     desc: 'Both metric and imperial units supported across all tools. Covering USA, India, UK, and global audiences with localized context and examples.',
   },
 ];
+
+const faqs = [
+  {
+    q: 'Is CalcQuick completely free?',
+    a: 'Yes. Every tool on CalcQuick is 100% free — no sign-up, no subscription, no hidden fees. We are supported by respectful, non-intrusive advertising.'
+  },
+  {
+    q: 'Does CalcQuick collect any personal data?',
+    a: 'No. All calculations run entirely in your browser. We never see, store, or transmit the values you enter. Your data stays on your device.'
+  },
+  {
+    q: 'How accurate are the calculators?',
+    a: 'We use industry-standard and clinically validated formulas: the WHO BMI formula, the Mifflin-St Jeor equation for calorie and BMR calculations, precise ISO 8601 date arithmetic for age, standard compound interest formulas, and actuarially validated mortgage amortization schedules.'
+  },
+  {
+    q: 'Do the tools work on mobile?',
+    a: 'Yes. CalcQuick is built mobile-first. Every calculator is fully responsive and tested on iOS and Android. Touch targets are sized for fingers, and layouts adapt from 320px to 4K.'
+  },
+  {
+    q: 'Can I use CalcQuick offline?',
+    a: 'Yes for most tools. Once a page has loaded, the JavaScript runs locally and does not require an active internet connection. The Currency Converter requires internet to fetch live exchange rates.'
+  },
+  {
+    q: 'How do I suggest a new calculator?',
+    a: 'We love suggestions! Use the Contact page to submit your idea. We regularly add new tools based on user requests.'
+  },
+];
+
+const schemas = [
+  generateOrganization(),
+  generateFAQ(faqs),
+];
 ---
 
 <BaseLayout
-  title="About CalcQuick — Free & Accurate Online Calculators"
-  description="Learn about CalcQuick's mission to provide fast, accurate, and free online calculators. Built with scientific formulas, full accessibility, and zero data collection."
+  title="About CalcQuick — 19 Free Online Calculators & Tools"
+  description="CalcQuick provides 19 free online calculators and productivity tools for health, finance, and everyday use. Fast, private, accurate — no sign-up ever required."
   canonical="/about"
-  schema={[generateOrganization()]}
+  schema={schemas}
+  keywords="about calcquick, free online calculators, bmi calculator, age calculator, word counter, pomodoro timer, image compressor"
 >
   <Header />
   <main id="main-content">
@@ -67,13 +115,13 @@ const values = [
         <div class="hero-inner fade-up">
           <span class="eyebrow" style="margin-bottom: 16px; display: block;">About CalcQuick</span>
           <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 20px; max-width: 700px;">
-            Free calculators built for accuracy, speed, and everyone.
+            19 free calculators & tools — built for speed, accuracy, and everyone.
           </h1>
-          <p class="text-body-lg" style="color: var(--color-body); max-width: 560px; line-height: 30px; margin-bottom: 40px;">
-            CalcQuick was created with a single goal: to make reliable, beautiful calculators that work instantly on any device — free, with no sign-ups, no clutter, and no compromises.
+          <p class="text-body-lg" style="color: var(--color-body); max-width: 580px; line-height: 30px; margin-bottom: 40px;">
+            CalcQuick was created with a single goal: to make reliable, beautiful tools that work instantly on any device — free, with no sign-ups, no clutter, and absolute privacy. From health metrics to productivity timers, everything runs in your browser.
           </p>
           <div class="hero-ctas">
-            <a href="/age-calculator" class="btn-primary">Try a Calculator</a>
+            <a href="/" class="btn-primary">Browse All Tools</a>
             <a href="/contact" class="btn-secondary">Contact Us</a>
           </div>
         </div>
@@ -81,7 +129,7 @@ const values = [
     </section>
 
     <!-- Stats -->
-    <section class="stats-section">
+    <section class="stats-section" aria-label="CalcQuick at a glance">
       <div class="container-site">
         <div class="stats-grid fade-up">
           {stats.map((stat) => (
@@ -104,10 +152,10 @@ const values = [
               Calculators that respect you and your time.
             </h2>
             <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
-              Most calculator websites are slow, ad-riddled, and built to game search rankings rather than genuinely help people. When you search for "how old am I" or "what is my BMI", you deserve an instant, accurate answer — not a page that takes five seconds to load and forces you to accept cookies before doing basic math.
+              Most calculator websites are slow, ad-riddled, and built to game search rankings rather than genuinely help people. When you search for "how old am I," "compress my image," or "what is my BMI," you deserve an instant, accurate answer — not a page that takes five seconds to load and forces you to accept cookies before doing basic math.
             </p>
             <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
-              CalcQuick was built to fix this. Every calculator uses clinically-validated formulas: the WHO BMI formula, the Mifflin-St Jeor equation for daily calories, and precise calendar arithmetic for age. Our code is lean, our pages load fast, and your data never leaves your browser.
+              CalcQuick was built to fix this. Every calculator uses clinically-validated formulas: the WHO BMI formula, the Mifflin-St Jeor equation for daily calories, and precise calendar arithmetic for age. Our image tools run entirely via the HTML5 Canvas API — your photos never leave your device. Our code is lean, our pages load fast, and your data never reaches our servers.
             </p>
             <p class="text-body-md" style="color: var(--color-body); line-height: 28px;">
               We support both metric and imperial units, cover use cases from USA school enrollment dates to India's UPSC exam eligibility, and make sure our tools are fully accessible to users of screen readers and assistive technology.
@@ -121,8 +169,9 @@ const values = [
                 <li>✅ Formulas sourced from WHO, NIH, and peer-reviewed research</li>
                 <li>✅ Open and transparent calculation logic</li>
                 <li>✅ No account required — ever</li>
-                <li>✅ Dark mode, keyboard navigation, ARIA compliance</li>
+                <li>✅ Dark mode, keyboard navigation, full ARIA compliance</li>
                 <li>✅ Tested across mobile, tablet, and desktop</li>
+                <li>✅ Image & text tools run 100% locally — total privacy</li>
                 <li>✅ Completely free — supported by respectful advertising</li>
               </ul>
             </div>
@@ -132,12 +181,12 @@ const values = [
     </section>
 
     <!-- Values Grid -->
-    <section class="values-section">
+    <section class="values-section" aria-labelledby="values-heading">
       <div class="container-site">
         <div class="section-header fade-up">
           <span class="eyebrow">Our Principles</span>
-          <h2 class="text-display-md" style="color: var(--color-ink); margin-top: 8px; margin-bottom: 12px;">
-            How we build every calculator.
+          <h2 class="text-display-md" id="values-heading" style="color: var(--color-ink); margin-top: 8px; margin-bottom: 12px;">
+            How we build every tool.
           </h2>
           <p class="text-body-lg" style="color: var(--color-body); max-width: 500px;">
             Six principles guide every design and engineering decision at CalcQuick.
@@ -155,17 +204,20 @@ const values = [
       </div>
     </section>
 
-    <!-- Calculators CTA -->
-    <section class="tools-section">
+    <!-- All Tools Section -->
+    <section class="tools-section" aria-labelledby="tools-heading">
       <div class="container-site">
         <div class="section-header fade-up" style="margin-bottom: 40px;">
-          <span class="eyebrow">Our Tools</span>
-          <h2 class="text-display-md" style="color: var(--color-ink); margin-top: 8px;">
-            Try our free calculators.
+          <span class="eyebrow">All Tools</span>
+          <h2 class="text-display-md" id="tools-heading" style="color: var(--color-ink); margin-top: 8px; margin-bottom: 12px;">
+            Try our 19 free tools.
           </h2>
+          <p class="text-body-lg" style="color: var(--color-body); max-width: 520px;">
+            Health calculators, finance tools, productivity timers, image editors — all free, all private, all instant.
+          </p>
         </div>
         <div class="tools-grid fade-up">
-          {tools.map((tool) => (
+          {allTools.map((tool) => (
             <a href={tool.href} class="tool-link">
               <span class="tool-icon" aria-hidden="true">{tool.icon}</span>
               <div>
@@ -181,9 +233,84 @@ const values = [
       </div>
     </section>
 
+    <!-- FAQ Section -->
+    <section class="faq-section" aria-labelledby="faq-heading">
+      <div class="container-site">
+        <div class="section-header fade-up" style="margin-bottom: 40px;">
+          <span class="eyebrow">FAQ</span>
+          <h2 class="text-display-md" id="faq-heading" style="color: var(--color-ink); margin-top: 8px;">
+            Common questions.
+          </h2>
+        </div>
+        <div class="about-faqs fade-up" role="list">
+          {faqs.map((faq, i) => (
+            <div class="faq-item" role="listitem">
+              <button
+                class="faq-question"
+                aria-expanded="false"
+                aria-controls={`faq-answer-${i}`}
+              >
+                {faq.q}
+                <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <div class="faq-answer" id={`faq-answer-${i}`}>
+                {faq.a}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="cta-section">
+      <div class="container-site">
+        <div class="cta-card fade-up">
+          <div class="cta-text">
+            <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 8px;">Ready to calculate?</h2>
+            <p class="text-body-md" style="color: var(--color-body);">No sign-up needed. Pick a tool and get an instant, accurate result.</p>
+          </div>
+          <div class="cta-actions">
+            <a href="/" class="btn-primary">Browse All Tools →</a>
+            <a href="/blog" class="btn-secondary">Read Our Guides</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
   <Footer />
 </BaseLayout>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-question').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      const answerId = btn.getAttribute('aria-controls');
+      const answer = answerId ? document.getElementById(answerId) : null;
+      const icon = btn.querySelector('.faq-icon');
+
+      // Close all
+      document.querySelectorAll('.faq-question').forEach((b) => {
+        b.setAttribute('aria-expanded', 'false');
+        const aid = b.getAttribute('aria-controls');
+        const a = aid ? document.getElementById(aid) : null;
+        if (a) a.classList.remove('open');
+        const ic = b.querySelector('.faq-icon');
+        if (ic) ic.classList.remove('open');
+      });
+
+      if (!isOpen) {
+        btn.setAttribute('aria-expanded', 'true');
+        if (answer) answer.classList.add('open');
+        if (icon) icon.classList.add('open');
+      }
+    });
+  });
+</script>
 
 <style>
   /* Hero */
@@ -250,12 +377,12 @@ const values = [
 
   /* Tools */
   .tools-section { padding: 96px 0; }
-  .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .tool-link {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 20px 24px;
+    gap: 14px;
+    padding: 16px 20px;
     background: var(--color-canvas-soft);
     border: 1px solid var(--color-hairline);
     border-radius: var(--radius-md);
@@ -263,23 +390,49 @@ const values = [
     transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
   }
   .tool-link:hover { border-color: var(--color-link); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-  .tool-icon { font-size: 28px; flex-shrink: 0; }
-  .tool-name { font-size: 15px; font-weight: 600; color: var(--color-ink); margin-bottom: 2px; }
-  .tool-desc { font-size: 13px; color: var(--color-muted); }
-  .tool-arrow { margin-left: auto; flex-shrink: 0; color: var(--color-muted); transition: color 0.15s; }
-  .tool-link:hover .tool-arrow { color: var(--color-link); }
+  .tool-icon { font-size: 24px; flex-shrink: 0; }
+  .tool-name { font-size: 14px; font-weight: 600; color: var(--color-ink); margin-bottom: 2px; }
+  .tool-desc { font-size: 12px; color: var(--color-muted); }
+  .tool-arrow { margin-left: auto; flex-shrink: 0; color: var(--color-muted); transition: color 0.15s, transform 0.15s; }
+  .tool-link:hover .tool-arrow { color: var(--color-link); transform: translateX(3px); }
+
+  /* FAQ */
+  .faq-section {
+    padding: 96px 0;
+    background: var(--color-canvas-soft);
+    border-top: 1px solid var(--color-hairline);
+  }
+  .about-faqs { max-width: 720px; }
+
+  /* CTA Banner */
+  .cta-section { padding: 64px 0 96px; }
+  .cta-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 40px 48px;
+    background: var(--color-canvas-soft);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-xl);
+    flex-wrap: wrap;
+  }
+  .cta-actions { display: flex; gap: 12px; flex-shrink: 0; flex-wrap: wrap; }
 
   /* Responsive */
   @media (max-width: 1023px) {
     .values-grid { grid-template-columns: repeat(2, 1fr); }
+    .tools-grid { grid-template-columns: repeat(2, 1fr); }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 767px) {
     .mission-grid { grid-template-columns: 1fr; gap: 40px; }
     .tools-grid { grid-template-columns: 1fr; }
     .values-grid { grid-template-columns: 1fr; }
+    .cta-card { padding: 28px 24px; flex-direction: column; align-items: flex-start; }
+    .about-hero { padding: 64px 0 48px; }
   }
   @media (max-width: 599px) {
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   }
 </style>

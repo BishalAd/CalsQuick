@@ -108,7 +108,7 @@ const currencies = [
       <label class="label" style="margin-bottom:8px;">Quick Amounts</label>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         {[1,5,10,25,50,100,500,1000,5000,10000].map(n=>(
-          <button class="quick-amt-btn" data-amount={n} onclick={`(document.getElementById('cc-amount') as HTMLInputElement).value='${n}';convertCurrency();`}>${n>=1000?n.toLocaleString():n}</button>
+          <button class="quick-amt-btn" data-amount={String(n)}>{n>=1000?n.toLocaleString():n}</button>
         ))}
       </div>
     </div>
@@ -370,6 +370,14 @@ const currencies = [
     const toEl=document.getElementById('cc-to') as HTMLSelectElement;
     [fromEl.value,toEl.value]=[toEl.value,fromEl.value];
     convertCurrency();
+  });
+
+  // Quick Amount buttons (event delegation — avoids inline onclick scope issues)
+  document.querySelectorAll('.quick-amt-btn').forEach(b=>{
+    b.addEventListener('click',()=>{
+      (document.getElementById('cc-amount') as HTMLInputElement).value=(b as HTMLElement).dataset.amount!;
+      convertCurrency();
+    });
   });
 
   // Popular pair buttons
