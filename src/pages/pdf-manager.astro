@@ -1,0 +1,1114 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { 
+    q: 'What is a PDF splitter?', 
+    a: 'A PDF splitter is a free online tool that divides a PDF document into multiple smaller PDFs. You can split by page ranges (e.g., extract pages 1-5 as one PDF and 6-10 as another), extract individual pages, remove unwanted pages, or split by file size. Our advanced PDF splitter also lets you add pages from other PDFs, reorder pages, rotate pages, and delete pages — all in one tool. Everything happens in your browser with complete privacy.' 
+  },
+  { 
+    q: 'How do I extract specific pages from a PDF?', 
+    a: 'Our page extractor makes it simple: (1) Upload your PDF, (2) View all pages as thumbnails, (3) Click to select the pages you want to extract (use Shift+click for multiple), (4) Click "Extract Selected Pages" to download them as a new PDF. You can also specify page ranges like "1-5, 8, 10-15" to extract multiple ranges at once. The extracted PDF contains only your selected pages in the original order. Perfect for pulling out specific chapters, forms, or sections from large documents.' 
+  },
+  { 
+    q: 'Can I remove pages from a PDF?', 
+    a: 'Yes! Our page remover lets you delete unwanted pages from any PDF. Simply: Upload your PDF, click on pages you want to remove (they\'ll be highlighted in red), and download the cleaned PDF without those pages. You can remove blank pages, unnecessary sections, advertisements, or any pages you don\'t need. The remaining pages keep their original order and formatting. This is perfect for cleaning up scanned documents, removing cover pages, or trimming PDFs before sharing.' 
+  },
+  { 
+    q: 'How do I add pages to an existing PDF?', 
+    a: 'Our "Insert Pages" feature lets you add pages from another PDF at any position: (1) Upload your main PDF, (2) Click "Add Pages from Another PDF", (3) Select the PDF containing pages you want to insert, (4) Choose where to insert them (before/after a specific page, at beginning, or at end), (5) Select which pages from the second PDF to insert. This is perfect for adding appendices, inserting missing pages, combining related documents, or attaching cover sheets.' 
+  },
+  { 
+    q: 'Can I split a PDF into individual pages?', 
+    a: 'Yes! Use the "Split into Individual Pages" option. This creates a separate PDF file for each page of your document. You can download them all at once as individual files. This is useful for: Extracting each page of a scanned document as separate files, Splitting a multi-page invoice into individual pages, Creating separate files from a combined report, or Sharing specific pages without sending the entire document. Each file is named with the page number for easy identification.' 
+  },
+  { 
+    q: 'How do I split a PDF by page ranges?', 
+    a: 'Our range splitter lets you define custom page ranges: Upload your PDF, click "Split by Ranges", and enter ranges like "1-5, 6-10, 11-15" to create three separate PDFs. You can also use our visual range selector — click the first page of a range, then Shift+click the last page to define ranges visually. Each range becomes its own PDF file. Common uses: Splitting a textbook into chapters, Separating a combined invoice batch into individual invoices, or Dividing a large report into sections for different teams.' 
+  },
+  { 
+    q: 'What happens to bookmarks, links, and form fields when splitting?', 
+    a: 'Our PDF splitter preserves as much as possible: Internal links within the same page range continue working, Form fields on kept pages remain fillable, Page dimensions and orientation stay the same, and Text and images maintain their quality. However, bookmarks pointing to removed pages may become invalid, and links between pages in different split files won\'t work. For best results with complex PDFs, review the output to ensure all desired elements are preserved.' 
+  },
+  { 
+    q: 'Can I rotate pages before splitting or extracting?', 
+    a: 'Yes! Before splitting or extracting, you can rotate individual pages or groups of pages: Click a page to select it, then use the rotate button (90° clockwise). You can rotate multiple selected pages at once. This is especially useful for scanned documents where some pages may be sideways or upside down. Rotation is applied before the split, so your output PDFs have the correct orientation. Common rotations: 90°, 180°, 270°.' 
+  },
+  { 
+    q: 'Is there a limit on PDF file size or number of pages?', 
+    a: 'Since processing happens in your browser, limits depend on your device\'s capabilities: Most devices handle PDFs up to 100MB smoothly, Documents with up to 500 pages process quickly, and For very large PDFs (200MB+), we recommend splitting in smaller batches. There\'s no artificial limit set by our tool — it\'s all based on your computer\'s memory and processing power. Mobile devices may have lower limits than desktops.' 
+  },
+  { 
+    q: 'Can I reorder pages before saving?', 
+    a: 'Yes! Our drag-and-drop page organizer lets you visually rearrange pages: Click and drag any page thumbnail to a new position, Use the "Move to Start" or "Move to End" buttons for quick repositioning, Sort pages automatically (by original order or reverse), and Duplicate pages by selecting and using the duplicate function. This gives you complete control over the final page order before downloading.' 
+  },
+  { 
+    q: 'How is this different from the PDF Merger?', 
+    a: 'While the PDF Merger combines multiple PDFs into one, the PDF Splitter does the opposite — it divides one PDF into multiple files. However, our tool combines both capabilities: Split (divide one PDF into several), Extract (pull out specific pages), Remove (delete unwanted pages), Insert (add pages from other PDFs at specific positions), and Reorder (rearrange pages). It\'s a complete PDF page management tool that handles both splitting and combining tasks.' 
+  },
+  { 
+    q: 'Are my PDFs safe and private when using this tool?', 
+    a: 'Absolutely! 100% of PDF processing happens locally in your browser using the PDF-lib JavaScript library. Your documents are NEVER uploaded to any server, cloud, or external service. They never leave your device. This makes our tool safe for: Legal documents, Financial records, Medical information, Personal identification, Business contracts, and any sensitive or confidential PDFs. You can verify this by disconnecting your internet after loading the page — everything will continue working.' 
+  },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'PDF Splitter — Split, Extract, Remove & Add Pages to PDF (Free, Private)',
+    description: 'Free online PDF splitter and page manager. Split PDFs by page ranges, extract pages, remove unwanted pages, add pages from other PDFs, reorder and rotate pages. 100% browser-based privacy.',
+    url: '/pdf-splitter',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'PDF Merger', href: '/pdf-merger', icon: '📄', desc: 'Combine multiple PDFs' },
+  { name: 'Image Cropper', href: '/image-cropper', icon: '✂️', desc: 'Crop & shape images' },
+  { name: 'Image Size Reducer', href: '/image-size-reducer', icon: '🗜️', desc: 'Compress images' },
+  { name: 'QR Code Generator', href: '/qr-code-generator', icon: '📱', desc: 'Generate QR codes' },
+];
+
+const useCases = [
+  { icon: '📚', title: 'Extract Chapters', desc: 'Pull out individual chapters from textbooks and large documents' },
+  { icon: '📋', title: 'Remove Blank Pages', desc: 'Clean up scanned PDFs by removing empty or unnecessary pages' },
+  { icon: '📧', title: 'Email Single Pages', desc: 'Extract one page to email instead of sending the entire document' },
+  { icon: '📑', title: 'Split Invoices', desc: 'Separate combined invoice batches into individual files' },
+  { icon: '🗂️', title: 'Organize Documents', desc: 'Reorder, rotate, and clean up pages before archiving' },
+  { icon: '📎', title: 'Insert Attachments', desc: 'Add appendix pages, cover sheets, or additional documents' },
+  { icon: '🔒', title: 'Share Specific Pages', desc: 'Extract only the pages you want to share, keeping others private' },
+  { icon: '🖨️', title: 'Print Selection', desc: 'Extract pages to print without wasting paper on unwanted pages' },
+];
+---
+
+<CalculatorLayout
+  title="PDF Splitter — Split, Extract, Remove & Add Pages to PDF (Free & Private)"
+  description="Free online PDF splitter and page manager. Split PDF by ranges, extract pages, remove unwanted pages, add pages from other PDFs, reorder & rotate. 100% browser-based — files stay on your device."
+  canonical="/pdf-splitter"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'PDF Splitter', url: '/pdf-splitter' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 24px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">PDF Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">PDF Splitter & Page Manager</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 700px;">
+      Split, extract, remove, and add pages to PDFs. Reorder and rotate pages with drag-and-drop. Select specific pages to extract or delete. All processing is private — your files never leave your device.
+    </p>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="pdfs-workspace fade-up stagger-1" style="margin-bottom: 24px;">
+    
+    <!-- Upload Area -->
+    <div id="pdfs-upload" class="pdfs-upload-area">
+      <div class="pdfs-upload-icon">📄</div>
+      <h3 style="color:var(--color-ink);margin-bottom:8px;">Drop a PDF here or click to browse</h3>
+      <p style="color:var(--color-muted);font-size:13px;">Upload a PDF to split, extract, remove, or manage pages</p>
+      <input type="file" id="pdfs-file-input" accept=".pdf,application/pdf" style="display:none;" />
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:center;flex-wrap:wrap;">
+        <button id="pdfs-browse-btn" class="btn-primary" style="font-size:14px;padding:12px 24px;">📁 Select PDF File</button>
+        <button id="pdfs-sample-btn" class="btn-secondary" style="font-size:13px;padding:10px 18px;">🖼️ Load Sample PDF</button>
+      </div>
+      <div class="pdfs-privacy-badge">
+        🔒 Files stay on your device — never uploaded to any server
+      </div>
+    </div>
+
+    <!-- Editor Area -->
+    <div id="pdfs-editor" style="display:none;">
+      
+      <!-- Top Toolbar -->
+      <div class="pdfs-toolbar">
+        <div class="pdfs-toolbar-left">
+          <span class="pdfs-file-name" id="pdfs-file-name">—</span>
+          <span class="pdfs-page-info" id="pdfs-page-info">0 pages</span>
+        </div>
+        <div class="pdfs-toolbar-center">
+          <button id="pdfs-select-all-btn" class="btn-secondary" style="font-size:11px;padding:6px 12px;">☑️ Select All</button>
+          <button id="pdfs-deselect-btn" class="btn-secondary" style="font-size:11px;padding:6px 12px;">⬜ Deselect</button>
+          <button id="pdfs-invert-btn" class="btn-secondary" style="font-size:11px;padding:6px 12px;">🔄 Invert</button>
+        </div>
+        <div class="pdfs-toolbar-right">
+          <button id="pdfs-rotate-cw-btn" class="btn-secondary" style="font-size:11px;padding:6px 10px;" title="Rotate selected clockwise">↻ 90°</button>
+          <button id="pdfs-rotate-ccw-btn" class="btn-secondary" style="font-size:11px;padding:6px 10px;" title="Rotate selected counter-clockwise">↺ -90°</button>
+          <button id="pdfs-new-file-btn" class="btn-secondary" style="font-size:11px;padding:6px 12px;">📁 New File</button>
+        </div>
+      </div>
+
+      <!-- Action Bar -->
+      <div class="pdfs-action-bar">
+        <div class="pdfs-action-group">
+          <span class="pdfs-action-label">Actions:</span>
+          <button id="pdfs-extract-btn" class="pdfs-action-btn primary">
+            <span>📤</span> Extract Selected
+          </button>
+          <button id="pdfs-remove-btn" class="pdfs-action-btn danger">
+            <span>🗑️</span> Remove Selected
+          </button>
+          <button id="pdfs-split-individual-btn" class="pdfs-action-btn">
+            <span>📄📄📄</span> Split to Individual Pages
+          </button>
+          <button id="pdfs-split-range-btn" class="pdfs-action-btn">
+            <span>✂️</span> Split by Range
+          </button>
+          <button id="pdfs-insert-btn" class="pdfs-action-btn">
+            <span>📎</span> Insert Pages
+          </button>
+          <button id="pdfs-undo-btn" class="pdfs-action-btn" title="Undo last action">
+            <span>↩</span> Undo
+          </button>
+        </div>
+        <div class="pdfs-selection-info" id="pdfs-selection-info">
+          <span style="color:var(--color-muted);">0 pages selected</span>
+        </div>
+      </div>
+
+      <!-- Pages Grid -->
+      <div class="pdfs-pages-container">
+        <div id="pdfs-pages-grid" class="pdfs-pages-grid">
+          <!-- Page cards will be rendered here -->
+        </div>
+      </div>
+
+      <!-- Range Input Modal -->
+      <div id="pdfs-range-modal" class="pdfs-modal" style="display:none;">
+        <div class="pdfs-modal-content">
+          <h3 style="font-size:16px;font-weight:600;color:var(--color-ink);margin-bottom:12px;">✂️ Split by Page Ranges</h3>
+          <p style="font-size:13px;color:var(--color-muted);margin-bottom:12px;">
+            Enter page ranges separated by commas. Each range becomes a separate PDF.<br/>
+            Examples: <code>1-5, 6-10, 11-15</code> or <code>1, 3, 5-7</code>
+          </p>
+          <input type="text" id="pdfs-range-input" class="input-base" placeholder="e.g., 1-5, 6-10, 11-15" style="width:100%;" />
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <button id="pdfs-range-confirm-btn" class="btn-primary" style="flex:1;">Split & Download</button>
+            <button id="pdfs-range-cancel-btn" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insert Modal -->
+      <div id="pdfs-insert-modal" class="pdfs-modal" style="display:none;">
+        <div class="pdfs-modal-content">
+          <h3 style="font-size:16px;font-weight:600;color:var(--color-ink);margin-bottom:12px;">📎 Insert Pages from Another PDF</h3>
+          <input type="file" id="pdfs-insert-file-input" accept=".pdf,application/pdf" style="display:none;" />
+          <button id="pdfs-insert-browse-btn" class="btn-secondary" style="width:100%;margin-bottom:12px;">📁 Select PDF to Insert From</button>
+          <div id="pdfs-insert-file-info" style="font-size:12px;color:var(--color-muted);margin-bottom:12px;"></div>
+          <label style="font-size:12px;font-weight:600;color:var(--color-ink);margin-bottom:4px;display:block;">Insert Position:</label>
+          <select id="pdfs-insert-position" class="input-base" style="width:100%;margin-bottom:8px;">
+            <option value="start">At the Beginning</option>
+            <option value="end" selected>At the End</option>
+            <option value="after">After Page #</option>
+          </select>
+          <input type="number" id="pdfs-insert-after-page" class="input-base" placeholder="Page number" style="width:100%;margin-bottom:8px;display:none;" min="1" />
+          <label style="font-size:12px;font-weight:600;color:var(--color-ink);margin-bottom:4px;display:block;">Pages to Insert (comma-separated):</label>
+          <input type="text" id="pdfs-insert-pages" class="input-base" placeholder="e.g., 1-3, 5 or all" value="all" style="width:100%;margin-bottom:12px;" />
+          <div style="display:flex;gap:8px;">
+            <button id="pdfs-insert-confirm-btn" class="btn-primary" style="flex:1;">Insert Pages</button>
+            <button id="pdfs-insert-cancel-btn" class="btn-secondary">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div id="pdfs-progress" style="display:none;text-align:center;padding:20px;">
+        <div class="pdfs-progress-bar-wrap">
+          <div class="pdfs-progress-bar" id="pdfs-progress-bar"></div>
+        </div>
+        <p style="font-size:13px;color:var(--color-muted);margin-top:8px;" id="pdfs-progress-text">Processing...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="use-cases-grid fade-up" style="margin-bottom:40px;">
+    {useCases.map(uc => (
+      <div class="use-case-card">
+        <div class="uc-icon">{uc.icon}</div>
+        <h3 style="font-size:14px;font-weight:600;color:var(--color-ink);margin-bottom:4px;">{uc.title}</h3>
+        <p style="font-size:12px;color:var(--color-body);line-height:1.4;">{uc.desc}</p>
+      </div>
+    ))}
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:24px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">PDF Splitter & Page Manager — Complete Guide</h2>
+    
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Managing PDF pages shouldn't require expensive software like Adobe Acrobat. Our <strong>free PDF splitter and page manager</strong> gives you complete control over your PDF pages — <strong>split large PDFs into smaller ones, extract specific pages, remove unwanted pages, insert pages from other PDFs, and reorder pages</strong> — all with drag-and-drop simplicity. Every operation happens in your browser with complete privacy; your files never leave your device.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">All the PDF Page Operations You Need</h3>
+    <div style="overflow-x:auto;margin:16px 0 24px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Operation</th>
+            <th style="padding:12px 16px;">What It Does</th>
+            <th style="padding:12px 16px;">When to Use</th>
+            <th style="padding:12px 16px;">Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['📤 Extract Pages', 'Pull out selected pages into a new PDF', 'Share specific pages, create handouts', 'New PDF with only selected pages'],
+            ['🗑️ Remove Pages', 'Delete unwanted pages from the PDF', 'Clean up scanned docs, remove blanks', 'Original PDF minus removed pages'],
+            ['✂️ Split by Range', 'Divide PDF into multiple files by page ranges', 'Separate chapters, split invoice batches', 'Multiple PDFs, one per range'],
+            ['📄 Split to Individual', 'Create one PDF per page', 'Extract each page as separate file', 'One PDF per page'],
+            ['📎 Insert Pages', 'Add pages from another PDF at any position', 'Add appendices, insert missing pages', 'Original PDF + inserted pages'],
+            ['↻ Rotate Pages', 'Change page orientation (90°/180°/270°)', 'Fix sideways scanned pages', 'Same PDF with rotated pages'],
+          ].map(([op, what, when, output]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:600;">{op}</td>
+              <td style="padding:10px 16px;color:var(--color-link);">{what}</td>
+              <td style="padding:10px 16px;">{when}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{output}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Common PDF Splitting Scenarios</h3>
+    <div style="overflow-x:auto;margin:16px 0;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Scenario</th>
+            <th style="padding:12px 16px;">Operation</th>
+            <th style="padding:12px 16px;">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Textbook Chapters', 'Split by Range', 'Split 300-page textbook into chapters: 1-30, 31-65, 66-100, etc.'],
+            ['Scanned Document', 'Remove Pages', 'Delete blank pages, scanner calibration pages, and backs of single-sided pages'],
+            ['Invoice Batch', 'Split Individual', 'Separate 50 combined invoices into 50 individual PDF files'],
+            ['Job Application', 'Extract Pages', 'Extract only relevant certificates from a large document'],
+            ['Report Distribution', 'Split + Extract', 'Send each department only their relevant section'],
+            ['Contract Package', 'Insert Pages', 'Add updated terms & conditions pages to existing contract'],
+            ['Presentation Slides', 'Extract Pages', 'Pull out 5 key slides to share as a summary'],
+          ].map(([scenario, operation, details]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:600;">{scenario}</td>
+              <td style="padding:10px 16px;color:var(--color-link);font-weight:500;">{operation}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{details}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Pro Tips for PDF Page Management</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      <strong>Preview before downloading</strong> — check page orientations and content before finalizing. <strong>Use Shift+click</strong> to select multiple consecutive pages quickly. <strong>Name your files descriptively</strong> after splitting to stay organized. <strong>Rotate first, then extract</strong> — fix orientation issues before creating output files. <strong>Keep originals</strong> — always keep a backup of the original PDF before removing pages. <strong>Combine with PDF Merger</strong> — use our PDF Merger tool to recombine split files in new arrangements.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`pdfs-faq-${i}`} id={`pdfs-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`pdfs-faq-${i}`} role="region" aria-labelledby={`pdfs-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<style>
+  .pdfs-workspace {
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+    overflow: hidden;
+  }
+
+  /* Upload */
+  .pdfs-upload-area {
+    border: 3px dashed var(--color-hairline);
+    border-radius: var(--radius-lg);
+    padding: 60px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--color-canvas-soft-2);
+    margin: 16px;
+  }
+  .pdfs-upload-area:hover, .pdfs-upload-area.drag-over {
+    border-color: var(--color-link);
+    background: var(--color-canvas);
+  }
+  .pdfs-upload-icon { font-size: 56px; margin-bottom: 12px; }
+  .pdfs-privacy-badge {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 6px 16px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #059669;
+  }
+
+  /* Toolbar */
+  .pdfs-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--color-canvas-soft-2);
+    border-bottom: 1px solid var(--color-hairline);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pdfs-toolbar-left, .pdfs-toolbar-center, .pdfs-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .pdfs-file-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-ink);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pdfs-page-info {
+    font-size: 12px;
+    color: var(--color-muted);
+    background: var(--color-canvas);
+    padding: 4px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--color-hairline);
+    white-space: nowrap;
+  }
+
+  /* Action Bar */
+  .pdfs-action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--color-hairline);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pdfs-action-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .pdfs-action-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+  }
+  .pdfs-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 7px 14px;
+    border: 1px solid var(--color-hairline);
+    border-radius: 8px;
+    background: var(--color-canvas);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.1s;
+    font-family: inherit;
+    color: var(--color-body);
+    white-space: nowrap;
+  }
+  .pdfs-action-btn:hover { border-color: var(--color-link); color: var(--color-link); }
+  .pdfs-action-btn.primary { background: var(--color-link); color: white; border-color: var(--color-link); }
+  .pdfs-action-btn.primary:hover { background: #1d4ed8; }
+  .pdfs-action-btn.danger:hover { border-color: #dc2626; color: #dc2626; background: #fef2f2; }
+  .pdfs-selection-info {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  /* Pages Grid */
+  .pdfs-pages-container {
+    padding: 16px;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  .pdfs-pages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+  }
+  .pdfs-page-card {
+    border: 2px solid var(--color-hairline);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    background: var(--color-canvas);
+  }
+  .pdfs-page-card:hover { border-color: var(--color-link); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .pdfs-page-card.selected { border-color: var(--color-link); box-shadow: 0 0 0 3px rgba(36,99,235,0.2); }
+  .pdfs-page-card.removing { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.2); background: #fef2f2; }
+  .pdfs-page-thumb {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, var(--color-canvas-soft-2) 0%, var(--color-canvas) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: var(--color-muted);
+    position: relative;
+  }
+  .pdfs-page-thumb .page-content-preview {
+    font-size: 10px;
+    padding: 8px;
+    text-align: center;
+    color: var(--color-body);
+    line-height: 1.4;
+  }
+  .pdfs-page-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px;
+    background: var(--color-canvas-soft-2);
+    border-top: 1px solid var(--color-hairline);
+    font-size: 10px;
+  }
+  .pdfs-page-number {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .pdfs-page-rotation-badge {
+    background: var(--color-link);
+    color: white;
+    padding: 1px 6px;
+    border-radius: 99px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+  .pdfs-page-check {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid white;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: transparent;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .pdfs-page-card.selected .pdfs-page-check {
+    background: var(--color-link);
+    border-color: var(--color-link);
+    color: white;
+  }
+  .pdfs-page-card.removing .pdfs-page-check {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: white;
+  }
+
+  /* Modal */
+  .pdfs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .pdfs-modal-content {
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+
+  /* Progress */
+  .pdfs-progress-bar-wrap {
+    width: 100%;
+    height: 8px;
+    background: var(--color-hairline);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .pdfs-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-link), #8b5cf6);
+    border-radius: 99px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  /* Use cases */
+  .use-cases-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .use-case-card {
+    padding: 20px 16px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas);
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .use-case-card:hover {
+    border-color: var(--color-link);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .uc-icon { font-size: 32px; margin-bottom: 8px; }
+
+  .prose-section {
+    padding: 32px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+
+  @media (max-width: 768px) {
+    .use-cases-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .pdfs-pages-grid {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+    .pdfs-action-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .prose-section { padding: 20px 16px; }
+  }
+  @media (max-width: 400px) {
+    .use-cases-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>
+
+<script>
+  // ─── State ────────────────────────────────────────────────────────────────────
+  let pdfDoc: any = null;
+  let pdfBytes: Uint8Array | null = null;
+  let pdfFileName = '';
+  let totalPages = 0;
+  let selectedPages: Set<number> = new Set();
+  let pageRotations: number[] = [];
+  let removeMode = false;
+  let undoStack: { rotations: number[]; pages: number }[] = [];
+
+  // Insert state
+  let insertPdfDoc: any = null;
+  let insertPdfBytes: Uint8Array | null = null;
+
+  // ─── DOM Elements ────────────────────────────────────────────────────────────
+  const uploadArea = document.getElementById('pdfs-upload')!;
+  const editorArea = document.getElementById('pdfs-editor')!;
+  const fileInput = document.getElementById('pdfs-file-input') as HTMLInputElement;
+  const pagesGrid = document.getElementById('pdfs-pages-grid')!;
+  const selectionInfo = document.getElementById('pdfs-selection-info')!;
+
+  // ─── Upload ──────────────────────────────────────────────────────────────────
+  document.getElementById('pdfs-browse-btn')!.addEventListener('click', () => fileInput.click());
+  uploadArea.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('button')) fileInput.click();
+  });
+
+  fileInput.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) await loadPDF(file);
+  });
+
+  uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+  uploadArea.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    const file = e.dataTransfer?.files?.[0];
+    if (file) await loadPDF(file);
+  });
+
+  // ─── Sample PDF ──────────────────────────────────────────────────────────────
+  document.getElementById('pdfs-sample-btn')!.addEventListener('click', async () => {
+    const { PDFDocument, StandardFonts, rgb } = (window as any).PDFLib;
+    const doc = await PDFDocument.create();
+    
+    for (let i = 1; i <= 8; i++) {
+      const page = doc.addPage([595, 842]);
+      const font = await doc.embedFont(StandardFonts.Helvetica);
+      const colors = [
+        rgb(0.2, 0.3, 0.8), rgb(0.8, 0.2, 0.3), rgb(0.2, 0.7, 0.4),
+        rgb(0.8, 0.6, 0.1), rgb(0.5, 0.2, 0.7), rgb(0.1, 0.6, 0.7),
+        rgb(0.7, 0.3, 0.5), rgb(0.3, 0.5, 0.2),
+      ];
+      
+      page.drawText(`Sample Document`, { x: 80, y: 720, size: 28, font, color: colors[i-1] });
+      page.drawText(`Page ${i} of 8`, { x: 80, y: 670, size: 18, font, color: rgb(0.3, 0.3, 0.3) });
+      page.drawText(`This is sample page ${i} for testing the PDF splitter.`, { x: 80, y: 620, size: 12, font, color: rgb(0.5, 0.5, 0.5) });
+      page.drawText(`You can split, extract, remove, or reorder pages.`, { x: 80, y: 590, size: 11, font, color: rgb(0.6, 0.6, 0.6) });
+      
+      if (i % 3 === 0) {
+        page.drawText(`📌 This is a section divider page`, { x: 80, y: 400, size: 14, font, color: rgb(0.4, 0.4, 0.4) });
+      }
+    }
+    
+    const bytes = await doc.save();
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const file = new File([blob], 'Sample-Document-8-Pages.pdf', { type: 'application/pdf' });
+    await loadPDF(file);
+  });
+
+  async function loadPDF(file: File) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = (window as any).PDFLib;
+      
+      try {
+        pdfDoc = await PDFDocument.load(arrayBuffer);
+      } catch(e: any) {
+        if (e.message?.includes('password')) {
+          const password = prompt(`"${file.name}" is password protected. Enter password:`);
+          if (!password) return;
+          pdfDoc = await PDFDocument.load(arrayBuffer, { password });
+        } else {
+          throw e;
+        }
+      }
+      
+      pdfBytes = new Uint8Array(arrayBuffer);
+      pdfFileName = file.name;
+      totalPages = pdfDoc.getPageCount();
+      selectedPages.clear();
+      pageRotations = new Array(totalPages).fill(0);
+      undoStack = [];
+      removeMode = false;
+      
+      uploadArea.style.display = 'none';
+      editorArea.style.display = '';
+      
+      document.getElementById('pdfs-file-name')!.textContent = file.name;
+      document.getElementById('pdfs-page-info')!.textContent = `${totalPages} page${totalPages !== 1 ? 's' : ''}`;
+      
+      renderPages();
+      updateSelectionInfo();
+    } catch(e) {
+      alert('Could not read PDF. It may be corrupted or in an unsupported format.');
+      console.error(e);
+    }
+  }
+
+  // ─── Render Pages ────────────────────────────────────────────────────────────
+  function renderPages() {
+    pagesGrid.innerHTML = '';
+    
+    for (let i = 0; i < totalPages; i++) {
+      const isSelected = selectedPages.has(i);
+      const isRemoving = removeMode && isSelected;
+      
+      const card = document.createElement('div');
+      card.className = `pdfs-page-card${isSelected ? (removeMode ? ' removing' : ' selected') : ''}`;
+      card.dataset.pageIndex = String(i);
+      
+      // Sample content preview based on page number
+      const sampleTexts = [
+        'Title Page', 'Introduction', 'Chapter 1', 'Chapter 2',
+        'Chapter 3', 'Appendix A', 'Appendix B', 'References',
+      ];
+      
+      card.innerHTML = `
+        <div class="pdfs-page-thumb">
+          <div class="page-content-preview">
+            <strong>${sampleTexts[i % sampleTexts.length] || `Page ${i + 1}`}</strong><br/>
+            <span style="font-size:9px;">Content preview</span>
+          </div>
+          <div class="pdfs-page-check">${isSelected ? '✓' : ''}</div>
+        </div>
+        <div class="pdfs-page-footer">
+          <span class="pdfs-page-number">Page ${i + 1}</span>
+          ${pageRotations[i] ? `<span class="pdfs-page-rotation-badge">${pageRotations[i]}°</span>` : ''}
+        </div>
+      `;
+      
+      card.addEventListener('click', (e) => {
+        if (e.shiftKey && selectedPages.size > 0) {
+          // Range select
+          const lastSelected = Math.max(...selectedPages);
+          const start = Math.min(lastSelected, i);
+          const end = Math.max(lastSelected, i);
+          for (let j = start; j <= end; j++) selectedPages.add(j);
+        } else if (e.ctrlKey || e.metaKey) {
+          // Toggle
+          if (selectedPages.has(i)) selectedPages.delete(i);
+          else selectedPages.add(i);
+        } else {
+          // Single select
+          if (selectedPages.has(i) && selectedPages.size === 1) {
+            selectedPages.clear();
+          } else {
+            selectedPages.clear();
+            selectedPages.add(i);
+          }
+        }
+        renderPages();
+        updateSelectionInfo();
+      });
+      
+      pagesGrid.appendChild(card);
+    }
+  }
+
+  function updateSelectionInfo() {
+    const count = selectedPages.size;
+    if (count === 0) {
+      selectionInfo.innerHTML = '<span style="color:var(--color-muted);">0 pages selected</span>';
+    } else {
+      const pages = [...selectedPages].sort((a, b) => a - b).map(i => i + 1).join(', ');
+      selectionInfo.innerHTML = `<span style="color:var(--color-link);font-weight:600;">${count} page${count !== 1 ? 's' : ''} selected:</span> <span style="font-size:11px;">${pages.length > 30 ? pages.slice(0, 30) + '...' : pages}</span>`;
+    }
+  }
+
+  // ─── Selection Buttons ──────────────────────────────────────────────────────
+  document.getElementById('pdfs-select-all-btn')!.addEventListener('click', () => {
+    for (let i = 0; i < totalPages; i++) selectedPages.add(i);
+    renderPages();
+    updateSelectionInfo();
+  });
+
+  document.getElementById('pdfs-deselect-btn')!.addEventListener('click', () => {
+    selectedPages.clear();
+    renderPages();
+    updateSelectionInfo();
+  });
+
+  document.getElementById('pdfs-invert-btn')!.addEventListener('click', () => {
+    const newSet = new Set<number>();
+    for (let i = 0; i < totalPages; i++) {
+      if (!selectedPages.has(i)) newSet.add(i);
+    }
+    selectedPages = newSet;
+    renderPages();
+    updateSelectionInfo();
+  });
+
+  // ─── Rotate ──────────────────────────────────────────────────────────────────
+  function rotatePages(degrees: number) {
+    if (selectedPages.size === 0) return;
+    saveUndo();
+    selectedPages.forEach(i => {
+      pageRotations[i] = ((pageRotations[i] || 0) + degrees + 360) % 360;
+    });
+    renderPages();
+  }
+
+  document.getElementById('pdfs-rotate-cw-btn')!.addEventListener('click', () => rotatePages(90));
+  document.getElementById('pdfs-rotate-ccw-btn')!.addEventListener('click', () => rotatePages(-90));
+
+  // ─── Undo ────────────────────────────────────────────────────────────────────
+  function saveUndo() {
+    undoStack.push({
+      rotations: [...pageRotations],
+      pages: totalPages,
+    });
+    if (undoStack.length > 50) undoStack.shift();
+  }
+
+  document.getElementById('pdfs-undo-btn')!.addEventListener('click', () => {
+    if (undoStack.length === 0) return;
+    const prev = undoStack.pop()!;
+    pageRotations = prev.rotations;
+    renderPages();
+  });
+
+  // ─── Extract Selected Pages ──────────────────────────────────────────────────
+  document.getElementById('pdfs-extract-btn')!.addEventListener('click', async () => {
+    if (selectedPages.size === 0) { alert('Please select at least one page to extract.'); return; }
+    if (!pdfDoc) return;
+    
+    const pageIndices = [...selectedPages].sort((a, b) => a - b);
+    await createAndDownloadPDF(pageIndices, `extracted-pages-${Date.now()}.pdf`);
+  });
+
+  // ─── Remove Selected Pages ───────────────────────────────────────────────────
+  document.getElementById('pdfs-remove-btn')!.addEventListener('click', async () => {
+    if (selectedPages.size === 0) { alert('Please select pages to remove.'); return; }
+    if (!pdfDoc) return;
+    
+    if (selectedPages.size === totalPages) {
+      alert('Cannot remove all pages. At least one page must remain.');
+      return;
+    }
+    
+    if (!confirm(`Remove ${selectedPages.size} selected page(s) from the PDF?`)) return;
+    
+    const keepIndices: number[] = [];
+    for (let i = 0; i < totalPages; i++) {
+      if (!selectedPages.has(i)) keepIndices.push(i);
+    }
+    
+    saveUndo();
+    await createAndDownloadPDF(keepIndices, pdfFileName.replace('.pdf', '') + '-cleaned.pdf');
+    
+    // Reload with new page count
+    totalPages = keepIndices.length;
+    const newRotations: number[] = [];
+    keepIndices.forEach(i => newRotations.push(pageRotations[i] || 0));
+    pageRotations = newRotations;
+    selectedPages.clear();
+    document.getElementById('pdfs-page-info')!.textContent = `${totalPages} page${totalPages !== 1 ? 's' : ''}`;
+    renderPages();
+    updateSelectionInfo();
+  });
+
+  // ─── Split to Individual Pages ───────────────────────────────────────────────
+  document.getElementById('pdfs-split-individual-btn')!.addEventListener('click', async () => {
+    if (!pdfDoc) return;
+    if (!confirm(`Split this PDF into ${totalPages} individual files, one per page?`)) return;
+    
+    for (let i = 0; i < totalPages; i++) {
+      await createAndDownloadPDF([i], `page-${i + 1}-of-${totalPages}.pdf`);
+      await new Promise(r => setTimeout(r, 200)); // Small delay between downloads
+    }
+  });
+
+  // ─── Split by Range ──────────────────────────────────────────────────────────
+  document.getElementById('pdfs-split-range-btn')!.addEventListener('click', () => {
+    document.getElementById('pdfs-range-modal')!.style.display = '';
+    (document.getElementById('pdfs-range-input') as HTMLInputElement).focus();
+  });
+
+  document.getElementById('pdfs-range-cancel-btn')!.addEventListener('click', () => {
+    document.getElementById('pdfs-range-modal')!.style.display = 'none';
+  });
+
+  document.getElementById('pdfs-range-confirm-btn')!.addEventListener('click', async () => {
+    const input = (document.getElementById('pdfs-range-input') as HTMLInputElement).value.trim();
+    if (!input) return;
+    
+    const ranges = input.split(',').map(s => s.trim());
+    const rangeIndices: number[][] = [];
+    
+    for (const range of ranges) {
+      if (range.includes('-')) {
+        const [start, end] = range.split('-').map(Number);
+        if (isNaN(start) || isNaN(end) || start < 1 || end > totalPages || start > end) {
+          alert(`Invalid range: ${range}. Pages must be between 1 and ${totalPages}.`);
+          return;
+        }
+        const indices: number[] = [];
+        for (let i = start - 1; i < end; i++) indices.push(i);
+        rangeIndices.push(indices);
+      } else {
+        const page = parseInt(range);
+        if (isNaN(page) || page < 1 || page > totalPages) {
+          alert(`Invalid page: ${range}. Must be between 1 and ${totalPages}.`);
+          return;
+        }
+        rangeIndices.push([page - 1]);
+      }
+    }
+    
+    document.getElementById('pdfs-range-modal')!.style.display = 'none';
+    
+    for (let i = 0; i < rangeIndices.length; i++) {
+      await createAndDownloadPDF(rangeIndices[i], `split-part-${i + 1}.pdf`);
+      await new Promise(r => setTimeout(r, 200));
+    }
+  });
+
+  // ─── Insert Pages ────────────────────────────────────────────────────────────
+  document.getElementById('pdfs-insert-btn')!.addEventListener('click', () => {
+    document.getElementById('pdfs-insert-modal')!.style.display = '';
+  });
+
+  document.getElementById('pdfs-insert-cancel-btn')!.addEventListener('click', () => {
+    document.getElementById('pdfs-insert-modal')!.style.display = 'none';
+    insertPdfDoc = null;
+    insertPdfBytes = null;
+  });
+
+  document.getElementById('pdfs-insert-browse-btn')!.addEventListener('click', () => {
+    (document.getElementById('pdfs-insert-file-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('pdfs-insert-file-input')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const { PDFDocument } = (window as any).PDFLib;
+      insertPdfDoc = await PDFDocument.load(arrayBuffer);
+      insertPdfBytes = new Uint8Array(arrayBuffer);
+      document.getElementById('pdfs-insert-file-info')!.textContent = 
+        `✅ Loaded: ${file.name} (${insertPdfDoc.getPageCount()} pages)`;
+    } catch(e) {
+      alert('Could not load PDF for insertion.');
+    }
+  });
+
+  document.getElementById('pdfs-insert-position')!.addEventListener('change', (e) => {
+    const afterPageInput = document.getElementById('pdfs-insert-after-page')!;
+    afterPageInput.style.display = (e.target as HTMLSelectElement).value === 'after' ? '' : 'none';
+  });
+
+  document.getElementById('pdfs-insert-confirm-btn')!.addEventListener('click', async () => {
+    if (!insertPdfDoc || !pdfDoc) {
+      alert('Please select a PDF to insert pages from.');
+      return;
+    }
+    
+    const position = (document.getElementById('pdfs-insert-position') as HTMLSelectElement).value;
+    const pagesInput = (document.getElementById('pdfs-insert-pages') as HTMLInputElement).value.trim();
+    
+    let insertIndices: number[];
+    if (pagesInput === 'all') {
+      insertIndices = Array.from({ length: insertPdfDoc.getPageCount() }, (_, i) => i);
+    } else {
+      insertIndices = pagesInput.split(',').map(s => parseInt(s.trim()) - 1).filter(i => !isNaN(i) && i >= 0);
+    }
+    
+    if (insertIndices.length === 0) {
+      alert('No valid pages to insert.');
+      return;
+    }
+    
+    const { PDFDocument } = (window as any).PDFLib;
+    const newDoc = await PDFDocument.create();
+    
+    let insertAfter = 0;
+    if (position === 'start') insertAfter = 0;
+    else if (position === 'end') insertAfter = totalPages;
+    else if (position === 'after') {
+      insertAfter = parseInt((document.getElementById('pdfs-insert-after-page') as HTMLInputElement).value) || 1;
+    }
+    
+    // Copy existing pages before insertion point
+    const existingBefore = Array.from({ length: Math.min(insertAfter, totalPages) }, (_, i) => i);
+    const copiedBefore = await newDoc.copyPages(pdfDoc, existingBefore);
+    copiedBefore.forEach((p: any, i: number) => {
+      if (pageRotations[i]) p.setRotation({ angle: pageRotations[i] });
+      newDoc.addPage(p);
+    });
+    
+    // Copy insert pages
+    const copiedInsert = await newDoc.copyPages(insertPdfDoc, insertIndices);
+    copiedInsert.forEach((p: any) => newDoc.addPage(p));
+    
+    // Copy existing pages after insertion point
+    const existingAfter = Array.from({ length: totalPages - insertAfter }, (_, i) => i + insertAfter);
+    const copiedAfter = await newDoc.copyPages(pdfDoc, existingAfter);
+    copiedAfter.forEach((p: any, i: number) => {
+      const origIdx = insertAfter + i;
+      if (pageRotations[origIdx]) p.setRotation({ angle: pageRotations[origIdx] });
+      newDoc.addPage(p);
+    });
+    
+    const newBytes = await newDoc.save();
+    const blob = new Blob([newBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = pdfFileName.replace('.pdf', '') + '-with-inserted-pages.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    document.getElementById('pdfs-insert-modal')!.style.display = 'none';
+    insertPdfDoc = null;
+    insertPdfBytes = null;
+    
+    // Reload with new PDF
+    const file = new File([blob], a.download, { type: 'application/pdf' });
+    await loadPDF(file);
+  });
+
+  // ─── Create & Download PDF ───────────────────────────────────────────────────
+  async function createAndDownloadPDF(pageIndices: number[], filename: string) {
+    if (!pdfDoc) return;
+    
+    const { PDFDocument } = (window as any).PDFLib;
+    const newDoc = await PDFDocument.create();
+    const copiedPages = await newDoc.copyPages(pdfDoc, pageIndices);
+    
+    copiedPages.forEach((page: any, i: number) => {
+      const origIndex = pageIndices[i];
+      if (pageRotations[origIndex]) {
+        page.setRotation({ angle: pageRotations[origIndex] });
+      }
+      newDoc.addPage(page);
+    });
+    
+    const newBytes = await newDoc.save();
+    const blob = new Blob([newBytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ─── New File ────────────────────────────────────────────────────────────────
+  document.getElementById('pdfs-new-file-btn')!.addEventListener('click', () => {
+    pdfDoc = null;
+    pdfBytes = null;
+    totalPages = 0;
+    selectedPages.clear();
+    pageRotations = [];
+    undoStack = [];
+    uploadArea.style.display = '';
+    editorArea.style.display = 'none';
+  });
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

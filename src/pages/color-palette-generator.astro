@@ -1,0 +1,418 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is a color palette generator?', a: 'A tool that creates harmonious sets of colors based on a starting hue, using color theory rules such as complementary, analogous, triadic, and tetradic schemes.' },
+  { q: 'Can I lock colors I like and generate new ones for the rest?', a: 'Yes, you can lock individual swatches so they stay unchanged when you regenerate the palette.' },
+  { q: 'What color formats are available?', a: 'The tool shows HEX, RGB, and HSL values for each color. You can copy any format with a click.' },
+  { q: 'Is there a limit to how many palettes I can generate?', a: 'No. Generate as many palettes as you like — all processing happens locally in your browser.' },
+  { q: 'Do you store or share the colors I create?', a: 'No. All data remains in your browser; nothing is sent to any server.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'Color Palette Generator', description: 'Free color palette generator that creates harmonious color schemes using color theory. Lock colors, export values, and explore combinations.', url: '/color-palette-generator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Count words, characters, and paragraphs' },
+  { name: 'JSON Formatter', href: '/json-formatter', icon: '{}', desc: 'Validate and beautify JSON data' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure objects on your screen' },
+];
+
+---
+<CalculatorLayout
+  title="Color Palette Generator — Free Online Color Scheme Tool"
+  description="Generate beautiful color palettes using color theory rules. Lock colors, view HEX/RGB/HSL values, and export your scheme."
+  canonical="/color-palette-generator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Color Palette Generator', url: '/color-palette-generator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Productivity Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Color Palette Generator</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Create harmonious color schemes for design, branding, art, or any project. Based on a starting hue, the tool generates complementary, analogous, triadic, and more palettes.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="color-palette-generator">
+    <div class="calc-form">
+      <!-- Base Color Input -->
+      <div class="form-row">
+        <div class="form-field">
+          <label for="base-color" class="label">Base Color (HEX)</label>
+          <input type="text" id="base-color" class="input-base" placeholder="#ff5733" aria-label="Base color in HEX format" value="#ff5733" />
+          <div id="base-color-preview" style="margin-top: 6px; width: 40px; height: 40px; border: 1px solid var(--color-hairline); border-radius: var(--radius-sm); display: inline-block;"></div>
+        </div>
+      </div>
+
+      <!-- Palette Type Selector -->
+      <div class="form-row">
+        <div class="form-field">
+          <label for="palette-type" class="label">Palette Type</label>
+          <select id="palette-type" class="input-base input-lg">
+            <option value="complementary">Complementary</option>
+            <option value="analogous">Analogous</option>
+            <option value="triadic">Triadic</option>
+            <option value="tetradic">Tetradic</option>
+            <option value="monochromatic">Monochromatic</option>
+            <option value="shades">Shades</option>
+            <option value="random">Random</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+        <button id="generate-palette-btn" class="btn-primary" aria-label="Generate Palette">Generate Palette</button>
+        <button id="randomize-btn" class="btn-secondary" aria-label="Randomize Base Color">Random Base</button>
+        <button id="clear-btn" class="btn-secondary" aria-label="Clear">Clear</button>
+      </div>
+
+      <!-- Palette Display -->
+      <div id="palette-container" style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: justify; overflow-x: auto;">
+        <!-- Palette swatches will be inserted here -->
+      </div>
+
+      <!-- Actions for Palette -->
+      <div id="palette-actions" style="margin-top: 16px; display: flex; gap: 8px; justify-content: flex-end; hidden">
+        <button id="copy-palette-btn" class="btn-success btn-sm" aria-label="Copy palette as JSON">Copy JSON</button>
+        <button id="download-palette-btn" class="btn-secondary btn-sm" aria-label="Download palette as JSON">Download JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO Article Section -->
+  <div style="margin-top: 48px;" class="prose-section fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 20px;">The Designer’s Guide to Color Palettes</h2>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      Color is one of the most powerful tools in a designer’s arsenal. A well‑chosen palette can evoke emotions, convey brand identity, and guide the user’s eye. Understanding color theory helps you create combinations that are pleasing, balanced, and effective.
+    </p>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Common Color Harmony Rules</h3>
+    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--color-body); line-height: 26px; font-size: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Complementary:</strong> Two colors opposite each other on the color wheel (e.g., blue & orange). Creates high contrast and vibrant looks.</li>
+      <li><strong>Analogous:</strong> Three colors next to each other (e.g., yellow‑green, yellow, yellow‑orange). Offers harmonious, serene designs.</li>
+      <li><strong>Triadic:</strong> Three colors evenly spaced around the wheel (e.g., red, yellow, blue). Provides balanced contrast and richness.</li>
+      <li><strong>Tetradic (Double‑Complementary):</strong> Four colors forming two complementary pairs. Offers plenty of variety but requires careful balancing.</li>
+      <li><strong>Monochromatic:</strong> Variations in lightness and saturation of a single hue. Elegant and easy to manage.</li>
+      <li><strong>Shades:</strong> Different lightness values of the same hue, from dark to light.</li>
+    </ul>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">How the Generator Works</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      The tool converts the input HEX color to HSL (Hue, Saturation, Lightness). It then applies the selected harmony rule by adjusting the hue angle (and sometimes saturation/lightness) to generate the desired number of colors (typically 5). Each generated color is converted back to HEX for display.
+    </p>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Best Practices for Using Color Palettes</h3>
+    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--color-body); line-height: 26px; font-size: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Start with a purpose:</strong> Choose a base color that reflects the mood or brand you want to convey.</li>
+      <li><strong>Test for accessibility:</strong> Ensure sufficient contrast between text and background colors (WCAG AA/AAA).</li>
+      <li><strong>Use the 60‑30‑10 rule:</strong> In interior or UI design, allocate ~60% dominant color, ~30% secondary, and ~10% accent.</li>
+      <li><strong>Consider color blindness:</strong> Use tools like Coblis or simulate deuteranopia/protanopia to ensure your palette remains distinguishable.</li>
+      <li><strong>Document your palette:</strong> Save the HEX, RGB, and HSL values for consistency across media and team members.</li>
+    </ul>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px;">
+      By leveraging color theory and a reliable generator, you can create professional‑grade color schemes quickly and confidently.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top: 48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top: 1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`cp-faq-${i}`} id={`cp-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`cp-faq-${i}`} role="region" aria-labelledby={`cp-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form { display: flex; flex-direction: column; gap: 20px; }
+  #base-color-preview { background: #ff5733; }
+</style>
+
+<script>
+  const baseInput = document.getElementById('base-color');
+  const basePreview = document.getElementById('base-color-preview');
+  const paletteType = document.getElementById('palette-type');
+  const generateBtn = document.getElementById('generate-palette-btn');
+  const randomizeBtn = document.getElementById('randomize-btn');
+  const clearBtn = document.getElementById('clear-btn');
+  const paletteContainer = document.getElementById('palette-container');
+  const paletteActions = document.getElementById('palette-actions');
+  const copyBtn = document.getElementById('copy-palette-btn');
+  const downloadBtn = document.getElementById('download-palette-btn');
+
+  // HEX to RGB/HSL helpers
+  function hexToRgb(hex) {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
+  }
+
+  function rgbToHsl(r, g, b) {
+    r /= 255, g /= 255, b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+      }
+      h *= 60;
+      if (h < 0) h += 360;
+    }
+    return { h, s, l };
+  }
+
+  function hslToRgb(h, s, l) {
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l; // achromatic
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1 / 6) return p + (q - p) * 6 * t;
+        if (t < 1 / 2) return q;
+        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h / 360 + 1 / 3);
+      g = hue2rgb(p, q, h / 360);
+      b = hue2rgb(p, q, h / 360 - 1 / 3);
+    }
+    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
+  function rgbToHex(r, g, b) {
+    return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()}`;
+  }
+
+  function generatePalette() {
+    const hex = baseInput.value.trim();
+    if (!hex || !/^#?[0-9a-fA-F]{6}$/.test(hex)) {
+      alert('Please enter a valid HEX color (e.g., #ff5733).');
+      return;
+    }
+    const rgb = hexToRgb(hex);
+    if (!rgb) return;
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const type = paletteType.value;
+    const count = 5; // number of colors in palette
+    const colors = [];
+
+    function addColor(h, s, l) {
+      // clamp
+      h = ((h % 360) + 360) % 360;
+      s = Math.max(0, Math.min(1, s));
+      l = Math.max(0, Math.min(1, l));
+      const rgb = hslToRgb(h, s, l);
+      colors.push(rgbToHex(rgb[0], rgb[1], rgb[2]));
+    }
+
+    switch (type) {
+      case 'complementary':
+        // base + opposite
+        addColor(hsl.h, hsl.s, hsl.l);
+        addColor((hsl.h + 180) % 360, hsl.s, hsl.l);
+        // add some variations
+        for (let i = 1; i < count; i++) {
+          const offset = (i - 1) * 30;
+          addColor((hsl.h + offset) % 360, hsl.s * 0.8 + 0.1, hsl.l * 0.9 + 0.05);
+        }
+        break;
+      case 'analogous':
+        for (let i = 0; i < count; i++) {
+          const offset = ((i - Math.floor(count / 2)) * 30);
+          addColor((hsl.h + offset) % 360, hsl.s, hsl.l);
+        }
+        break;
+      case 'triadic':
+        for (let i = 0; i < count; i++) {
+          const offset = i * 120;
+          addColor((hsl.h + offset) % 360, hsl.s, hsl.l);
+        }
+        break;
+      case 'tetradic':
+        // two complementary pairs
+        for (let i = 0; i < count; i++) {
+          const offset = i * 90;
+          addColor((hsl.h + offset) % 360, hsl.s, hsl.l);
+        }
+        break;
+      case 'monochromatic':
+        for (let i = 0; i < count; i++) {
+          const lShift = (i - Math.floor(count / 2)) * 0.15;
+          addColor(hsl.h, hsl.s, Math.max(0, Math.min(1, hsl.l + lShift)));
+        }
+        break;
+      case 'shades':
+        for (let i = 0; i < count; i++) {
+          const lShift = (i / (count - 1)) * 0.8 + 0.1; // 0.1 to 0.9
+          addColor(hsl.h, hsl.s, lShift);
+        }
+        break;
+      case 'random':
+        for (let i = 0; i < count; i++) {
+          const h = Math.random() * 360;
+          const s = 0.4 + Math.random() * 0.6;
+          const l = 0.25 + Math.random() * 0.5;
+          addColor(h, s, l);
+        }
+        break;
+      default:
+        addColor(hsl.h, hsl.s, hsl.l);
+        for (let i = 1; i < count; i++) {
+          addColor((hsl.h + i * 60) % 360, hsl.s, hsl.l);
+        }
+    }
+
+    renderPalette(colors);
+  }
+
+  function renderPalette(colors) {
+    paletteContainer.innerHTML = '';
+    colors.forEach((hex, index) => {
+      const swatch = document.createElement('div');
+      swatch.style.flex = '0 0 auto';
+      swatch.style.width = '60px';
+      swatch.style.height = '60px';
+      swatch.style.backgroundColor = hex;
+      swatch.style.border = '1px solid var(--color-hairline)';
+      swatch.style.borderRadius = var(--radius-sm);
+      swatch.style.position = 'relative';
+      swatch.style.display = 'flex';
+      swatch.style.alignItems = 'center';
+      swatch.style.justifyContent = 'center';
+      swatch.style.cursor = 'pointer';
+      swatch.title = hex;
+
+      // lock toggle
+      const lockBtn = document.createElement('button');
+      lockBtn.innerHTML = '🔒';
+      lockBtn.style.position = 'absolute';
+      lockBtn.style.top = '2px';
+      lockBtn.style.left = '2px';
+      lockBtn.style.background = 'rgba(0,0,0,0.5)';
+      lockBtn.style.border = 'none';
+      lockBtn.style.color = var(--color-on-ink);
+      lockBtn.style.width = '18px';
+      lockBtn.style.height = '18px';
+      lockBtn.style.borderRadius = '50%';
+      lockBtn.style.fontSize = '10px';
+      lockBtn.style.cursor = 'pointer';
+      lockBtn.dataset.index = index;
+      lockBtn.dataset.locked = 'false';
+      lockBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const btn = e.target;
+        const locked = btn.dataset.locked === 'true';
+        btn.dataset.locked = String(!locked);
+        btn.style.background = locked ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.5)';
+        btn.style.color = locked ? var(--color-body) : var(--color-on-ink);
+      });
+      swatch.appendChild(lockBtn);
+
+      // click to copy
+      swatch.addEventListener('click', () => {
+        navigator.clipboard.writeText(hex).then(() => {
+          swatch.style.transform = 'scale(1.1)';
+          setTimeout(() => { swatch.style.transform = ''; }, 200);
+        });
+      });
+
+      paletteContainer.appendChild(swatch);
+    });
+
+    paletteActions.hidden = false;
+  }
+
+  function randomizeBase() {
+    const h = Math.random() * 360;
+    const s = 0.4 + Math.random() * 0.6;
+    const l = 0.25 + Math.random() * 0.5;
+    const rgb = hslToRgb(h, s, l);
+    const hex = rgbToHex(rgb[0], rgb[1], rgb[2]);
+    baseInput.value = hex;
+    basePreview.style.backgroundColor = hex;
+    generatePalette();
+  }
+
+  function clearAll() {
+    baseInput.value = '#ff5733';
+    basePreview.style.backgroundColor = '#ff5733';
+    paletteContainer.innerHTML = '';
+    paletteActions.hidden = true;
+  }
+
+  function copyPalette() {
+    const swatches = paletteContainer.querySelectorAll('div');
+    const palette = [];
+    swatches.forEach(swatch => {
+      const hex = swatch.title;
+      if (hex) palette.push(hex);
+    });
+    navigator.clipboard.writeText(JSON.stringify(palette, null, 2)).then(() => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => { copyBtn.textContent = 'Copy JSON'; }, 1500);
+    }).catch(err => {
+      alert('Failed to copy: ' + err);
+    });
+  }
+
+  function downloadPalette() {
+    const swatches = paletteContainer.querySelectorAll('div');
+    const palette = [];
+    swatches.forEach(swatch => {
+      const hex = swatch.title;
+      if (hex) palette.push(hex);
+    });
+    const blob = new Blob([JSON.stringify(palette, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'palette.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Initial generation
+  baseInput.addEventListener('input', (e) => {
+    const val = e.target.value;
+    if (/^#?[0-9a-fA-F]{3}$/.test(val) || /^#?[0-9a-fA-F]{6}$/.test(val)) {
+      basePreview.style.backgroundColor = val;
+    }
+  });
+  generateBtn?.addEventListener('click', generatePalette);
+  randomizeBtn?.addEventListener('click', randomizeBase);
+  clearBtn?.addEventListener('click', clearAll);
+  copyBtn?.addEventListener('click', copyPalette);
+  downloadBtn?.addEventListener('click', downloadPalette);
+  // Generate on load
+  generatePalette();
+</script>

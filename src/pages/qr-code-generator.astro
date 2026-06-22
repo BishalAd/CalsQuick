@@ -1,0 +1,198 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What is a QR code?', a: 'A QR code (Quick Response code) is a two‑dimensional barcode that can store URLs, text, or other data. It can be scanned by smartphones and many other devices.' },
+  { q: 'Is there a limit on the amount of data I can encode?', a: 'Yes. Depending on the QR code version and error correction level, the maximum capacity ranges from a few dozen to several thousand characters. For typical URLs, you’re well within limits.' },
+  { q: 'Do you store the data I encode?', a: 'No. The QR code is generated entirely in your browser using a client‑side library, or via a request to a public image‑generation service that does not retain your data.' },
+  { q: 'Can I change the size of the QR code?', a: 'Yes, you can adjust the pixel dimensions (e.g., 200×200, 300×300) to suit your needs.' },
+  { q: 'Are QR codes permanent?', a: 'Once generated, the image represents the data at that moment. If the underlying data changes, you must generate a new QR code.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'QR Code Generator', description: 'Free QR code generator that works in your browser. Create scannable QR codes for URLs, text, contact info, and more.', url: '/qr-code-generator' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Count words, characters, and paragraphs' },
+  { name: 'JSON Formatter', href: '/json-formatter', icon: '{}', desc: 'Validate and beautify JSON data' },
+  { name: 'Online Ruler', href: '/online-ruler', icon: '📏', desc: 'Measure objects on your screen' },
+];
+
+---
+<CalculatorLayout
+  title="QR Code Generator — Free Online QR Code Creator"
+  description="Generate QR codes instantly for URLs, text, or any data. Customize size, download as PNG, and scan with any device."
+  canonical="/qr-code-generator"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'QR Code Generator', url: '/qr-code-generator' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Productivity Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">QR Code Generator</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Create scannable QR codes for websites, messages, Wi‑Fi credentials, and more. All processing happens in your browser — no data is stored or shared.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="qr-code-generator">
+    <div class="calc-form">
+      <!-- Data Input -->
+      <div class="form-row">
+        <div class="form-field">
+          <label for="qr-data" class="label">Data to Encode</label>
+          <textarea id="qr-data" class="input-base" rows="3" placeholder="Enter a URL, text, or any data..." aria-label="Data to encode in QR code"></textarea>
+        </div>
+      </div>
+
+      <!-- Size Selector -->
+      <div class="form-row">
+        <div class="form-field">
+          <label for="qr-size" class="label">Image Size (pixels)</label>
+          <select id="qr-size" class="input-base input-lg">
+            <option value="100">100 × 100</option>
+            <option value="150" selected>150 × 150</option>
+            <option value="200">200 × 200</option>
+            <option value="250">250 × 250</option>
+            <option value="300">300 × 300</option>
+            <option value="400">400 × 400</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button id="generate-qr-btn" class="btn-primary" style="flex: 1;" aria-label="Generate QR Code">Generate QR Code</button>
+        <button id="clear-qr-btn" class="btn-secondary" aria-label="Clear">Clear</button>
+      </div>
+
+      <!-- QR Code Display -->
+      <div id="qr-output" style="margin-top: 24px; text-align: center;">
+        <img id="qr-image" src="" alt="QR code" style="max-width: 100%; height: auto; border: 1px solid var(--color-hairline); border-radius: var(--radius-sm);" hidden>
+        <p id="qr-error" style="color: var(--color-error); margin-top: 8px; hidden"></p>
+        <div id="qr-actions" style="margin-top: 12px; display: flex; gap: 8px; justify-content: center; hidden">
+          <button id="download-qr-btn" class="btn-success btn-sm" aria-label="Download QR Code">Download PNG</button>
+          <button id="copy-qr-btn" class="btn-secondary btn-sm" aria-label="Copy Image URL">Copy URL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO Article Section -->
+  <div style="margin-top: 48px;" class="prose-section fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 20px;">The Ultimate Guide to QR Codes</h2>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      QR codes have become a ubiquitous bridge between the physical and digital worlds. From restaurant menus to product packaging, event tickets to contactless payments, these square barcodes let users access digital content with a simple scan.
+    </p>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">How Do QR Codes Work?</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      A QR code encodes data in a grid of black and white modules. The pattern includes alignment marks, timing patterns, and error‑correction codes that allow scanners to read the code even if it’s partially damaged or obscured.
+    </p>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Common Uses for QR Codes</h3>
+    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--color-body); line-height: 26px; font-size: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Website URLs:</strong> Direct users to a landing page, product page, or online menu.</li>
+      <li><strong>Contact Information (vCard):</strong> Share your name, phone, email, and address in a single scan.</li>
+      <li><strong>Wi‑Fi Credentials:</strong> Encode SSID, password, and encryption type so guests can join your network instantly.</li>
+      <li><strong>Event Tickets:</strong> Store ticket IDs, seat numbers, and validation data for secure entry.</li>
+      <li><strong>Product Information:</strong> Link to manuals, warranty details, or authenticity verification.</li>
+    </ul>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Best Practices for QR Code Generation</h3>
+    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--color-body); line-height: 26px; font-size: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Keep it simple:</strong> The less data you encode, the more reliable the QR code will be, especially at smaller sizes.</li>
+      <li><strong>Use adequate size:</strong> For scanning from a distance, aim for at least 2 × 2 cm (≈ 150 × 150 px at 300 DPI).</li>
+      <li><strong>Ensure contrast:</strong> Dark modules on a light background work best. Avoid inverting colors unless you test with your target scanners.</li>
+      <li><strong>Test before distributing:</strong> Scan the generated code with multiple devices and apps to confirm readability.</li>
+      <li><strong>Include a call‑to‑action:</strong> Add text like “Scan for menu” or “Scan to download app” so users know what to expect.</li>
+    </ul>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px;">
+      With a reliable QR code generator, you can bridge offline and online experiences quickly, securely, and at zero cost.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top: 48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top: 1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`qr-faq-${i}`} id={`qr-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`qr-faq-${i}`} role="region" aria-labelledby={`qr-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .calc-form { display: flex; flex-direction: column; gap: 20px; }
+  textarea { width: 100%; resize: vertical; }
+</style>
+
+<script>
+  const dataInput = document.getElementById('qr-data');
+  const sizeSelect = document.getElementById('qr-size');
+  const generateBtn = document.getElementById('generate-qr-btn');
+  const clearBtn = document.getElementById('clear-qr-btn');
+  const qrImage = document.getElementById('qr-image');
+  const qrOutput = document.getElementById('qr-output');
+  const qrError = document.getElementById('qr-error');
+  const qrActions = document.getElementById('qr-actions');
+  const downloadBtn = document.getElementById('download-qr-btn');
+  const copyUrlBtn = document.getElementById('copy-qr-btn');
+
+  function generateQR() {
+    const data = dataInput.value.trim();
+    if (!data) {
+      qrError.textContent = 'Please enter some data to encode.';
+      qrError.hidden = false;
+      qrImage.hidden = true;
+      qrActions.hidden = true;
+      return;
+    }
+    qrError.hidden = true;
+    const size = parseInt(sizeSelect.value);
+    // Using the free QR server API (no API key required)
+    const url = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(data)}&size=${size}x${size}`;
+    qrImage.src = url;
+    qrImage.alt = `QR code encoding: ${data.substring(0, 50)}...`;
+    qrImage.hidden = false;
+    qrActions.hidden = false;
+  }
+
+  function clearAll() {
+    dataInput.value = '';
+    qrImage.src = '';
+    qrImage.hidden = true;
+    qrError.hidden = true;
+    qrActions.hidden = true;
+  }
+
+  function downloadQR() {
+    const link = document.createElement('a');
+    link.href = qrImage.src;
+    link.download = 'qr-code.png';
+    link.click();
+  }
+
+  function copyQRUrl() {
+    navigator.clipboard.writeText(qrImage.src).then(() => {
+      copyUrlBtn.textContent = 'Copied!';
+      setTimeout(() => { copyUrlBtn.textContent = 'Copy URL'; }, 1500);
+    }).catch(err => {
+      alert('Failed to copy: ' + err);
+    });
+  }
+
+  generateBtn?.addEventListener('click', generateQR);
+  clearBtn?.addEventListener('click', clearAll);
+  downloadBtn?.addEventListener('click', downloadQR);
+  copyUrlBtn?.addEventListener('click', copyQRUrl);
+</script>

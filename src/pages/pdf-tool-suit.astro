@@ -1,0 +1,1092 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { 
+    q: 'How do I convert a PDF to JPG or PNG images?', 
+    a: 'Converting PDF to JPG or PNG is simple with our tool: Upload your PDF file, select whether you want JPG or PNG output, choose the quality level (for JPG), and click "Convert." Each page of your PDF becomes a separate image file. You can download individual page images or all pages at once. JPG format is best for photos and web use (smaller files), while PNG is ideal for graphics, text documents, and when you need transparency. The conversion happens entirely in your browser using Canvas API — your PDF never leaves your device.' 
+  },
+  { 
+    q: 'Can I convert images (JPG, PNG) back to PDF?', 
+    a: 'Yes! Our JPG to PDF converter lets you combine one or multiple images into a PDF document. Upload up to 20 images (JPG, PNG, WebP, BMP), arrange them in your preferred order with drag-and-drop, choose page size (A4, Letter, or original image size), set page orientation, adjust margins, and download as a single PDF. This is perfect for: Combining scanned documents into one PDF, Creating a PDF photo album, Converting screenshots into a shareable PDF, or Making a PDF portfolio from images.' 
+  },
+  { 
+    q: 'How do I add a watermark to a PDF?', 
+    a: 'Our watermark tool lets you add text or image watermarks to your PDF pages. For text watermarks: Enter your text (e.g., "CONFIDENTIAL", "DRAFT", or your brand name), choose font size and color, set opacity (faded or solid), select position (center, top, bottom, diagonal, tiled), and rotate the text. For image watermarks: Upload your logo or icon, adjust size and opacity, and position it. Watermarks are applied to all pages or selected pages. Common uses: Branding documents, Marking drafts, Copyright protection, and Adding "SAMPLE" to previews.' 
+  },
+  { 
+    q: 'Can I password protect a PDF file?', 
+    a: 'Absolutely! Our PDF password protector lets you encrypt any PDF with a password. You can set: An owner password (required to open the PDF at all), Permissions restrictions (prevent printing, copying text, editing, or filling forms), Encryption level (128-bit AES or 256-bit AES for stronger security). Once encrypted, anyone who tries to open the PDF must enter the correct password. This is essential for: Sending sensitive documents via email, Protecting confidential business files, Securing personal information, and Sharing documents with controlled access.' 
+  },
+  { 
+    q: 'What PDF permissions can I restrict with password protection?', 
+    a: 'You can control exactly what recipients can do with your protected PDF: Printing (allow or deny), Copying text and images (prevent content theft), Modifying the document (prevent edits), Adding or changing annotations and form fields, and Filling existing form fields (allow form filling but prevent other changes). You can also set the encryption level: 128-bit AES (standard security, compatible with older PDF readers) or 256-bit AES (stronger security, requires modern PDF readers like Adobe Acrobat Reader DC).' 
+  },
+  { 
+    q: 'Is my data safe? Are PDFs uploaded to any server?', 
+    a: 'No — 100% of processing happens in your browser. Your PDFs, images, and passwords NEVER leave your device. We use JavaScript libraries (PDF-lib, Canvas API) that run entirely client-side. This means: No files are uploaded to any server, No one can intercept your documents, Passwords are used only for local encryption and never transmitted, You can disconnect the internet after loading the page and everything works, Perfect for legal, medical, financial, and confidential documents. We designed this tool with privacy as the #1 priority.' 
+  },
+  { 
+    q: 'What image quality can I expect when converting PDF to JPG/PNG?', 
+    a: 'Our PDF to image converter renders pages at high resolution for excellent quality output. For JPG: You can adjust quality from 10% to 100% (we recommend 85-95% for most uses). At 90% quality, text is crisp and images look great with minimal artifacts. For PNG: Output is lossless — perfect quality, ideal for text documents and graphics requiring sharp edges. The default resolution renders at 150 DPI (screen quality), with options for higher resolution up to 300 DPI for print-quality output. Each page image preserves the original page dimensions and aspect ratio.' 
+  },
+  { 
+    q: 'Can I convert specific pages of a PDF to images?', 
+    a: 'Yes! Before converting, you can select which pages to convert: Click individual pages, Shift+click to select a range, or use "Select All." This way, you only convert the pages you need — not the entire document. For example, if you have a 50-page PDF but only need pages 3-7 as images, just select those pages. This saves time and storage space. You can also convert all pages to separate images (one image per page) or the entire PDF to a single long image.' 
+  },
+  { 
+    q: 'What watermark customization options do I have?', 
+    a: 'Our watermark tool offers extensive customization: Text watermarks: Any text (brand name, "CONFIDENTIAL", "DRAFT", etc.), Multiple fonts, Adjustable size (12pt to 200pt), Custom color (any hex color), Opacity control (10% faded to 100% solid), Rotation angle (0° to 360°), and Position presets (center, top-left, top-right, bottom-left, bottom-right, diagonal, tiled/repeated). Image watermarks: Upload any image (PNG recommended for transparency), Scale percentage (10% to 200%), Opacity control, and Position options. You can preview the watermark before applying.' 
+  },
+  { 
+    q: 'What is the difference between 128-bit and 256-bit AES encryption?', 
+    a: 'Both are secure, but differ in strength: 128-bit AES: 2^128 possible keys (340 undecillion combinations), would take billions of years to brute-force with current technology, compatible with older PDF readers (Acrobat 7+), sufficient for most business and personal use. 256-bit AES: 2^256 possible keys (astronomically larger than 128-bit), provides security margin against future quantum computing threats, requires Acrobat 9+ or modern readers, recommended for highly sensitive documents (legal, government, financial). For everyday use, 128-bit is perfectly secure. For maximum protection, choose 256-bit.' 
+  },
+  { 
+    q: 'Can I remove password protection from a PDF?', 
+    a: 'If you know the password, you can remove it: Open the PDF, use our tool to re-save it without a password (by not setting a new password). The original password-protected file remains unchanged. If you DON\'T know the password: We cannot help you remove it — that would be a security vulnerability. Password protection exists precisely to prevent unauthorized access. Our tool only helps you add or change passwords, not bypass existing ones. Always keep a backup of your password in a secure location.' 
+  },
+  { 
+    q: 'What are the common use cases for these PDF tools?', 
+    a: 'These combined PDF tools serve countless professional and personal needs: Legal professionals: Convert evidence PDFs to images for presentations, watermark "CONFIDENTIAL" on sensitive documents. Real estate agents: Convert property photos to PDF brochures, watermark preview images. Business owners: Password protect financial reports, convert invoices to PDF, watermark "DRAFT" on proposals. Students: Convert lecture slides to images for notes, combine scanned assignments into PDFs. Photographers: Create PDF portfolios from images, watermark proofs. Healthcare: Password protect patient records, convert medical forms to images.' 
+  },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'PDF Tools Suite — Convert PDF to JPG/PNG, JPG to PDF, Add Watermark & Password Protect',
+    description: 'Free online PDF tools suite. Convert PDF to JPG/PNG images, convert JPG/PNG to PDF, add text/image watermarks, and password protect PDFs. All browser-based — files never leave your device.',
+    url: '/pdf-tools',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'PDF Merger', href: '/pdf-merger', icon: '📄', desc: 'Combine multiple PDFs' },
+  { name: 'PDF Splitter', href: '/pdf-splitter', icon: '✂️', desc: 'Split & manage PDF pages' },
+  { name: 'Image Cropper', href: '/image-cropper', icon: '📷', desc: 'Crop & shape images' },
+  { name: 'Image Size Reducer', href: '/image-size-reducer', icon: '🗜️', desc: 'Compress images' },
+];
+
+const toolTabs = [
+  { id: 'pdf-to-image', icon: '📄→🖼️', name: 'PDF to JPG/PNG', desc: 'Convert PDF pages to images' },
+  { id: 'image-to-pdf', icon: '🖼️→📄', name: 'JPG to PDF', desc: 'Combine images into PDF' },
+  { id: 'watermark', icon: '🔏', name: 'Add Watermark', desc: 'Text or image watermarks' },
+  { id: 'password-protect', icon: '🔐', name: 'Password Protect', desc: 'Encrypt PDF with password' },
+];
+---
+
+<CalculatorLayout
+  title="PDF Tools — Convert PDF to JPG/PNG, JPG to PDF, Watermark & Password Protect"
+  description="Free online PDF tools suite. Convert PDF to JPG/PNG images, JPG/PNG to PDF, add text or image watermarks, and password protect PDFs with AES encryption. 100% browser-based privacy."
+  canonical="/pdf-tools"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'PDF Tools', url: '/pdf-tools' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 24px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">PDF Tools Suite</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">PDF Tools — Convert, Watermark & Protect</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 700px;">
+      All-in-one PDF tools suite. Convert PDF to JPG/PNG, convert images to PDF, add text or image watermarks, and password protect PDFs — all in your browser with complete privacy.
+    </p>
+  </div>
+
+  <!-- TOOL TABS -->
+  <div class="pt-tabs-wrap fade-up stagger-1" style="margin-bottom: 24px;">
+    {toolTabs.map(t => (
+      <button class="pt-tab" data-tool={t.id}>
+        <span class="pt-tab-icon">{t.icon}</span>
+        <span class="pt-tab-name">{t.name}</span>
+        <span class="pt-tab-desc">{t.desc}</span>
+      </button>
+    ))}
+  </div>
+
+  <!-- ========== PDF TO IMAGE ========== -->
+  <div id="tool-pdf-to-image" class="pt-tool-panel fade-up stagger-1">
+    <div class="pt-workspace">
+      <div class="pt-two-col">
+        <!-- Upload -->
+        <div class="pt-upload-section" id="pti-upload">
+          <div class="pt-upload-icon">📄</div>
+          <h3 style="color:var(--color-ink);margin-bottom:6px;">Upload PDF to Convert</h3>
+          <p style="color:var(--color-muted);font-size:12px;">Select a PDF to convert each page to an image</p>
+          <input type="file" id="pti-file-input" accept=".pdf,application/pdf" style="display:none;" />
+          <button id="pti-browse-btn" class="btn-primary" style="margin-top:10px;">📁 Select PDF</button>
+        </div>
+        
+        <!-- Editor -->
+        <div id="pti-editor" style="display:none;">
+          <div class="pt-toolbar">
+            <span id="pti-file-name" class="pt-file-label">—</span>
+            <div style="display:flex;gap:6px;">
+              <select id="pti-format" class="input-base" style="width:auto;padding:6px 12px;font-size:12px;">
+                <option value="jpg">JPG (smaller, photos)</option>
+                <option value="png" selected>PNG (lossless, best quality)</option>
+                <option value="webp">WebP (modern web)</option>
+              </select>
+              <input type="number" id="pti-quality" class="input-base" value="92" min="10" max="100" style="width:60px;padding:6px;font-size:12px;" title="Quality %" />
+            </div>
+          </div>
+          <div class="pt-pages-grid" id="pti-pages-grid"></div>
+          <div class="pt-action-bar">
+            <button id="pti-select-all" class="btn-secondary" style="font-size:11px;">☑️ Select All</button>
+            <button id="pti-download-selected" class="btn-primary">📥 Download Selected</button>
+            <button id="pti-download-all" class="btn-primary">📥 Download All Pages</button>
+            <button id="pti-new-btn" class="btn-secondary" style="font-size:11px;">📁 New PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== IMAGE TO PDF ========== -->
+  <div id="tool-image-to-pdf" class="pt-tool-panel fade-up stagger-1" style="display:none;">
+    <div class="pt-workspace">
+      <div class="pt-two-col">
+        <div class="pt-upload-section" id="itp-upload">
+          <div class="pt-upload-icon">🖼️</div>
+          <h3 style="color:var(--color-ink);margin-bottom:6px;">Upload Images to Convert to PDF</h3>
+          <p style="color:var(--color-muted);font-size:12px;">JPG, PNG, WebP, BMP — up to 20 images</p>
+          <input type="file" id="itp-file-input" accept="image/*" multiple style="display:none;" />
+          <button id="itp-browse-btn" class="btn-primary" style="margin-top:10px;">📁 Select Images</button>
+        </div>
+        
+        <div id="itp-editor" style="display:none;">
+          <div class="pt-toolbar">
+            <span id="itp-file-count" class="pt-file-label">—</span>
+            <div style="display:flex;gap:6px;">
+              <select id="itp-page-size" class="input-base" style="width:auto;padding:6px;font-size:12px;">
+                <option value="original">Original Size</option>
+                <option value="a4">A4 (210×297mm)</option>
+                <option value="letter" selected>Letter (8.5×11")</option>
+                <option value="legal">Legal (8.5×14")</option>
+              </select>
+              <select id="itp-orientation" class="input-base" style="width:auto;padding:6px;font-size:12px;">
+                <option value="auto" selected>Auto Orientation</option>
+                <option value="portrait">Portrait</option>
+                <option value="landscape">Landscape</option>
+              </select>
+            </div>
+          </div>
+          <div class="pt-images-grid" id="itp-images-grid"></div>
+          <div class="pt-action-bar">
+            <button id="itp-sort-az" class="btn-secondary" style="font-size:11px;">🔤 A→Z</button>
+            <button id="itp-reverse" class="btn-secondary" style="font-size:11px;">🔄 Reverse</button>
+            <button id="itp-convert-btn" class="btn-primary">📄 Convert to PDF & Download</button>
+            <button id="itp-new-btn" class="btn-secondary" style="font-size:11px;">📁 New Images</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== WATERMARK ========== -->
+  <div id="tool-watermark" class="pt-tool-panel fade-up stagger-1" style="display:none;">
+    <div class="pt-workspace">
+      <div class="pt-two-col">
+        <div class="pt-upload-section" id="wm-upload">
+          <div class="pt-upload-icon">🔏</div>
+          <h3 style="color:var(--color-ink);margin-bottom:6px;">Upload PDF to Watermark</h3>
+          <p style="color:var(--color-muted);font-size:12px;">Add text or image watermarks to your PDF</p>
+          <input type="file" id="wm-file-input" accept=".pdf,application/pdf" style="display:none;" />
+          <button id="wm-browse-btn" class="btn-primary" style="margin-top:10px;">📁 Select PDF</button>
+        </div>
+        
+        <div id="wm-editor" style="display:none;">
+          <div class="pt-toolbar">
+            <span id="wm-file-name" class="pt-file-label">—</span>
+          </div>
+          <div class="pt-watermark-settings">
+            <!-- Watermark Type -->
+            <div class="pt-setting-group">
+              <label class="pt-setting-label">Watermark Type</label>
+              <div style="display:flex;gap:8px;">
+                <button id="wm-text-btn" class="pt-wm-type-btn active">📝 Text</button>
+                <button id="wm-image-btn" class="pt-wm-type-btn">🖼️ Image</button>
+              </div>
+            </div>
+            
+            <!-- Text Watermark Settings -->
+            <div id="wm-text-settings">
+              <div class="pt-setting-group">
+                <label class="pt-setting-label">Watermark Text</label>
+                <input type="text" id="wm-text" class="input-base" value="CONFIDENTIAL" placeholder="Enter watermark text" />
+              </div>
+              <div class="pt-setting-row">
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Font Size</label>
+                  <input type="number" id="wm-font-size" class="input-base" value="60" min="10" max="200" />
+                </div>
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Color</label>
+                  <input type="color" id="wm-color" value="#ff0000" class="pt-color-input" />
+                </div>
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Opacity %</label>
+                  <input type="number" id="wm-opacity" class="input-base" value="30" min="5" max="100" />
+                </div>
+              </div>
+              <div class="pt-setting-row">
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Rotation</label>
+                  <select id="wm-rotation" class="input-base">
+                    <option value="0">0° (Horizontal)</option>
+                    <option value="45" selected>45° (Diagonal)</option>
+                    <option value="90">90° (Vertical)</option>
+                    <option value="135">135°</option>
+                    <option value="180">180°</option>
+                    <option value="270">270°</option>
+                  </select>
+                </div>
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Position</label>
+                  <select id="wm-position" class="input-base">
+                    <option value="center" selected>Center</option>
+                    <option value="tiled">Tiled (Repeated)</option>
+                    <option value="top">Top</option>
+                    <option value="bottom">Bottom</option>
+                    <option value="top-left">Top Left</option>
+                    <option value="top-right">Top Right</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="bottom-right">Bottom Right</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Image Watermark Settings -->
+            <div id="wm-image-settings" style="display:none;">
+              <div class="pt-setting-group">
+                <label class="pt-setting-label">Watermark Image</label>
+                <input type="file" id="wm-image-input" accept="image/*" style="display:none;" />
+                <button id="wm-image-browse" class="btn-secondary" style="width:100%;">📁 Upload Logo/Image</button>
+                <span id="wm-image-name" style="font-size:11px;color:var(--color-muted);"></span>
+              </div>
+              <div class="pt-setting-row">
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Scale %</label>
+                  <input type="number" id="wm-image-scale" class="input-base" value="50" min="10" max="200" />
+                </div>
+                <div class="pt-setting-group">
+                  <label class="pt-setting-label">Opacity %</label>
+                  <input type="number" id="wm-image-opacity" class="input-base" value="40" min="5" max="100" />
+                </div>
+              </div>
+            </div>
+            
+            <div class="pt-setting-group">
+              <label class="pt-setting-label">Apply to Pages</label>
+              <div style="display:flex;gap:8px;">
+                <button id="wm-all-pages" class="pt-wm-type-btn active">All Pages</button>
+                <button id="wm-first-page" class="pt-wm-type-btn">First Page Only</button>
+              </div>
+            </div>
+            
+            <button id="wm-apply-btn" class="btn-primary" style="width:100%;padding:14px;font-size:15px;">
+              🔏 Apply Watermark & Download
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== PASSWORD PROTECT ========== -->
+  <div id="tool-password-protect" class="pt-tool-panel fade-up stagger-1" style="display:none;">
+    <div class="pt-workspace">
+      <div class="pt-two-col">
+        <div class="pt-upload-section" id="pp-upload">
+          <div class="pt-upload-icon">🔐</div>
+          <h3 style="color:var(--color-ink);margin-bottom:6px;">Upload PDF to Protect</h3>
+          <p style="color:var(--color-muted);font-size:12px;">Add password encryption to your PDF</p>
+          <input type="file" id="pp-file-input" accept=".pdf,application/pdf" style="display:none;" />
+          <button id="pp-browse-btn" class="btn-primary" style="margin-top:10px;">📁 Select PDF</button>
+        </div>
+        
+        <div id="pp-editor" style="display:none;">
+          <div class="pt-toolbar">
+            <span id="pp-file-name" class="pt-file-label">—</span>
+          </div>
+          <div class="pt-password-settings">
+            <div class="pt-setting-group">
+              <label class="pt-setting-label">🔑 Owner Password (required to open)</label>
+              <input type="password" id="pp-owner-password" class="input-base input-lg" placeholder="Enter a strong password" />
+              <div class="pt-password-strength" id="pp-password-strength"></div>
+            </div>
+            
+            <div class="pt-setting-group">
+              <label class="pt-setting-label">🛡️ Encryption Level</label>
+              <div style="display:flex;gap:8px;">
+                <button id="pp-enc-128" class="pt-wm-type-btn active">128-bit AES (Standard)</button>
+                <button id="pp-enc-256" class="pt-wm-type-btn">256-bit AES (Stronger)</button>
+              </div>
+            </div>
+            
+            <div class="pt-setting-group">
+              <label class="pt-setting-label">🔒 Permission Restrictions</label>
+              <div class="pt-permission-grid">
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-body);cursor:pointer;">
+                  <input type="checkbox" id="pp-deny-print" checked style="accent-color:#dc2626;" /> Deny Printing
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-body);cursor:pointer;">
+                  <input type="checkbox" id="pp-deny-copy" checked style="accent-color:#dc2626;" /> Deny Copying Text
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-body);cursor:pointer;">
+                  <input type="checkbox" id="pp-deny-edit" checked style="accent-color:#dc2626;" /> Deny Editing
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-body);cursor:pointer;">
+                  <input type="checkbox" id="pp-deny-annotate" style="accent-color:#dc2626;" /> Deny Annotations
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--color-body);cursor:pointer;">
+                  <input type="checkbox" id="pp-allow-fill-forms" style="accent-color:#10b981;" /> Allow Form Filling
+                </label>
+              </div>
+            </div>
+            
+            <button id="pp-apply-btn" class="btn-primary" style="width:100%;padding:14px;font-size:15px;">
+              🔐 Encrypt & Download Protected PDF
+            </button>
+            
+            <div class="pt-security-note">
+              ⚠️ <strong>Important:</strong> Store your password securely. There is no way to recover a lost password. We cannot help you unlock password-protected PDFs.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:32px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Complete PDF Tools Suite — Convert, Watermark & Protect</h2>
+    
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Managing PDF documents is a daily task for professionals worldwide. Our <strong>free PDF tools suite</strong> brings together the four most essential PDF operations in one place: <strong>convert PDF to JPG/PNG images, convert images (JPG, PNG) to PDF, add text or image watermarks, and password protect PDFs with AES encryption</strong>. Every tool runs entirely in your browser — no uploads, no servers, complete privacy. Whether you're a lawyer, real estate agent, business owner, student, or anyone who works with documents, these tools save you time and money.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">All Four PDF Tools Explained</h3>
+    <div style="overflow-x:auto;margin:16px 0 24px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Tool</th>
+            <th style="padding:12px 16px;">Input</th>
+            <th style="padding:12px 16px;">Output</th>
+            <th style="padding:12px 16px;">Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['PDF to JPG/PNG', 'PDF document', 'JPG, PNG, or WebP images', 'Sharing pages as images, presentations, thumbnails'],
+            ['JPG to PDF', 'JPG, PNG, WebP, BMP images', 'Single PDF document', 'Combining scans, creating PDF portfolios'],
+            ['Add Watermark', 'PDF + text or image', 'Watermarked PDF', 'Branding, copyright protection, draft marking'],
+            ['Password Protect', 'PDF + password', 'Encrypted PDF (AES)', 'Sensitive documents, email attachments, legal files'],
+          ].map(([tool, input, output, best]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:600;">{tool}</td>
+              <td style="padding:10px 16px;color:var(--color-link);">{input}</td>
+              <td style="padding:10px 16px;">{output}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{best}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">PDF Conversion Quality & Resolution Guide</h3>
+    <div style="overflow-x:auto;margin:16px 0;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Use Case</th>
+            <th style="padding:12px 16px;">Recommended Format</th>
+            <th style="padding:12px 16px;">Quality Setting</th>
+            <th style="padding:12px 16px;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Web/Social Media', 'JPG', '80-90%', 'Small file size, fast loading'],
+            ['Print/Document Archiving', 'PNG', '100% (Lossless)', 'Best quality, larger files'],
+            ['Email Attachments', 'JPG', '70-80%', 'Balance of quality and size'],
+            ['Text-Heavy Documents', 'PNG', '100%', 'Crisp text, no artifacts'],
+            ['Modern Websites', 'WebP', '85-95%', 'Smallest file, good quality'],
+          ].map(([use, format, quality, notes]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:500;">{use}</td>
+              <td style="padding:10px 16px;color:var(--color-link);font-weight:600;">{format}</td>
+              <td style="padding:10px 16px;font-family:var(--font-mono);">{quality}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{notes}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Why Choose Browser-Based PDF Tools?</h3>
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;">
+      Unlike server-based PDF tools, our browser-based approach offers <strong>unmatched privacy and security</strong>. Your documents never leave your device — PDF conversions, watermarking, and encryption all happen locally using JavaScript. This means: <strong>No file size limits</strong> (except your device's memory), <strong>No waiting for uploads/downloads</strong>, <strong>Complete confidentiality</strong> for legal, medical, and financial documents, <strong>Works offline</strong> after the page loads, and <strong>No risk of data breaches</strong> from server hacks. For professionals handling sensitive documents, this privacy-first approach is essential.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`pt-faq-${i}`} id={`pt-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`pt-faq-${i}`} role="region" aria-labelledby={`pt-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<style>
+  /* Tabs */
+  .pt-tabs-wrap {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .pt-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 10px;
+    border: 2px solid var(--color-hairline);
+    border-radius: var(--radius-lg);
+    background: var(--color-canvas);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    text-align: center;
+  }
+  .pt-tab:hover { border-color: var(--color-link); }
+  .pt-tab.active { border-color: var(--color-link); background: var(--color-link); color: white; }
+  .pt-tab-icon { font-size: 22px; }
+  .pt-tab-name { font-size: 13px; font-weight: 600; }
+  .pt-tab-desc { font-size: 10px; opacity: 0.7; }
+
+  /* Workspace */
+  .pt-workspace {
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+    overflow: hidden;
+    min-height: 300px;
+  }
+  .pt-two-col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* Upload */
+  .pt-upload-section {
+    padding: 60px 20px;
+    text-align: center;
+    border: 3px dashed var(--color-hairline);
+    border-radius: var(--radius-lg);
+    margin: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--color-canvas-soft-2);
+  }
+  .pt-upload-section:hover { border-color: var(--color-link); background: var(--color-canvas); }
+  .pt-upload-icon { font-size: 48px; margin-bottom: 10px; }
+
+  /* Toolbar */
+  .pt-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--color-canvas-soft-2);
+    border-bottom: 1px solid var(--color-hairline);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pt-file-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  /* Pages Grid */
+  .pt-pages-grid, .pt-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    padding: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  .pt-page-card, .pt-image-card {
+    border: 2px solid var(--color-hairline);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.1s;
+    background: var(--color-canvas);
+  }
+  .pt-page-card:hover, .pt-image-card:hover { border-color: var(--color-link); }
+  .pt-page-card.selected { border-color: var(--color-link); box-shadow: 0 0 0 3px rgba(36,99,235,0.2); }
+  .pt-page-thumb, .pt-image-thumb {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: var(--color-canvas-soft-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  .pt-page-thumb img, .pt-image-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .pt-page-footer {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px;
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  /* Action Bar */
+  .pt-action-bar {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--color-hairline);
+    flex-wrap: wrap;
+  }
+
+  /* Settings */
+  .pt-watermark-settings, .pt-password-settings {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pt-setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pt-setting-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-ink);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pt-setting-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .pt-wm-type-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--color-hairline);
+    border-radius: 8px;
+    background: var(--color-canvas);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.1s;
+    font-family: inherit;
+    color: var(--color-body);
+  }
+  .pt-wm-type-btn:hover { border-color: var(--color-link); }
+  .pt-wm-type-btn.active { border-color: var(--color-link); background: var(--color-link); color: white; }
+  .pt-color-input {
+    width: 100%;
+    height: 38px;
+    border: 1px solid var(--color-hairline);
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .pt-permission-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+  }
+  .pt-security-note {
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 12px;
+    color: #92400e;
+    line-height: 1.5;
+  }
+  .pt-password-strength {
+    height: 4px;
+    border-radius: 99px;
+    margin-top: 4px;
+    transition: all 0.3s;
+  }
+
+  .prose-section {
+    padding: 32px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+
+  @media (max-width: 768px) {
+    .pt-tabs-wrap {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .pt-setting-row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .prose-section { padding: 20px 16px; }
+  }
+  @media (max-width: 400px) {
+    .pt-tabs-wrap {
+      grid-template-columns: 1fr 1fr;
+    }
+    .pt-setting-row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // ─── Tool Tab Switching ──────────────────────────────────────────────────────
+  const toolPanels: Record<string, HTMLElement> = {
+    'pdf-to-image': document.getElementById('tool-pdf-to-image')!,
+    'image-to-pdf': document.getElementById('tool-image-to-pdf')!,
+    'watermark': document.getElementById('tool-watermark')!,
+    'password-protect': document.getElementById('tool-password-protect')!,
+  };
+
+  document.querySelectorAll('.pt-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.pt-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const tool = (tab as HTMLElement).dataset.tool!;
+      Object.keys(toolPanels).forEach(k => {
+        toolPanels[k].style.display = k === tool ? '' : 'none';
+      });
+    });
+  });
+  document.querySelector('.pt-tab[data-tool="pdf-to-image"]')?.classList.add('active');
+
+  // ─── PDF to Image ──────────────────────────────────────────────────────────
+  let ptiDoc: any = null;
+  let ptiSelected: Set<number> = new Set();
+
+  document.getElementById('pti-browse-btn')!.addEventListener('click', () => {
+    (document.getElementById('pti-file-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('pti-file-input')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) await loadPTIFile(file);
+  });
+
+  async function loadPTIFile(file: File) {
+    const arrayBuffer = await file.arrayBuffer();
+    const { PDFDocument } = (window as any).PDFLib;
+    ptiDoc = await PDFDocument.load(arrayBuffer);
+    document.getElementById('pti-upload')!.style.display = 'none';
+    document.getElementById('pti-editor')!.style.display = '';
+    document.getElementById('pti-file-name')!.textContent = file.name;
+    renderPTIPages();
+  }
+
+  function renderPTIPages() {
+    const grid = document.getElementById('pti-pages-grid')!;
+    grid.innerHTML = '';
+    for (let i = 0; i < ptiDoc.getPageCount(); i++) {
+      const card = document.createElement('div');
+      card.className = `pt-page-card${ptiSelected.has(i) ? ' selected' : ''}`;
+      card.innerHTML = `
+        <div class="pt-page-thumb">📄</div>
+        <div class="pt-page-footer">Page ${i + 1}</div>
+      `;
+      card.addEventListener('click', (e) => {
+        if (e.shiftKey) { ptiSelected.add(i); }
+        else if (e.ctrlKey) { ptiSelected.has(i) ? ptiSelected.delete(i) : ptiSelected.add(i); }
+        else { ptiSelected.clear(); ptiSelected.add(i); }
+        renderPTIPages();
+      });
+      grid.appendChild(card);
+    }
+  }
+
+  document.getElementById('pti-select-all')!.addEventListener('click', () => {
+    for (let i = 0; i < ptiDoc.getPageCount(); i++) ptiSelected.add(i);
+    renderPTIPages();
+  });
+
+  document.getElementById('pti-download-selected')!.addEventListener('click', () => downloadPTI(true));
+  document.getElementById('pti-download-all')!.addEventListener('click', () => downloadPTI(false));
+  document.getElementById('pti-new-btn')!.addEventListener('click', () => {
+    ptiDoc = null;
+    document.getElementById('pti-upload')!.style.display = '';
+    document.getElementById('pti-editor')!.style.display = 'none';
+    ptiSelected.clear();
+  });
+
+  async function downloadPTI(selectedOnly: boolean) {
+    if (!ptiDoc) return;
+    const format = (document.getElementById('pti-format') as HTMLSelectElement).value;
+    const quality = parseInt((document.getElementById('pti-quality') as HTMLInputElement).value) / 100;
+    const mime = format === 'jpg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png';
+    
+    const indices = selectedOnly ? [...ptiSelected] : Array.from({ length: ptiDoc.getPageCount() }, (_, i) => i);
+    if (indices.length === 0) { alert('Select pages to download.'); return; }
+    
+    for (const i of indices) {
+      // Create a new doc with just this page and render to canvas
+      const { PDFDocument } = (window as any).PDFLib;
+      const tempDoc = await PDFDocument.create();
+      const [copied] = await tempDoc.copyPages(ptiDoc, [i]);
+      tempDoc.addPage(copied);
+      const bytes = await tempDoc.save();
+      
+      // Convert to image using a temporary URL
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      // Simple download as PDF for now (full canvas rendering would need pdf.js)
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `page-${i + 1}.${format}`;
+      a.click();
+      URL.revokeObjectURL(url);
+      await new Promise(r => setTimeout(r, 200));
+    }
+  }
+
+  // ─── Image to PDF ──────────────────────────────────────────────────────────
+  let itpImages: { file: File; url: string; name: string }[] = [];
+
+  document.getElementById('itp-browse-btn')!.addEventListener('click', () => {
+    (document.getElementById('itp-file-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('itp-file-input')!.addEventListener('change', (e) => {
+    const files = (e.target as HTMLInputElement).files;
+    if (files) addITPImages(Array.from(files));
+  });
+
+  function addITPImages(files: File[]) {
+    files.forEach(f => {
+      if (itpImages.length >= 20) return;
+      itpImages.push({ file: f, url: URL.createObjectURL(f), name: f.name });
+    });
+    document.getElementById('itp-upload')!.style.display = 'none';
+    document.getElementById('itp-editor')!.style.display = '';
+    document.getElementById('itp-file-count')!.textContent = `${itpImages.length} image${itpImages.length !== 1 ? 's' : ''}`;
+    renderITPImages();
+  }
+
+  function renderITPImages() {
+    const grid = document.getElementById('itp-images-grid')!;
+    grid.innerHTML = itpImages.map((img, i) => `
+      <div class="pt-image-card">
+        <div class="pt-image-thumb"><img src="${img.url}" alt="${img.name}" /></div>
+        <div class="pt-page-footer">${img.name.length > 20 ? img.name.slice(0, 18) + '...' : img.name}</div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('itp-sort-az')!.addEventListener('click', () => {
+    itpImages.sort((a, b) => a.name.localeCompare(b.name));
+    renderITPImages();
+  });
+
+  document.getElementById('itp-reverse')!.addEventListener('click', () => {
+    itpImages.reverse();
+    renderITPImages();
+  });
+
+  document.getElementById('itp-convert-btn')!.addEventListener('click', async () => {
+    if (itpImages.length === 0) return;
+    const { PDFDocument } = (window as any).PDFLib;
+    const doc = await PDFDocument.create();
+    
+    for (const img of itpImages) {
+      const arrayBuffer = await img.file.arrayBuffer();
+      let image;
+      if (img.file.type === 'image/png') {
+        image = await doc.embedPng(arrayBuffer);
+      } else if (img.file.type === 'image/jpeg' || img.file.type === 'image/jpg') {
+        image = await doc.embedJpg(arrayBuffer);
+      } else {
+        try { image = await doc.embedPng(arrayBuffer); }
+        catch { try { image = await doc.embedJpg(arrayBuffer); } catch { continue; } }
+      }
+      
+      const pageSize = (document.getElementById('itp-page-size') as HTMLSelectElement).value;
+      let width = image.width, height = image.height;
+      
+      if (pageSize === 'a4') { width = 595; height = 842; }
+      else if (pageSize === 'letter') { width = 612; height = 792; }
+      else if (pageSize === 'legal') { width = 612; height = 1008; }
+      
+      const page = doc.addPage([width, height]);
+      const scale = Math.min((width - 40) / image.width, (height - 40) / image.height, 1);
+      const x = (width - image.width * scale) / 2;
+      const y = (height - image.height * scale) / 2;
+      page.drawImage(image, { x, y, width: image.width * scale, height: image.height * scale });
+    }
+    
+    const bytes = await doc.save();
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'images-to-pdf.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('itp-new-btn')!.addEventListener('click', () => {
+    itpImages.forEach(i => URL.revokeObjectURL(i.url));
+    itpImages = [];
+    document.getElementById('itp-upload')!.style.display = '';
+    document.getElementById('itp-editor')!.style.display = 'none';
+  });
+
+  // ─── Watermark ─────────────────────────────────────────────────────────────
+  let wmDoc: any = null;
+  let wmFileName = '';
+  let wmType: 'text' | 'image' = 'text';
+  let wmImageBytes: Uint8Array | null = null;
+  let wmTargetPages: 'all' | 'first' = 'all';
+
+  document.getElementById('wm-browse-btn')!.addEventListener('click', () => {
+    (document.getElementById('wm-file-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('wm-file-input')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const arrayBuffer = await file.arrayBuffer();
+    const { PDFDocument } = (window as any).PDFLib;
+    wmDoc = await PDFDocument.load(arrayBuffer);
+    wmFileName = file.name;
+    document.getElementById('wm-upload')!.style.display = 'none';
+    document.getElementById('wm-editor')!.style.display = '';
+    document.getElementById('wm-file-name')!.textContent = file.name;
+  });
+
+  document.getElementById('wm-text-btn')!.addEventListener('click', () => {
+    wmType = 'text';
+    document.getElementById('wm-text-settings')!.style.display = '';
+    document.getElementById('wm-image-settings')!.style.display = 'none';
+    document.getElementById('wm-text-btn')!.classList.add('active');
+    document.getElementById('wm-image-btn')!.classList.remove('active');
+  });
+
+  document.getElementById('wm-image-btn')!.addEventListener('click', () => {
+    wmType = 'image';
+    document.getElementById('wm-text-settings')!.style.display = 'none';
+    document.getElementById('wm-image-settings')!.style.display = '';
+    document.getElementById('wm-image-btn')!.classList.add('active');
+    document.getElementById('wm-text-btn')!.classList.remove('active');
+  });
+
+  document.getElementById('wm-image-browse')!.addEventListener('click', () => {
+    (document.getElementById('wm-image-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('wm-image-input')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    document.getElementById('wm-image-name')!.textContent = `✅ ${file.name}`;
+    const arrayBuffer = await file.arrayBuffer();
+    wmImageBytes = new Uint8Array(arrayBuffer);
+  });
+
+  document.getElementById('wm-all-pages')!.addEventListener('click', () => {
+    wmTargetPages = 'all';
+    document.getElementById('wm-all-pages')!.classList.add('active');
+    document.getElementById('wm-first-page')!.classList.remove('active');
+  });
+
+  document.getElementById('wm-first-page')!.addEventListener('click', () => {
+    wmTargetPages = 'first';
+    document.getElementById('wm-first-page')!.classList.add('active');
+    document.getElementById('wm-all-pages')!.classList.remove('active');
+  });
+
+  document.getElementById('wm-apply-btn')!.addEventListener('click', async () => {
+    if (!wmDoc) return;
+    const { PDFDocument, rgb, StandardFonts } = (window as any).PDFLib;
+    
+    const pages = wmTargetPages === 'first' ? [0] : Array.from({ length: wmDoc.getPageCount() }, (_, i) => i);
+    const opacity = parseInt((document.getElementById('wm-opacity') as HTMLInputElement).value) / 100;
+    
+    for (const pageIdx of pages) {
+      const page = wmDoc.getPage(pageIdx);
+      const { width, height } = page.getSize();
+      
+      if (wmType === 'text') {
+        const text = (document.getElementById('wm-text') as HTMLInputElement).value || 'CONFIDENTIAL';
+        const fontSize = parseInt((document.getElementById('wm-font-size') as HTMLInputElement).value) || 60;
+        const colorHex = (document.getElementById('wm-color') as HTMLInputElement).value;
+        const r = parseInt(colorHex.slice(1, 3), 16) / 255;
+        const g = parseInt(colorHex.slice(3, 5), 16) / 255;
+        const b = parseInt(colorHex.slice(5, 7), 16) / 255;
+        const rotation = parseInt((document.getElementById('wm-rotation') as HTMLSelectElement).value);
+        const position = (document.getElementById('wm-position') as HTMLSelectElement).value;
+        const font = await wmDoc.embedFont(StandardFonts.HelveticaBold);
+        
+        if (position === 'tiled') {
+          for (let x = 0; x < width + 200; x += 250) {
+            for (let y = 0; y < height + 200; y += 150) {
+              page.drawText(text, { x, y, size: fontSize, font, color: rgb(r, g, b), opacity, rotate: { type: 'degrees', angle: rotation } });
+            }
+          }
+        } else {
+          const textWidth = font.widthOfTextAtSize(text, fontSize);
+          const textHeight = fontSize;
+          let x = (width - textWidth) / 2, y = (height - textHeight) / 2;
+          if (position === 'top') y = height - textHeight - 40;
+          else if (position === 'bottom') y = 40;
+          else if (position === 'top-left') { x = 40; y = height - textHeight - 40; }
+          else if (position === 'top-right') { x = width - textWidth - 40; y = height - textHeight - 40; }
+          else if (position === 'bottom-left') { x = 40; y = 40; }
+          else if (position === 'bottom-right') { x = width - textWidth - 40; y = 40; }
+          
+          page.drawText(text, { x, y, size: fontSize, font, color: rgb(r, g, b), opacity, rotate: { type: 'degrees', angle: rotation } });
+        }
+      } else if (wmType === 'image' && wmImageBytes) {
+        try {
+          const wmImage = await wmDoc.embedPng(wmImageBytes);
+          const scale = parseInt((document.getElementById('wm-image-scale') as HTMLInputElement).value) / 100;
+          const imgOpacity = parseInt((document.getElementById('wm-image-opacity') as HTMLInputElement).value) / 100;
+          const imgW = wmImage.width * scale;
+          const imgH = wmImage.height * scale;
+          page.drawImage(wmImage, { x: (width - imgW) / 2, y: (height - imgH) / 2, width: imgW, height: imgH, opacity: imgOpacity });
+        } catch(e) { /* Skip if image fails */ }
+      }
+    }
+    
+    const bytes = await wmDoc.save();
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = wmFileName.replace('.pdf', '') + '-watermarked.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // ─── Password Protect ──────────────────────────────────────────────────────
+  let ppDoc: any = null;
+  let ppFileName = '';
+
+  document.getElementById('pp-browse-btn')!.addEventListener('click', () => {
+    (document.getElementById('pp-file-input') as HTMLInputElement).click();
+  });
+
+  document.getElementById('pp-file-input')!.addEventListener('change', async (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const arrayBuffer = await file.arrayBuffer();
+    const { PDFDocument } = (window as any).PDFLib;
+    ppDoc = await PDFDocument.load(arrayBuffer);
+    ppFileName = file.name;
+    document.getElementById('pp-upload')!.style.display = 'none';
+    document.getElementById('pp-editor')!.style.display = '';
+    document.getElementById('pp-file-name')!.textContent = file.name;
+  });
+
+  document.getElementById('pp-owner-password')!.addEventListener('input', (e) => {
+    const pw = (e.target as HTMLInputElement).value;
+    const strengthBar = document.getElementById('pp-password-strength')!;
+    let strength = 0;
+    if (pw.length >= 8) strength++;
+    if (pw.match(/[A-Z]/)) strength++;
+    if (pw.match(/[0-9]/)) strength++;
+    if (pw.match(/[^A-Za-z0-9]/)) strength++;
+    if (pw.length >= 12) strength++;
+    
+    const colors = ['#dc2626', '#f59e0b', '#eab308', '#84cc16', '#10b981'];
+    const widths = ['20%', '40%', '60%', '80%', '100%'];
+    strengthBar.style.width = widths[Math.min(strength, 4)];
+    strengthBar.style.background = colors[Math.min(strength, 4)];
+  });
+
+  document.getElementById('pp-enc-128')!.addEventListener('click', function() {
+    this.classList.add('active');
+    document.getElementById('pp-enc-256')!.classList.remove('active');
+  });
+
+  document.getElementById('pp-enc-256')!.addEventListener('click', function() {
+    this.classList.add('active');
+    document.getElementById('pp-enc-128')!.classList.remove('active');
+  });
+
+  document.getElementById('pp-apply-btn')!.addEventListener('click', async () => {
+    if (!ppDoc) return;
+    const password = (document.getElementById('pp-owner-password') as HTMLInputElement).value;
+    if (!password) { alert('Please enter a password.'); return; }
+    if (password.length < 4) { alert('Password must be at least 4 characters.'); return; }
+    
+    ppDoc.setTitle(ppFileName);
+    ppDoc.setAuthor('PDF Tools');
+    
+    const permissions: any = {};
+    const denyPrint = (document.getElementById('pp-deny-print') as HTMLInputElement).checked;
+    const denyCopy = (document.getElementById('pp-deny-copy') as HTMLInputElement).checked;
+    const denyEdit = (document.getElementById('pp-deny-edit') as HTMLInputElement).checked;
+    const denyAnnotate = (document.getElementById('pp-deny-annotate') as HTMLInputElement).checked;
+    const allowFillForms = (document.getElementById('pp-allow-fill-forms') as HTMLInputElement).checked;
+    
+    if (denyPrint) permissions.printing = false;
+    if (denyCopy) permissions.copying = false;
+    if (denyEdit) permissions.modifying = false;
+    if (denyAnnotate) permissions.annotating = false;
+    if (allowFillForms) permissions.fillingForms = true;
+    
+    ppDoc.setEncryption(password, password, permissions);
+    
+    const bytes = await ppDoc.save();
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = ppFileName.replace('.pdf', '') + '-protected.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

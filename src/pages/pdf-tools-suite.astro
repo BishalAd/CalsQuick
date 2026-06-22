@@ -1,0 +1,131 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { q: 'What PDF tools are available in this suite?', a: 'This suite currently includes a PDF Merger. Additional tools such as PDF Splitter, Compressor, and Page Rearranger are planned for future releases.' },
+  { q: 'Are these tools free to use?', a: 'Yes, all tools in the suite are completely free and run entirely in your browser — no registration, no ads, and no data leaves your device.' },
+  { q: 'Do I need to install any software?', a: 'No. All tools are web‑based and work in any modern browser. Just open the page and start using them.' },
+  { q: 'Is my data secure when using these PDF tools?', a: 'Absolutely. All processing happens locally in your browser. Your files are never uploaded to any server, ensuring complete privacy.' },
+  { q: 'Can I use these tools on mobile devices?', a: 'Yes, the suite is responsive and works on smartphones and tablets as well as desktop computers.' },
+];
+
+const schemas = [
+  generateSoftwareApplication({ name: 'PDF Tools Suite', description: 'A collection of free, offline PDF utilities that run in your browser. Includes PDF Merger, with more tools coming soon.', url: '/pdf-tools-suite' }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'PDF Merger', href: '/pdf-merger', icon: '📄', desc: 'Combine multiple PDF files into one' },
+  { name: 'Word Counter', href: '/word-counter', icon: '📝', desc: 'Count words, characters, and paragraphs' },
+  { name: 'JSON Formatter', href: '/json-formatter', icon: '{}', desc: 'Validate and beautify JSON data' },
+];
+
+---
+<CalculatorLayout
+  title="PDF Tools Suite — Free Offline PDF Utilities"
+  description="A collection of free, browser‑based PDF tools. Merge, split, compress, and more — all with zero uploads and full privacy."
+  canonical="/pdf-tools-suite"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'PDF Tools Suite', url: '/pdf-tools-suite' }]}
+  relatedCalcs={relatedCalcs}
+>
+  <div style="margin-bottom: 32px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Productivity Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">PDF Tools Suite</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 600px;">
+      Access a growing set of free PDF utilities that run entirely in your browser. No uploads, no installations, and your data stays private.
+    </p>
+  </div>
+
+  <div class="calc-panel fade-up stagger-1" id="pdf-tools-suite">
+    <!-- Tool Cards -->
+    <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+      <!-- PDF Merger Card -->
+      <div class="tool-card" style="border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <span style="font-size: 28px;">📄</span>
+          <div>
+            <h2 style="font-size: 1.2em; margin: 0; color: var(--color-ink);">PDF Merger</h2>
+            <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">Combine multiple PDF files into one document</p>
+          </div>
+        </div>
+        <p style="color: var(--color-body); line-height: 1.5; margin-bottom: 16px;">
+          Merge two or more PDF files while preserving order, quality, and metadata. All processing happens locally — no file leaves your device.
+        </p>
+        <a href="/pdf-merger" class="btn-primary" style="width: 100%; text-align: center;">Open PDF Merger</a>
+      </div>
+
+      <!-- Placeholder for Future Tools -->
+      <div class="tool-card" style="border: 1px solid var(--color-hairline-soft); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas-soft);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <span style="font-size: 28px; opacity: 0.6;">🔧</span>
+          <div>
+            <h2 style="font-size: 1.2em; margin: 0; color: var(--color-muted);">More Tools Coming Soon</h2>
+            <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">PDF Splitter, Compressor, Page Rearranger, and more</p>
+          </div>
+        </div>
+        <p style="color: var(--color-muted); font-style: italic; text-align: center;">
+          Stay tuned — additional PDF utilities will be added based on user demand.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO Article Section -->
+  <div style="margin-top: 48px;" class="prose-section fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 20px;">Why Use a Local PDF Tools Suite?</h2>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      Handling PDFs often involves sensitive information — contracts, invoices, personal documents, or confidential reports. Uploading files to an online service exposes them to potential interception, storage, or misuse. A fully client‑side PDF tools suite eliminates that risk entirely.
+    </p>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Advantages of Offline PDF Tools</h3>
+    <ul style="margin-left: 20px; margin-bottom: 16px; color: var(--color-body); line-height: 26px; font-size: 15px; display: flex; flex-direction: column; gap: 8px;">
+      <li><strong>Zero data exposure:</strong> Your files never leave your browser or device.</li>
+      <li><strong>No registration or ads:</strong> Pure utility without tracking, sign‑ups, or distracting advertisements.</li>
+      <li><strong>Works offline:</strong> Once loaded, the tools continue to function even without an internet connection (except for the initial load).</li>
+      <li><strong>Cross‑platform:</strong> Use on Windows, macOS, Linux, Android, iOS — any device with a modern browser.</li>
+      <li><strong>Always up to date:</strong> No need to manage versions or patches; the web app delivers the latest features automatically.</li>
+    </ul>
+    <h3 class="text-body-lg-strong" style="color: var(--color-ink); margin-top: 24px; margin-bottom: 12px;">Planned Tools in the Suite</h3>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px; margin-bottom: 16px;">
+      Based on user feedback, the following tools are slated for future releases:
+    </p>
+    <ol style="margin-left: 20px; color: var(--color-body); line-height: 28px; font-size: 15px;">
+      <li><strong>PDF Splitter:</strong> Extract specific pages or divide a document into multiple files.</li>
+      <li><strong>PDF Compressor:</strong> Reduce file size by optimizing images and removing unused objects while preserving quality.</li>
+      <li><strong>PDF Page Rearranger:</strong> Drag‑and‑drop to reorder, rotate, or delete pages within a document.</li>
+      <li><strong>PDF to Image Converter:</strong> Export pages as PNG or JPEG for easy sharing or embedding.</li>
+      <li><strong>Encryption & Decryption:</strong> Add password protection or remove it from PDF files (with the correct credentials).</li>
+    </ol>
+    <p class="text-body-md" style="color: var(--color-body); line-height: 28px;">
+      By keeping all operations local, you gain both convenience and peace of mind — knowing that your documents remain yours alone.
+    </p>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top: 48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color: var(--color-ink); margin-bottom: 24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top: 1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`pdfsuite-faq-${i}`} id={`pdfsuite-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`pdfsuite-faq-${i}`} role="region" aria-labelledby={`pdfsuite-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</CalculatorLayout>
+
+<style>
+  .tool-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+  .tool-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-md); }
+</style>
+
+<script>
+  // No interactive logic needed for this landing page
+</script>

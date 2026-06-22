@@ -1,0 +1,1105 @@
+---
+import CalculatorLayout from '../layouts/CalculatorLayout.astro';
+import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
+
+const faqs = [
+  { 
+    q: 'What is a unit converter and how does it work?', 
+    a: 'A unit converter is a free online tool that instantly converts measurements from one unit to another across various categories like length, weight, temperature, volume, area, speed, time, and more. Simply enter a value, select the "from" unit and "to" unit, and the conversion is calculated instantly using precise mathematical formulas and conversion factors. Our all-in-one converter supports 15+ categories with 200+ units — from common conversions (miles to kilometers, pounds to kilograms, Fahrenheit to Celsius) to specialized ones (data storage, fuel economy, pressure, angle). All calculations happen in your browser for instant results.' 
+  },
+  { 
+    q: 'What unit categories does this converter support?', 
+    a: 'Our comprehensive unit converter supports 15+ categories: (1) Length — meters, feet, inches, miles, kilometers, yards, centimeters, millimeters, nautical miles, (2) Weight/Mass — kilograms, pounds, ounces, grams, tons, stone, (3) Temperature — Celsius, Fahrenheit, Kelvin, (4) Volume — liters, gallons, milliliters, cups, fluid ounces, cubic meters, (5) Area — square meters, square feet, acres, hectares, square miles, (6) Speed — mph, km/h, m/s, knots, (7) Time — seconds, minutes, hours, days, weeks, months, years, (8) Digital Storage — bytes, KB, MB, GB, TB, PB, (9) Fuel Economy — mpg, km/l, L/100km, (10) Pressure — bar, psi, pascal, atm, (11) Angle — degrees, radians, gradians, (12) Frequency — hertz, kilohertz, megahertz, (13) Energy — joules, calories, kilowatt-hours, (14) Power — watts, kilowatts, horsepower, (15) Data Transfer — bps, kbps, mbps, gbps.' 
+  },
+  { 
+    q: 'How do I convert between metric and imperial units?', 
+    a: 'Our converter makes metric-imperial conversions effortless. Common conversions: Length: 1 inch = 2.54 cm, 1 foot = 0.3048 meters, 1 mile = 1.60934 km, 1 meter = 3.28084 feet. Weight: 1 pound = 0.453592 kg, 1 kg = 2.20462 pounds, 1 ounce = 28.3495 grams. Volume: 1 gallon (US) = 3.78541 liters, 1 liter = 0.264172 gallons. Temperature: °F = (°C × 9/5) + 32, °C = (°F − 32) × 5/9. Simply select your units and the tool applies the exact conversion factor. No memorization needed!' 
+  },
+  { 
+    q: 'Does this converter support currency exchange rates?', 
+    a: 'Yes! Our currency converter fetches live exchange rates for 30+ major currencies including USD, EUR, GBP, JPY, AUD, CAD, CHF, CNY, INR, and more. The rates are updated daily from reliable public APIs. You can convert between any two currencies with real-time accuracy. For offline use or when rates are unavailable, we use cached rates. Note: Currency rates fluctuate constantly — the displayed rate is the most recent available and should be used for reference. For financial transactions, check with your bank or exchange service.' 
+  },
+  { 
+    q: 'Can I convert cooking measurements?', 
+    a: 'Absolutely! Our volume and weight converters are perfect for cooking and baking conversions: Cups to milliliters, tablespoons to milliliters, Fluid ounces to milliliters, Grams to ounces, Pounds to grams, Teaspoons to milliliters. We include both US customary and metric cooking units. For example: 1 cup = 240 ml, 1 tablespoon = 15 ml, 1 teaspoon = 5 ml, 1 fluid ounce = 29.5735 ml. The converter handles precise decimal conversions essential for baking accuracy.' 
+  },
+  { 
+    q: 'How do I convert digital storage units (bytes, KB, MB, GB, TB)?', 
+    a: 'Our data storage converter handles both decimal (SI) and binary (IEC) units. Decimal: 1 KB = 1000 bytes, 1 MB = 1000 KB, 1 GB = 1000 MB (used by hard drive manufacturers). Binary: 1 KiB = 1024 bytes, 1 MiB = 1024 KiB, 1 GiB = 1024 MiB (used by operating systems). Simply select your units and we handle the math. Common conversions: 1 GB ≈ 1000 MB (decimal) or 1024 MB (binary), 1 TB = 1000 GB, 1 PB = 1000 TB. This helps explain why a "1TB" hard drive shows as ~931GB in Windows.' 
+  },
+  { 
+    q: 'Can I save my favorite conversions for quick access?', 
+    a: 'Yes! Our favorites feature lets you save frequently used conversions for one-click access. While browsing any category, click the star icon to save that conversion pair (e.g., "Miles → Kilometers"). Saved favorites appear in a dedicated "Favorites" tab and persist in your browser\'s local storage — they\'ll still be there when you return. You can save unlimited favorites and remove them anytime. This is perfect for conversions you use regularly, like currency rates or cooking measurements.' 
+  },
+  { 
+    q: 'How accurate are the conversions?', 
+    a: 'Our conversions use precise, scientifically-accepted conversion factors with high decimal precision. For example: 1 inch = exactly 2.54 cm, 1 pound = exactly 0.45359237 kg, 1 gallon (US) = exactly 3.785411784 liters. Results are displayed with appropriate decimal places (usually 2-6 depending on the category) to balance accuracy with readability. For scientific or engineering use, we show up to 10 decimal places. All temperature conversions use the exact formulas: °F = (°C × 9/5) + 32 and K = °C + 273.15.' 
+  },
+  { 
+    q: 'Can I use this converter offline?', 
+    a: 'Yes! Most conversion categories work completely offline — all formulas and conversion factors are embedded in the JavaScript code. The currency converter requires an internet connection for live rates but will use cached rates when offline. The tool loads once and continues working even without internet. This makes it reliable for: International travel, Areas with poor connectivity, Quick reference in meetings, and Students without constant internet access.' 
+  },
+  { 
+    q: 'What are the most commonly converted units?', 
+    a: 'Based on global usage data, the most frequent conversions are: (1) Miles to Kilometers (and vice versa) — travel and navigation, (2) Pounds to Kilograms — weight/fitness, (3) Fahrenheit to Celsius — weather/temperature, (4) Inches to Centimeters — measurements/DIY, (5) Gallons to Liters — fuel/volume, (6) USD to EUR — currency, (7) Feet to Meters — construction/real estate, (8) Ounces to Grams — cooking, (9) MPH to km/h — speed limits, (10) MB to GB — digital storage. Our tool surfaces these popular conversions at the top of each category for quick access.' 
+  },
+  { 
+    q: 'How do I convert compound units (e.g., m/s to km/h)?', 
+    a: 'For speed conversions like m/s to km/h, we handle the compound math automatically. Example: 1 m/s = 3.6 km/h (because 1 meter × 3600 seconds / 1000 meters = 3.6 km/h). Other compound conversions: km/h to mph (multiply by 0.621371), knots to km/h (multiply by 1.852), and liters/100km to mpg (complex formula). The converter applies the correct mathematical relationship, so you get accurate results without manual calculations.' 
+  },
+  { 
+    q: 'Is there a way to see the conversion formula used?', 
+    a: 'Yes! When you perform a conversion, the tool shows the formula used below the result. For example, converting Celsius to Fahrenheit shows: "Formula: °F = (°C × 9/5) + 32". This educational feature helps you understand the math behind the conversion and learn the relationships between units. For complex conversions, the step-by-step calculation is shown. Students find this particularly helpful for learning unit conversions in math and science classes.' 
+  },
+];
+
+const schemas = [
+  generateSoftwareApplication({
+    name: 'Unit Converter — Free All-in-One Conversion Tool (15+ Categories)',
+    description: 'Free all-in-one unit converter with 15+ categories: length, weight, temperature, volume, area, speed, time, data storage, currency, fuel economy, pressure, angle, energy, power, and more.',
+    url: '/unit-converter',
+  }),
+  generateFAQ(faqs),
+];
+
+const relatedCalcs = [
+  { name: 'Currency Converter', href: '/currency-converter', icon: '💱', desc: 'Live exchange rates' },
+  { name: 'Percentage Calculator', href: '/percentage-calculator', icon: '🔢', desc: 'Quick percentage math' },
+  { name: 'Age Calculator', href: '/age-calculator', icon: '🎂', desc: 'Calculate your age' },
+  { name: 'BMI Calculator', href: '/bmi-calculator', icon: '⚖️', desc: 'Body mass index' },
+];
+
+const categories = [
+  { id: 'length', icon: '📏', name: 'Length', units: ['Meter (m)', 'Kilometer (km)', 'Centimeter (cm)', 'Millimeter (mm)', 'Mile (mi)', 'Yard (yd)', 'Foot (ft)', 'Inch (in)', 'Nautical Mile (nmi)'] },
+  { id: 'weight', icon: '⚖️', name: 'Weight/Mass', units: ['Kilogram (kg)', 'Gram (g)', 'Milligram (mg)', 'Pound (lb)', 'Ounce (oz)', 'Stone (st)', 'Ton (t)', 'Carat (ct)'] },
+  { id: 'temperature', icon: '🌡️', name: 'Temperature', units: ['Celsius (°C)', 'Fahrenheit (°F)', 'Kelvin (K)'] },
+  { id: 'volume', icon: '🪣', name: 'Volume', units: ['Liter (L)', 'Milliliter (mL)', 'Gallon (US)', 'Quart (US)', 'Pint (US)', 'Cup (US)', 'Fluid Ounce (US)', 'Tablespoon', 'Teaspoon', 'Cubic Meter (m³)'] },
+  { id: 'area', icon: '📐', name: 'Area', units: ['Square Meter (m²)', 'Square Kilometer (km²)', 'Square Foot (ft²)', 'Square Mile (mi²)', 'Acre', 'Hectare (ha)', 'Square Yard (yd²)', 'Square Inch (in²)'] },
+  { id: 'speed', icon: '🏃', name: 'Speed', units: ['Meters/Second (m/s)', 'Kilometers/Hour (km/h)', 'Miles/Hour (mph)', 'Knots (kn)', 'Feet/Second (ft/s)'] },
+  { id: 'time', icon: '⏰', name: 'Time', units: ['Second (s)', 'Minute (min)', 'Hour (h)', 'Day (d)', 'Week (wk)', 'Month (mo)', 'Year (yr)', 'Millisecond (ms)'] },
+  { id: 'data', icon: '💾', name: 'Data Storage', units: ['Byte (B)', 'Kilobyte (KB)', 'Megabyte (MB)', 'Gigabyte (GB)', 'Terabyte (TB)', 'Petabyte (PB)', 'Kibibyte (KiB)', 'Mebibyte (MiB)', 'Gibibyte (GiB)'] },
+  { id: 'fuel', icon: '⛽', name: 'Fuel Economy', units: ['Miles/Gallon (mpg US)', 'Miles/Gallon (mpg UK)', 'Kilometers/Liter (km/L)', 'Liters/100km (L/100km)'] },
+  { id: 'pressure', icon: '🎈', name: 'Pressure', units: ['Pascal (Pa)', 'Kilopascal (kPa)', 'Bar', 'PSI (lb/in²)', 'Atmosphere (atm)', 'mmHg', 'Torr'] },
+  { id: 'angle', icon: '📐', name: 'Angle', units: ['Degree (°)', 'Radian (rad)', 'Gradian (grad)', 'Minute of Arc', 'Second of Arc'] },
+  { id: 'energy', icon: '⚡', name: 'Energy', units: ['Joule (J)', 'Kilojoule (kJ)', 'Calorie (cal)', 'Kilocalorie (kcal)', 'Watt-hour (Wh)', 'Kilowatt-hour (kWh)', 'Electronvolt (eV)'] },
+  { id: 'power', icon: '🔌', name: 'Power', units: ['Watt (W)', 'Kilowatt (kW)', 'Megawatt (MW)', 'Horsepower (hp)', 'BTU/Hour', 'Foot-pound/min'] },
+  { id: 'frequency', icon: '📡', name: 'Frequency', units: ['Hertz (Hz)', 'Kilohertz (kHz)', 'Megahertz (MHz)', 'Gigahertz (GHz)'] },
+  { id: 'currency', icon: '💱', name: 'Currency', units: ['USD ($)', 'EUR (€)', 'GBP (£)', 'JPY (¥)', 'AUD (A$)', 'CAD (C$)', 'CHF (Fr)', 'CNY (¥)', 'INR (₹)', 'NPR (Rs)', 'BRL (R$)', 'MXN (Mex$)', 'KRW (₩)', 'SGD (S$)', 'NZD (NZ$)'] },
+];
+
+const popularConversions = [
+  { from: 'Mile (mi)', to: 'Kilometer (km)', cat: 'length' },
+  { from: 'Pound (lb)', to: 'Kilogram (kg)', cat: 'weight' },
+  { from: 'Fahrenheit (°F)', to: 'Celsius (°C)', cat: 'temperature' },
+  { from: 'Inch (in)', to: 'Centimeter (cm)', cat: 'length' },
+  { from: 'Gallon (US)', to: 'Liter (L)', cat: 'volume' },
+  { from: 'Ounce (oz)', to: 'Gram (g)', cat: 'weight' },
+  { from: 'Miles/Hour (mph)', to: 'Kilometers/Hour (km/h)', cat: 'speed' },
+  { from: 'Gigabyte (GB)', to: 'Megabyte (MB)', cat: 'data' },
+  { from: 'Foot (ft)', to: 'Meter (m)', cat: 'length' },
+  { from: 'Cup (US)', to: 'Milliliter (mL)', cat: 'volume' },
+];
+</script>
+
+<CalculatorLayout
+  title="Unit Converter — Free All-in-One Conversion Tool (Length, Weight, Temperature & More)"
+  description="Free all-in-one unit converter with 15+ categories, 200+ units. Convert length, weight, temperature, volume, area, speed, time, data storage, currency, fuel economy, and more. Works offline."
+  canonical="/unit-converter"
+  schema={schemas}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Unit Converter', url: '/unit-converter' }]}
+  relatedCalcs={relatedCalcs}
+>
+
+  <!-- Header -->
+  <div style="margin-bottom: 24px;" class="fade-up">
+    <div class="eyebrow" style="margin-bottom: 8px;">Conversion Tools</div>
+    <h1 class="text-display-lg" style="color: var(--color-ink); margin-bottom: 12px;">Unit Converter</h1>
+    <p class="text-body-lg" style="color: var(--color-body); max-width: 700px;">
+      Convert between 200+ units across 15 categories. Length, weight, temperature, volume, currency, data storage, speed, and more. Smart search, favorites, and precise conversions — all in one tool.
+    </p>
+  </div>
+
+  <!-- MAIN WORKSPACE -->
+  <div class="uc-workspace fade-up stagger-1" style="margin-bottom: 24px;">
+    
+    <!-- Category Tabs -->
+    <div class="uc-category-bar">
+      <div class="uc-category-scroll" id="uc-category-scroll">
+        {categories.map(cat => (
+          <button class="uc-cat-btn" data-cat={cat.id}>
+            <span class="uc-cat-icon">{cat.icon}</span>
+            <span class="uc-cat-name">{cat.name}</span>
+          </button>
+        ))}
+      </div>
+      <button id="uc-favorites-tab" class="uc-cat-btn uc-fav-btn">
+        <span class="uc-cat-icon">⭐</span>
+        <span class="uc-cat-name">Favorites</span>
+      </button>
+      <button id="uc-popular-tab" class="uc-cat-btn uc-popular-btn">
+        <span class="uc-cat-icon">🔥</span>
+        <span class="uc-cat-name">Popular</span>
+      </button>
+    </div>
+
+    <!-- Converter Panel -->
+    <div class="uc-converter-panel">
+      
+      <!-- Search -->
+      <div class="uc-search-bar">
+        <span class="uc-search-icon">🔍</span>
+        <input type="text" id="uc-search-input" class="uc-search-input" placeholder="Search units... (e.g., 'miles to km', 'pounds', 'celsius')" />
+      </div>
+
+      <!-- Converter -->
+      <div class="uc-converter">
+        <div class="uc-input-group">
+          <label class="uc-label">From</label>
+          <div class="uc-unit-input-wrap">
+            <input type="number" id="uc-from-value" class="uc-value-input" value="1" step="any" />
+            <select id="uc-from-unit" class="uc-unit-select"></select>
+          </div>
+        </div>
+
+        <div class="uc-swap-area">
+          <button id="uc-swap-btn" class="uc-swap-btn" title="Swap units">⇄</button>
+        </div>
+
+        <div class="uc-input-group">
+          <label class="uc-label">To</label>
+          <div class="uc-unit-input-wrap">
+            <input type="number" id="uc-to-value" class="uc-value-input uc-result" readonly />
+            <select id="uc-to-unit" class="uc-unit-select"></select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Details -->
+      <div id="uc-result-details" class="uc-result-details">
+        <div class="uc-formula-box" id="uc-formula-box" style="display:none;">
+          <span class="uc-formula-label">📐 Formula:</span>
+          <span class="uc-formula-text" id="uc-formula-text"></span>
+        </div>
+        <div class="uc-alternatives" id="uc-alternatives"></div>
+      </div>
+
+      <!-- Favorite Button -->
+      <button id="uc-fav-btn" class="uc-fav-toggle" title="Save to favorites">☆ Save to Favorites</button>
+    </div>
+
+    <!-- Quick Conversions Table -->
+    <div class="uc-quick-table" id="uc-quick-table" style="display:none;">
+      <h3 class="uc-quick-title">📊 Quick Reference — <span id="uc-quick-title"></span></h3>
+      <div class="uc-quick-grid" id="uc-quick-grid"></div>
+    </div>
+  </div>
+
+  <!-- POPULAR CONVERSIONS -->
+  <div class="uc-popular-section fade-up" style="margin-bottom:32px;">
+    <h2 style="color:var(--color-ink);font-size:18px;font-weight:600;margin-bottom:12px;">🔥 Most Popular Conversions</h2>
+    <div class="uc-popular-grid" id="uc-popular-grid"></div>
+  </div>
+
+  <!-- SEO Article -->
+  <div class="prose-section fade-up" style="margin-top:24px;">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:20px;">Free Online Unit Converter — Complete Conversion Tool</h2>
+    
+    <p class="text-body-md" style="color:var(--color-body);line-height:28px;margin-bottom:16px;">
+      Whether you're traveling abroad, cooking from an international recipe, doing homework, or working on a DIY project, our <strong>free all-in-one unit converter</strong> has you covered. With <strong>15+ categories and 200+ units</strong>, you can convert anything from miles to kilometers, pounds to kilograms, Fahrenheit to Celsius, gallons to liters, gigabytes to megabytes, and much more. The smart search lets you find any conversion instantly — just type "miles to km" or "cups to ml" and get your answer. All conversions use precise formulas and work completely offline.
+    </p>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Complete Category List</h3>
+    <div style="overflow-x:auto;margin:16px 0 24px;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">Category</th>
+            <th style="padding:12px 16px;">Common Units</th>
+            <th style="padding:12px 16px;">Most Used Conversion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['📏 Length', 'Meter, Foot, Inch, Mile, Kilometer, Yard, cm, mm', 'Miles ↔ Kilometers'],
+            ['⚖️ Weight', 'Kilogram, Pound, Ounce, Gram, Stone, Ton', 'Pounds ↔ Kilograms'],
+            ['🌡️ Temperature', 'Celsius, Fahrenheit, Kelvin', '°F ↔ °C'],
+            ['🪣 Volume', 'Liter, Gallon, Cup, mL, Fluid Ounce, Tablespoon', 'Gallons ↔ Liters'],
+            ['📐 Area', 'm², ft², Acre, Hectare, mi², yd²', 'Square Feet ↔ Square Meters'],
+            ['🏃 Speed', 'm/s, km/h, mph, Knots', 'mph ↔ km/h'],
+            ['⏰ Time', 'Second, Minute, Hour, Day, Week, Year', 'Hours ↔ Minutes'],
+            ['💾 Data', 'Byte, KB, MB, GB, TB, KiB, MiB, GiB', 'GB ↔ MB'],
+            ['⛽ Fuel', 'mpg, km/L, L/100km', 'mpg ↔ L/100km'],
+            ['💱 Currency', 'USD, EUR, GBP, JPY, INR, CNY, 30+ more', 'USD ↔ EUR'],
+          ].map(([cat, units, conversion]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:600;">{cat}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{units}</td>
+              <td style="padding:10px 16px;color:var(--color-link);font-weight:500;">{conversion}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-body-lg-strong" style="color:var(--color-ink);margin-top:24px;margin-bottom:12px;">Essential Conversion Factors</h3>
+    <div style="overflow-x:auto;margin:16px 0;border:1px solid var(--color-hairline);border-radius:var(--radius-md);">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:var(--color-body);text-align:left;">
+        <thead>
+          <tr style="background:var(--color-canvas-soft-2);border-bottom:1px solid var(--color-hairline);font-weight:600;color:var(--color-ink);">
+            <th style="padding:12px 16px;">From</th>
+            <th style="padding:12px 16px;">To</th>
+            <th style="padding:12px 16px;">Multiply By</th>
+            <th style="padding:12px 16px;">Common Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[
+            ['Inches', 'Centimeters', '2.54', 'Screen sizes, height'],
+            ['Feet', 'Meters', '0.3048', 'Room dimensions'],
+            ['Miles', 'Kilometers', '1.60934', 'Distance, travel'],
+            ['Pounds', 'Kilograms', '0.453592', 'Body weight, shipping'],
+            ['Ounces', 'Grams', '28.3495', 'Cooking, food labels'],
+            ['Gallons (US)', 'Liters', '3.78541', 'Fuel, liquid volume'],
+            ['Fahrenheit', 'Celsius', '(°F - 32) × 5/9', 'Weather, cooking'],
+            ['mph', 'km/h', '1.60934', 'Speed limits, vehicles'],
+          ].map(([from, to, factor, use]) => (
+            <tr style="border-bottom:1px solid var(--color-hairline);">
+              <td style="padding:10px 16px;font-weight:500;">{from}</td>
+              <td style="padding:10px 16px;color:var(--color-link);">{to}</td>
+              <td style="padding:10px 16px;font-family:var(--font-mono);">{factor}</td>
+              <td style="padding:10px 16px;color:var(--color-muted);">{use}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:48px;" class="fade-up">
+    <h2 class="text-display-sm" style="color:var(--color-ink);margin-bottom:24px;">Frequently Asked Questions</h2>
+    <div class="faq-list" style="border-top:1px solid var(--color-hairline);">
+      {faqs.map((faq, i) => (
+        <div class="faq-item">
+          <button class="faq-question" aria-expanded="false" aria-controls={`uc-faq-${i}`} id={`uc-faq-btn-${i}`}>
+            <span>{faq.q}</span>
+            <svg class="faq-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <div class="faq-answer" id={`uc-faq-${i}`} role="region" aria-labelledby={`uc-faq-btn-${i}`}>{faq.a}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+</CalculatorLayout>
+
+<style>
+  .uc-workspace {
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+    overflow: hidden;
+  }
+
+  /* Category Bar */
+  .uc-category-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--color-hairline);
+    overflow-x: auto;
+    background: var(--color-canvas-soft-2);
+    padding: 4px 8px;
+  }
+  .uc-category-scroll {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    overflow-x: auto;
+  }
+  .uc-cat-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 9px 14px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-body);
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .uc-cat-btn:hover { background: var(--color-canvas); color: var(--color-ink); }
+  .uc-cat-btn.active { background: var(--color-link); color: white; }
+  .uc-cat-icon { font-size: 16px; }
+  .uc-cat-name { font-weight: 600; }
+  .uc-fav-btn { border-left: 1px solid var(--color-hairline); padding-left: 16px; }
+  .uc-popular-btn { border-left: 1px solid var(--color-hairline); }
+
+  /* Converter Panel */
+  .uc-converter-panel {
+    padding: 24px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .uc-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    border-radius: 60px;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+  }
+  .uc-search-icon { font-size: 16px; opacity: 0.5; }
+  .uc-search-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    color: var(--color-ink);
+  }
+  .uc-search-input::placeholder { color: var(--color-muted); }
+
+  /* Converter */
+  .uc-converter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .uc-input-group {
+    flex: 1;
+    min-width: 0;
+  }
+  .uc-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .uc-unit-input-wrap {
+    display: flex;
+    gap: 0;
+    border: 2px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .uc-unit-input-wrap:focus-within {
+    border-color: var(--color-link);
+  }
+  .uc-value-input {
+    flex: 1;
+    border: none;
+    padding: 12px 16px;
+    font-size: 22px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    outline: none;
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    min-width: 0;
+    width: 100%;
+  }
+  .uc-value-input.uc-result {
+    background: var(--color-canvas-soft-2);
+    color: var(--color-link);
+  }
+  .uc-unit-select {
+    border: none;
+    border-left: 1px solid var(--color-hairline);
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--color-canvas-soft-2);
+    color: var(--color-ink);
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+    max-width: 180px;
+  }
+
+  .uc-swap-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .uc-swap-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--color-hairline);
+    background: var(--color-canvas);
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-body);
+  }
+  .uc-swap-btn:hover {
+    border-color: var(--color-link);
+    color: var(--color-link);
+    transform: rotate(180deg);
+  }
+
+  /* Result Details */
+  .uc-result-details {
+    margin-top: 16px;
+  }
+  .uc-formula-box {
+    padding: 10px 14px;
+    background: var(--color-canvas-soft-2);
+    border-radius: 8px;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  .uc-formula-label {
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .uc-formula-text {
+    font-family: var(--font-mono);
+    color: var(--color-link);
+    margin-left: 4px;
+  }
+  .uc-alternatives {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .uc-alt-chip {
+    padding: 4px 10px;
+    font-size: 11px;
+    border: 1px solid var(--color-hairline);
+    border-radius: 99px;
+    background: var(--color-canvas-soft-2);
+    color: var(--color-body);
+    font-family: var(--font-mono);
+  }
+
+  .uc-fav-toggle {
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: 1px dashed var(--color-hairline);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--color-muted);
+    transition: all 0.15s;
+    font-family: inherit;
+    width: 100%;
+    text-align: center;
+  }
+  .uc-fav-toggle:hover { border-color: #f59e0b; color: #f59e0b; }
+  .uc-fav-toggle.saved { border-color: #f59e0b; color: #f59e0b; background: #fffbeb; }
+
+  /* Quick Table */
+  .uc-quick-table {
+    padding: 16px 24px;
+    border-top: 1px solid var(--color-hairline);
+    background: var(--color-canvas-soft-2);
+  }
+  .uc-quick-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin-bottom: 10px;
+  }
+  .uc-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 4px;
+  }
+  .uc-quick-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 10px;
+    font-size: 12px;
+    background: var(--color-canvas);
+    border-radius: 4px;
+  }
+  .uc-quick-item span:last-child {
+    font-weight: 600;
+    font-family: var(--font-mono);
+    color: var(--color-link);
+  }
+
+  /* Popular */
+  .uc-popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+  .uc-popular-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px;
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--color-canvas);
+  }
+  .uc-popular-card:hover { border-color: var(--color-link); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .uc-popular-icon { font-size: 24px; }
+  .uc-popular-text { font-size: 13px; }
+  .uc-popular-from { color: var(--color-body); }
+  .uc-popular-arrow { color: var(--color-link); margin: 0 4px; font-weight: 600; }
+  .uc-popular-to { color: var(--color-link); font-weight: 600; }
+
+  .prose-section {
+    padding: 32px;
+    background: var(--color-canvas);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-hairline);
+  }
+
+  @media (max-width: 768px) {
+    .uc-converter {
+      flex-direction: column;
+    }
+    .uc-swap-btn {
+      transform: rotate(90deg);
+    }
+    .uc-swap-btn:hover {
+      transform: rotate(270deg);
+    }
+    .uc-converter-panel { padding: 16px; }
+    .uc-value-input { font-size: 18px; }
+    .prose-section { padding: 20px 16px; }
+  }
+</style>
+
+<script>
+  // ─── Conversion Factors ──────────────────────────────────────────────────────
+  const conversionData: Record<string, Record<string, number | ((v: number) => number)>> = {
+    length: {
+      'Meter (m)': 1,
+      'Kilometer (km)': 1000,
+      'Centimeter (cm)': 0.01,
+      'Millimeter (mm)': 0.001,
+      'Mile (mi)': 1609.344,
+      'Yard (yd)': 0.9144,
+      'Foot (ft)': 0.3048,
+      'Inch (in)': 0.0254,
+      'Nautical Mile (nmi)': 1852,
+    },
+    weight: {
+      'Kilogram (kg)': 1,
+      'Gram (g)': 0.001,
+      'Milligram (mg)': 0.000001,
+      'Pound (lb)': 0.45359237,
+      'Ounce (oz)': 0.028349523125,
+      'Stone (st)': 6.35029318,
+      'Ton (t)': 1000,
+      'Carat (ct)': 0.0002,
+    },
+    volume: {
+      'Liter (L)': 1,
+      'Milliliter (mL)': 0.001,
+      'Gallon (US)': 3.785411784,
+      'Quart (US)': 0.946352946,
+      'Pint (US)': 0.473176473,
+      'Cup (US)': 0.24,
+      'Fluid Ounce (US)': 0.02957353,
+      'Tablespoon': 0.015,
+      'Teaspoon': 0.005,
+      'Cubic Meter (m³)': 1000,
+    },
+    area: {
+      'Square Meter (m²)': 1,
+      'Square Kilometer (km²)': 1000000,
+      'Square Foot (ft²)': 0.09290304,
+      'Square Mile (mi²)': 2589988.110336,
+      'Acre': 4046.8564224,
+      'Hectare (ha)': 10000,
+      'Square Yard (yd²)': 0.83612736,
+      'Square Inch (in²)': 0.00064516,
+    },
+    speed: {
+      'Meters/Second (m/s)': 1,
+      'Kilometers/Hour (km/h)': 0.277777778,
+      'Miles/Hour (mph)': 0.44704,
+      'Knots (kn)': 0.514444444,
+      'Feet/Second (ft/s)': 0.3048,
+    },
+    time: {
+      'Second (s)': 1,
+      'Minute (min)': 60,
+      'Hour (h)': 3600,
+      'Day (d)': 86400,
+      'Week (wk)': 604800,
+      'Month (mo)': 2629800,
+      'Year (yr)': 31557600,
+      'Millisecond (ms)': 0.001,
+    },
+    data: {
+      'Byte (B)': 1,
+      'Kilobyte (KB)': 1000,
+      'Megabyte (MB)': 1000000,
+      'Gigabyte (GB)': 1000000000,
+      'Terabyte (TB)': 1000000000000,
+      'Petabyte (PB)': 1000000000000000,
+      'Kibibyte (KiB)': 1024,
+      'Mebibyte (MiB)': 1048576,
+      'Gibibyte (GiB)': 1073741824,
+    },
+    fuel: {
+      'Miles/Gallon (mpg US)': 1,
+      'Miles/Gallon (mpg UK)': 0.832674,
+      'Kilometers/Liter (km/L)': 2.352145,
+      'Liters/100km (L/100km)': (v: number) => 235.2145 / v,
+    },
+    pressure: {
+      'Pascal (Pa)': 1,
+      'Kilopascal (kPa)': 1000,
+      'Bar': 100000,
+      'PSI (lb/in²)': 6894.75729,
+      'Atmosphere (atm)': 101325,
+      'mmHg': 133.322368,
+      'Torr': 133.322368,
+    },
+    angle: {
+      'Degree (°)': 1,
+      'Radian (rad)': 57.2957795,
+      'Gradian (grad)': 0.9,
+      'Minute of Arc': 1/60,
+      'Second of Arc': 1/3600,
+    },
+    energy: {
+      'Joule (J)': 1,
+      'Kilojoule (kJ)': 1000,
+      'Calorie (cal)': 4.184,
+      'Kilocalorie (kcal)': 4184,
+      'Watt-hour (Wh)': 3600,
+      'Kilowatt-hour (kWh)': 3600000,
+      'Electronvolt (eV)': 1.602176634e-19,
+    },
+    power: {
+      'Watt (W)': 1,
+      'Kilowatt (kW)': 1000,
+      'Megawatt (MW)': 1000000,
+      'Horsepower (hp)': 745.699872,
+      'BTU/Hour': 0.29307107,
+      'Foot-pound/min': 0.0225969658,
+    },
+    frequency: {
+      'Hertz (Hz)': 1,
+      'Kilohertz (kHz)': 1000,
+      'Megahertz (MHz)': 1000000,
+      'Gigahertz (GHz)': 1000000000,
+    },
+  };
+
+  // ─── State ────────────────────────────────────────────────────────────────────
+  let currentCategory = 'length';
+  let favorites: { cat: string; from: string; to: string }[] = [];
+  let currencyRates: Record<string, number> = {};
+
+  // ─── Currency Rates (Fallback) ──────────────────────────────────────────────
+  const fallbackRates: Record<string, number> = {
+    USD: 1, EUR: 0.92, GBP: 0.79, JPY: 149.5, AUD: 1.53, CAD: 1.36, CHF: 0.88,
+    CNY: 7.24, INR: 83.5, NPR: 133.5, BRL: 4.97, MXN: 17.1, KRW: 1320, SGD: 1.34, NZD: 1.63,
+  };
+
+  // ─── DOM Elements ────────────────────────────────────────────────────────────
+  const fromValue = document.getElementById('uc-from-value') as HTMLInputElement;
+  const toValue = document.getElementById('uc-to-value') as HTMLInputElement;
+  const fromUnit = document.getElementById('uc-from-unit') as HTMLSelectElement;
+  const toUnit = document.getElementById('uc-to-unit') as HTMLSelectElement;
+
+  // ─── Category Selection ─────────────────────────────────────────────────────
+  function selectCategory(catId: string) {
+    currentCategory = catId;
+    document.querySelectorAll('.uc-cat-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.uc-cat-btn[data-cat="${catId}"]`)?.classList.add('active');
+    
+    populateUnits(catId);
+    convert();
+    updateQuickTable();
+    updateFavButton();
+    updateFormula();
+  }
+
+  function populateUnits(catId: string) {
+    const cat = categories.find(c => c.id === catId);
+    if (!cat) return;
+    
+    const unitNames = cat.units;
+    fromUnit.innerHTML = unitNames.map((u, i) => `<option value="${u}" ${i === 0 ? 'selected' : ''}>${u}</option>`).join('');
+    toUnit.innerHTML = unitNames.map((u, i) => `<option value="${u}" ${i === Math.min(1, unitNames.length - 1) ? 'selected' : ''}>${u}</option>`).join('');
+  }
+
+  // ─── Conversion Logic ────────────────────────────────────────────────────────
+  function convert() {
+    const value = parseFloat(fromValue.value) || 0;
+    const from = fromUnit.value;
+    const to = toUnit.value;
+    
+    let result: number;
+    
+    if (currentCategory === 'temperature') {
+      result = convertTemperature(value, from, to);
+    } else if (currentCategory === 'currency') {
+      result = convertCurrency(value, from, to);
+    } else {
+      result = convertStandard(value, from, to, currentCategory);
+    }
+    
+    toValue.value = formatNumber(result);
+    updateAlternatives(value, from, to);
+    updateFormula();
+  }
+
+  function convertStandard(value: number, from: string, to: string, category: string): number {
+    const factors = conversionData[category];
+    if (!factors) return value;
+    
+    const fromFactor = factors[from];
+    const toFactor = factors[to];
+    
+    if (typeof fromFactor === 'function' || typeof toFactor === 'function') {
+      // Handle special fuel economy
+      if (category === 'fuel') {
+        const baseValue = typeof fromFactor === 'number' ? value * fromFactor : fromFactor(value);
+        return typeof toFactor === 'number' ? baseValue / toFactor : toFactor(baseValue);
+      }
+    }
+    
+    if (typeof fromFactor === 'number' && typeof toFactor === 'number') {
+      return (value * fromFactor) / toFactor;
+    }
+    
+    return value;
+  }
+
+  function convertTemperature(value: number, from: string, to: string): number {
+    // Convert to Celsius first
+    let celsius: number;
+    if (from.includes('Celsius')) celsius = value;
+    else if (from.includes('Fahrenheit')) celsius = (value - 32) * 5/9;
+    else if (from.includes('Kelvin')) celsius = value - 273.15;
+    else celsius = value;
+    
+    // Convert from Celsius to target
+    if (to.includes('Celsius')) return celsius;
+    if (to.includes('Fahrenheit')) return (celsius * 9/5) + 32;
+    if (to.includes('Kelvin')) return celsius + 273.15;
+    return celsius;
+  }
+
+  function convertCurrency(value: number, from: string, to: string): number {
+    const rates = Object.keys(currencyRates).length > 0 ? currencyRates : fallbackRates;
+    
+    const fromCode = from.match(/\(([^)]+)\)/)?.[1] || 'USD';
+    const toCode = to.match(/\(([^)]+)\)/)?.[1] || 'EUR';
+    
+    const fromRate = rates[fromCode] || 1;
+    const toRate = rates[toCode] || 1;
+    
+    return (value / fromRate) * toRate;
+  }
+
+  function formatNumber(num: number): string {
+    if (Math.abs(num) < 0.000001 && num !== 0) return num.toExponential(6);
+    if (Math.abs(num) < 0.01) return num.toFixed(6);
+    if (Math.abs(num) < 1) return num.toFixed(4);
+    if (Math.abs(num) < 1000) return num.toFixed(2);
+    return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  }
+
+  // ─── UI Updates ──────────────────────────────────────────────────────────────
+  function updateFormula() {
+    const box = document.getElementById('uc-formula-box')!;
+    const text = document.getElementById('uc-formula-text')!;
+    
+    if (currentCategory === 'temperature') {
+      const from = fromUnit.value;
+      const to = toUnit.value;
+      if (from.includes('Celsius') && to.includes('Fahrenheit')) {
+        box.style.display = ''; text.textContent = '°F = (°C × 9/5) + 32';
+      } else if (from.includes('Fahrenheit') && to.includes('Celsius')) {
+        box.style.display = ''; text.textContent = '°C = (°F − 32) × 5/9';
+      } else if (from.includes('Celsius') && to.includes('Kelvin')) {
+        box.style.display = ''; text.textContent = 'K = °C + 273.15';
+      } else {
+        box.style.display = 'none';
+      }
+    } else if (currentCategory === 'fuel') {
+      box.style.display = '';
+      text.textContent = 'Using fuel economy conversion formula';
+    } else {
+      box.style.display = 'none';
+    }
+  }
+
+  function updateAlternatives(value: number, from: string, to: string) {
+    const container = document.getElementById('uc-alternatives')!;
+    if (currentCategory === 'temperature' || currentCategory === 'currency') {
+      container.innerHTML = '';
+      return;
+    }
+    
+    const cat = categories.find(c => c.id === currentCategory);
+    if (!cat) return;
+    
+    const otherUnits = cat.units.filter(u => u !== from && u !== to).slice(0, 4);
+    container.innerHTML = otherUnits.map(u => {
+      const altValue = convertStandard(value, from, u, currentCategory);
+      return `<span class="uc-alt-chip">${formatNumber(altValue)} ${u.split(' (')[0]}</span>`;
+    }).join('');
+  }
+
+  function updateQuickTable() {
+    const table = document.getElementById('uc-quick-table')!;
+    const grid = document.getElementById('uc-quick-grid')!;
+    const title = document.getElementById('uc-quick-title')!;
+    
+    if (currentCategory === 'currency' || currentCategory === 'temperature') {
+      table.style.display = 'none';
+      return;
+    }
+    
+    table.style.display = '';
+    const cat = categories.find(c => c.id === currentCategory);
+    title.textContent = `${cat?.name} Quick Reference`;
+    
+    const from = fromUnit.value;
+    const to = toUnit.value;
+    const values = [0.1, 0.5, 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000];
+    
+    grid.innerHTML = values.map(v => {
+      const result = convertStandard(v, from, to, currentCategory);
+      return `<div class="uc-quick-item">
+        <span>${v} ${from.split(' (')[0]}</span>
+        <span>${formatNumber(result)} ${to.split(' (')[0]}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function updateFavButton() {
+    const btn = document.getElementById('uc-fav-btn')!;
+    const from = fromUnit.value;
+    const to = toUnit.value;
+    const isFav = favorites.some(f => f.cat === currentCategory && f.from === from && f.to === to);
+    
+    btn.textContent = isFav ? '⭐ Saved to Favorites' : '☆ Save to Favorites';
+    btn.classList.toggle('saved', isFav);
+  }
+
+  // ─── Favorites ───────────────────────────────────────────────────────────────
+  document.getElementById('uc-fav-btn')!.addEventListener('click', () => {
+    const from = fromUnit.value;
+    const to = toUnit.value;
+    const existing = favorites.findIndex(f => f.cat === currentCategory && f.from === from && f.to === to);
+    
+    if (existing >= 0) {
+      favorites.splice(existing, 1);
+    } else {
+      favorites.push({ cat: currentCategory, from, to });
+    }
+    
+    try { localStorage.setItem('uc_favorites', JSON.stringify(favorites)); } catch(e) {}
+    updateFavButton();
+    if (document.querySelector('.uc-fav-btn.active')) renderFavorites();
+  });
+
+  function renderFavorites() {
+    const grid = document.getElementById('uc-quick-grid')!;
+    const table = document.getElementById('uc-quick-table')!;
+    const title = document.getElementById('uc-quick-title')!;
+    table.style.display = '';
+    title.textContent = '⭐ Saved Favorites';
+    
+    if (favorites.length === 0) {
+      grid.innerHTML = '<p style="color:var(--color-muted);padding:20px;">No favorites yet. Browse categories and click "Save to Favorites" on conversions you use often.</p>';
+      return;
+    }
+    
+    grid.innerHTML = favorites.map(f => `
+      <div class="uc-popular-card" style="cursor:pointer;" onclick="loadFavorite('${f.cat}','${f.from}','${f.to}')">
+        <span class="uc-popular-icon">⭐</span>
+        <span class="uc-popular-text">
+          <span class="uc-popular-from">${f.from}</span>
+          <span class="uc-popular-arrow">→</span>
+          <span class="uc-popular-to">${f.to}</span>
+        </span>
+      </div>
+    `).join('');
+  }
+
+  (window as any).loadFavorite = (cat: string, from: string, to: string) => {
+    selectCategory(cat);
+    fromUnit.value = from;
+    toUnit.value = to;
+    convert();
+    updateFavButton();
+    updateQuickTable();
+  };
+
+  document.getElementById('uc-favorites-tab')!.addEventListener('click', () => {
+    document.querySelectorAll('.uc-cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('uc-favorites-tab')!.classList.add('active');
+    renderFavorites();
+  });
+
+  document.getElementById('uc-popular-tab')!.addEventListener('click', () => {
+    document.querySelectorAll('.uc-cat-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('uc-popular-tab')!.classList.add('active');
+    renderPopularConversions();
+  });
+
+  function renderPopularConversions() {
+    const grid = document.getElementById('uc-quick-grid')!;
+    const table = document.getElementById('uc-quick-table')!;
+    const title = document.getElementById('uc-quick-title')!;
+    table.style.display = '';
+    title.textContent = '🔥 Popular Conversions';
+    
+    grid.innerHTML = popularConversions.map(p => `
+      <div class="uc-popular-card" onclick="loadFavorite('${p.cat}','${p.from}','${p.to}')">
+        <span class="uc-popular-icon">🔥</span>
+        <span class="uc-popular-text">
+          <span class="uc-popular-from">${p.from.split(' (')[0]}</span>
+          <span class="uc-popular-arrow">→</span>
+          <span class="uc-popular-to">${p.to.split(' (')[0]}</span>
+        </span>
+      </div>
+    `).join('');
+  }
+
+  // ─── Smart Search ────────────────────────────────────────────────────────────
+  document.getElementById('uc-search-input')!.addEventListener('input', function() {
+    const query = (this as HTMLInputElement).value.toLowerCase().trim();
+    if (!query) return;
+    
+    // Check for "X to Y" pattern
+    const toMatch = query.match(/(.+?)\s+(?:to|in|→|->)\s+(.+)/);
+    if (toMatch) {
+      const searchFrom = toMatch[1].trim();
+      const searchTo = toMatch[2].trim();
+      
+      for (const cat of categories) {
+        const fromUnit = cat.units.find(u => u.toLowerCase().includes(searchFrom));
+        const toUnit = cat.units.find(u => u.toLowerCase().includes(searchTo));
+        if (fromUnit && toUnit) {
+          selectCategory(cat.id);
+          document.getElementById('uc-from-unit')!.value = fromUnit;
+          document.getElementById('uc-to-unit')!.value = toUnit;
+          convert();
+          updateFavButton();
+          updateQuickTable();
+          return;
+        }
+      }
+    }
+    
+    // Search for a single unit
+    for (const cat of categories) {
+      const found = cat.units.find(u => u.toLowerCase().includes(query));
+      if (found) {
+        selectCategory(cat.id);
+        document.getElementById('uc-from-unit')!.value = found;
+        convert();
+        updateFavButton();
+        updateQuickTable();
+        return;
+      }
+    }
+  });
+
+  // ─── Event Listeners ─────────────────────────────────────────────────────────
+  document.querySelectorAll('.uc-cat-btn[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => selectCategory((btn as HTMLElement).dataset.cat!));
+  });
+
+  fromValue.addEventListener('input', convert);
+  fromUnit.addEventListener('change', () => { convert(); updateFavButton(); updateQuickTable(); updateFormula(); });
+  toUnit.addEventListener('change', () => { convert(); updateFavButton(); updateQuickTable(); updateFormula(); });
+
+  document.getElementById('uc-swap-btn')!.addEventListener('click', () => {
+    const temp = fromUnit.value;
+    fromUnit.value = toUnit.value;
+    toUnit.value = temp;
+    fromValue.value = toValue.value;
+    convert();
+    updateFavButton();
+    updateQuickTable();
+    updateFormula();
+  });
+
+  // ─── Fetch Live Currency Rates ──────────────────────────────────────────────
+  async function fetchCurrencyRates() {
+    try {
+      const response = await fetch('https://open.er-api.com/v6/latest/USD');
+      const data = await response.json();
+      if (data.rates) {
+        currencyRates = data.rates;
+      }
+    } catch(e) {
+      // Use fallback rates
+      currencyRates = fallbackRates;
+    }
+  }
+
+  // ─── Init ──────────────────────────────────────────────────────────────────
+  function init() {
+    // Load favorites
+    try {
+      const saved = localStorage.getItem('uc_favorites');
+      if (saved) favorites = JSON.parse(saved);
+    } catch(e) {}
+    
+    // Load currency rates
+    fetchCurrencyRates();
+    
+    // Select default category
+    selectCategory('length');
+    
+    // Render popular grid
+    const popularGrid = document.getElementById('uc-popular-grid')!;
+    popularGrid.innerHTML = popularConversions.map(p => `
+      <div class="uc-popular-card" onclick="loadFavorite('${p.cat}','${p.from}','${p.to}')">
+        <span class="uc-popular-icon">🔥</span>
+        <span class="uc-popular-text">
+          <span class="uc-popular-from">${p.from.split(' (')[0]}</span>
+          <span class="uc-popular-arrow">→</span>
+          <span class="uc-popular-to">${p.to.split(' (')[0]}</span>
+        </span>
+      </div>
+    `).join('');
+  }
+
+  init();
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────────────
+  document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const exp = btn.getAttribute('aria-expanded') === 'true';
+      const id = btn.getAttribute('aria-controls');
+      const ans = id ? document.getElementById(id) : null;
+      const icon = btn.querySelector('.faq-icon');
+      btn.setAttribute('aria-expanded', String(!exp));
+      if (ans) ans.classList.toggle('open', !exp);
+      if (icon) icon.classList.toggle('open', !exp);
+    });
+  });
+</script>

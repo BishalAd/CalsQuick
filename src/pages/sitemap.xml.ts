@@ -211,6 +211,54 @@ const entries: SitemapEntry[] = [
     changefreq: 'weekly',
     priority:   0.9,
   },
+  {
+    url:        `${SITE}/password-generator/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/password-manager/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/pdf-merger/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/pdf-tools-suite/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/qr-code-generator/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/json-formatter/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/color-palette-generator/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
+  {
+    url:        `${SITE}/unit-converter/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'weekly',
+    priority:   0.9,
+  },
 
   // ── Blog ──────────────────────────────────────────────────────────────────
   {
@@ -406,7 +454,42 @@ const entries: SitemapEntry[] = [
     priority:   0.7,
   },
 
-  // ── Supporting ───────────────────────────────────────────────────────────
+  {
+    url:        `${SITE}/blog/password-manager-guide/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/pdf-merger-guide/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/pdf-tools-suite-guide/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/qr-code-generator-guide/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/json-formatter-guide/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },
+  {
+    url:        `${SITE}/blog/color-palette-generator-guide/`,
+    lastmod:    '2026-06-22',
+    changefreq: 'monthly',
+    priority:   0.7,
+  },  // ── Supporting ───────────────────────────────────────────────────────────
   {
     url:        `${SITE}/about/`,
     lastmod:    '2026-06-10',
