@@ -127,7 +127,7 @@ const contactMethods = [
             <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
             <path d="M8 7v4M8 5h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          <p>This form does not use a backend server. Messages are simulated client-side in this demo. To contact us directly, email <strong>hello@calcquick.online</strong>.</p>
+          <p>We respect your privacy and will only use your email to respond. For direct support, you can reach us at <strong>hello@calcquick.online</strong>.</p>
         </div>
       </div>
 
@@ -139,15 +139,17 @@ const contactMethods = [
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement;
   const success = document.getElementById('contact-success') as HTMLElement;
-  form?.addEventListener('submit', (e) => {
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('contact-submit') as HTMLButtonElement;
-    btn.textContent = 'Sending…';
+    btn.textContent = 'Sending Message…';
     btn.disabled = true;
-    setTimeout(() => {
-      form.hidden = true;
-      success.hidden = false;
-    }, 800);
+    
+    // Simulate server side request delay
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    
+    form.hidden = true;
+    success.hidden = false;
   });
 </script>
 

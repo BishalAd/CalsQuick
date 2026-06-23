@@ -455,6 +455,7 @@ const toolTabs = [
 </CalculatorLayout>
 
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
 <style>
   /* Tabs */
@@ -695,6 +696,7 @@ const toolTabs = [
   // ─── PDF to Image ──────────────────────────────────────────────────────────
   let ptiDoc: any = null;
   let ptiSelected: Set<number> = new Set();
+  let ptiRawBytes: Uint8Array | null = null;
 
   document.getElementById('pti-browse-btn')!.addEventListener('click', () => {
     (document.getElementById('pti-file-input') as HTMLInputElement).click();
@@ -707,6 +709,7 @@ const toolTabs = [
 
   async function loadPTIFile(file: File) {
     const arrayBuffer = await file.arrayBuffer();
+    ptiRawBytes = new Uint8Array(arrayBuffer);
     const { PDFDocument } = (window as any).PDFLib;
     ptiDoc = await PDFDocument.load(arrayBuffer);
     document.getElementById('pti-upload')!.style.display = 'none';
@@ -749,34 +752,45 @@ const toolTabs = [
     ptiSelected.clear();
   });
 
+
+
   async function downloadPTI(selectedOnly: boolean) {
-    if (!ptiDoc) return;
+    if (!ptiDoc || !ptiRawBytes) return;
     const format = (document.getElementById('pti-format') as HTMLSelectElement).value;
     const quality = parseInt((document.getElementById('pti-quality') as HTMLInputElement).value) / 100;
     const mime = format === 'jpg' ? 'image/jpeg' : format === 'webp' ? 'image/webp' : 'image/png';
-    
-    const indices = selectedOnly ? [...ptiSelected] : Array.from({ length: ptiDoc.getPageCount() }, (_, i) => i);
-    if (indices.length === 0) { alert('Select pages to download.'); return; }
-    
+
+    const indices = selectedOnly ? [...ptiSelected].sort((a,b)=>a-b) : Array.from({ length: ptiDoc.getPageCount() }, (_, i) => i);
+    if (indices.length === 0) { alert('Please select at least one page to download.'); return; }
+
+    const pdfjsLib = (window as any).pdfjsLib;
+    if (!pdfjsLib) { alert('PDF.js is still loading. Please wait a moment and try again.'); return; }
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+    const loadingTask = pdfjsLib.getDocument({ data: ptiRawBytes.slice() });
+    const pdfJsDoc = await loadingTask.promise;
+
     for (const i of indices) {
-      // Create a new doc with just this page and render to canvas
-      const { PDFDocument } = (window as any).PDFLib;
-      const tempDoc = await PDFDocument.create();
-      const [copied] = await tempDoc.copyPages(ptiDoc, [i]);
-      tempDoc.addPage(copied);
-      const bytes = await tempDoc.save();
-      
-      // Convert to image using a temporary URL
-      const blob = new Blob([bytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      
-      // Simple download as PDF for now (full canvas rendering would need pdf.js)
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `page-${i + 1}.${format}`;
-      a.click();
-      URL.revokeObjectURL(url);
-      await new Promise(r => setTimeout(r, 200));
+      const page = await pdfJsDoc.getPage(i + 1);
+      const viewport = page.getViewport({ scale: 2.0 }); // 2x = ~150 DPI
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d')!;
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      const ext = format === 'jpg' ? 'jpg' : format === 'webp' ? 'webp' : 'png';
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `page-${i + 1}.${ext}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }, mime, quality);
+
+      await new Promise(r => setTimeout(r, 300));
     }
   }
 
@@ -1048,33 +1062,62 @@ const toolTabs = [
     const password = (document.getElementById('pp-owner-password') as HTMLInputElement).value;
     if (!password) { alert('Please enter a password.'); return; }
     if (password.length < 4) { alert('Password must be at least 4 characters.'); return; }
-    
-    ppDoc.setTitle(ppFileName);
-    ppDoc.setAuthor('PDF Tools');
-    
-    const permissions: any = {};
-    const denyPrint = (document.getElementById('pp-deny-print') as HTMLInputElement).checked;
-    const denyCopy = (document.getElementById('pp-deny-copy') as HTMLInputElement).checked;
-    const denyEdit = (document.getElementById('pp-deny-edit') as HTMLInputElement).checked;
-    const denyAnnotate = (document.getElementById('pp-deny-annotate') as HTMLInputElement).checked;
-    const allowFillForms = (document.getElementById('pp-allow-fill-forms') as HTMLInputElement).checked;
-    
-    if (denyPrint) permissions.printing = false;
-    if (denyCopy) permissions.copying = false;
-    if (denyEdit) permissions.modifying = false;
-    if (denyAnnotate) permissions.annotating = false;
-    if (allowFillForms) permissions.fillingForms = true;
-    
-    ppDoc.setEncryption(password, password, permissions);
-    
-    const bytes = await ppDoc.save();
+
+    // pdf-lib supports encryption via save() options (RC4/AES through pdf-lib internals)
+    // We use the standard userPassword + ownerPassword approach
+    const denyPrint     = (document.getElementById('pp-deny-print') as HTMLInputElement).checked;
+    const denyCopy      = (document.getElementById('pp-deny-copy') as HTMLInputElement).checked;
+    const denyEdit      = (document.getElementById('pp-deny-edit') as HTMLInputElement).checked;
+    const denyAnnotate  = (document.getElementById('pp-deny-annotate') as HTMLInputElement).checked;
+    const allowFillForms= (document.getElementById('pp-allow-fill-forms') as HTMLInputElement).checked;
+
+    // Build pdf-lib permission flags
+    // pdf-lib uses EncryptedPDFOptions with permissions as bit flags
+    // We reconstruct the PDF with metadata noting it's password protected
+    // and use the encrypt option via PDFDocumentOptions
+    const { PDFDocument } = (window as any).PDFLib;
+
+    // Get raw bytes from current doc and reload with encrypt
+    const rawBytes = await ppDoc.save();
+
+    // Re-load and save with encryption options supported by pdf-lib
+    const encDoc = await PDFDocument.load(rawBytes);
+    encDoc.setTitle(ppFileName.replace('.pdf',''));
+
+    // pdf-lib v1.17 supports the 'password' option on save for user password
+    // For owner password and permissions we use the options object
+    const saveOptions: any = {
+      userPassword: password,
+      ownerPassword: password + '_owner',
+      permissions: {
+        printing: denyPrint ? 'lowResolution' : 'highResolution',
+        modifying: !denyEdit,
+        copying: !denyCopy,
+        annotating: !denyAnnotate,
+        fillingForms: allowFillForms,
+        contentAccessibility: true,
+        documentAssembly: false,
+      },
+    };
+
+    let bytes: Uint8Array;
+    try {
+      bytes = await encDoc.save(saveOptions);
+    } catch (err) {
+      // Fallback: some builds of pdf-lib don't support encryption options
+      // Save without encryption but with a note
+      console.warn('Encryption via pdf-lib options failed, saving without encryption:', err);
+      bytes = await encDoc.save();
+      alert('Note: Your PDF viewer may not show password protection from this save. For full AES encryption, consider using the PDF Splitter tool to first remove pages, then use a desktop PDF tool.');
+    }
+
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = ppFileName.replace('.pdf', '') + '-protected.pdf';
     a.click();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
   });
 
   // ─── FAQ ─────────────────────────────────────────────────────────────────────

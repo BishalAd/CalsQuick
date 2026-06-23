@@ -42,32 +42,54 @@ const relatedCalcs = [
     <!-- Tool Cards -->
     <div style="display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
       <!-- PDF Merger Card -->
-      <div class="tool-card" style="border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas);">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-          <span style="font-size: 28px;">📄</span>
-          <div>
-            <h2 style="font-size: 1.2em; margin: 0; color: var(--color-ink);">PDF Merger</h2>
-            <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">Combine multiple PDF files into one document</p>
+      <div class="tool-card" style="border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas); display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span style="font-size: 28px;">📄</span>
+            <div>
+              <h2 style="font-size: 1.2em; margin: 0; color: var(--color-ink);">PDF Merger</h2>
+              <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">Combine multiple PDF files</p>
+            </div>
           </div>
+          <p style="color: var(--color-body); line-height: 1.5; margin-bottom: 16px; font-size: 0.95em;">
+            Merge two or more PDF documents while preserving order, quality, and metadata. Drag-and-drop file reordering, entirely client-side.
+          </p>
         </div>
-        <p style="color: var(--color-body); line-height: 1.5; margin-bottom: 16px;">
-          Merge two or more PDF files while preserving order, quality, and metadata. All processing happens locally — no file leaves your device.
-        </p>
-        <a href="/pdf-merger" class="btn-primary" style="width: 100%; text-align: center;">Open PDF Merger</a>
+        <a href="/pdf-merger" class="btn-primary" style="width: 100%; text-align: center; margin-top: auto;">Open PDF Merger</a>
       </div>
 
-      <!-- Placeholder for Future Tools -->
-      <div class="tool-card" style="border: 1px solid var(--color-hairline-soft); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas-soft);">
-        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-          <span style="font-size: 28px; opacity: 0.6;">🔧</span>
-          <div>
-            <h2 style="font-size: 1.2em; margin: 0; color: var(--color-muted);">More Tools Coming Soon</h2>
-            <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">PDF Splitter, Compressor, Page Rearranger, and more</p>
+      <!-- PDF Splitter Card -->
+      <div class="tool-card" style="border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas); display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span style="font-size: 28px;">✂️</span>
+            <div>
+              <h2 style="font-size: 1.2em; margin: 0; color: var(--color-ink);">PDF Splitter</h2>
+              <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">Extract or split PDF pages</p>
+            </div>
           </div>
+          <p style="color: var(--color-body); line-height: 1.5; margin-bottom: 16px; font-size: 0.95em;">
+            Extract specific pages, delete pages you don't need, or split a large PDF document into separate files. Fast and secure.
+          </p>
         </div>
-        <p style="color: var(--color-muted); font-style: italic; text-align: center;">
-          Stay tuned — additional PDF utilities will be added based on user demand.
-        </p>
+        <a href="/pdf-splitter" class="btn-primary" style="width: 100%; text-align: center; margin-top: auto;">Open PDF Splitter</a>
+      </div>
+
+      <!-- PDF Converter & Security Card -->
+      <div class="tool-card" style="border: 1px solid var(--color-hairline); border-radius: var(--radius-lg); padding: 20px; background: var(--color-canvas); display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span style="font-size: 28px;">🔒</span>
+            <div>
+              <h2 style="font-size: 1.2em; margin: 0; color: var(--color-ink);">PDF Tools & Converter</h2>
+              <p style="font-size: 0.9em; color: var(--color-body); margin: 4px 0 0;">Images, Watermarks & Passwords</p>
+            </div>
+          </div>
+          <p style="color: var(--color-body); line-height: 1.5; margin-bottom: 16px; font-size: 0.95em;">
+            Convert PDF pages to JPEG/PNG images, add text watermarks, or add password protection to restrict printing, copying, and editing.
+          </p>
+        </div>
+        <a href="/pdf-tools" class="btn-primary" style="width: 100%; text-align: center; margin-top: auto;">Open PDF Tools</a>
       </div>
     </div>
   </div>

@@ -304,7 +304,7 @@ const relatedCalcs = [
       swatch.style.height = '60px';
       swatch.style.backgroundColor = hex;
       swatch.style.border = '1px solid var(--color-hairline)';
-      swatch.style.borderRadius = var(--radius-sm);
+      swatch.style.borderRadius = 'var(--radius-sm)';
       swatch.style.position = 'relative';
       swatch.style.display = 'flex';
       swatch.style.alignItems = 'center';
@@ -320,7 +320,7 @@ const relatedCalcs = [
       lockBtn.style.left = '2px';
       lockBtn.style.background = 'rgba(0,0,0,0.5)';
       lockBtn.style.border = 'none';
-      lockBtn.style.color = var(--color-on-ink);
+      lockBtn.style.color = 'var(--color-on-ink)';
       lockBtn.style.width = '18px';
       lockBtn.style.height = '18px';
       lockBtn.style.borderRadius = '50%';
@@ -330,11 +330,11 @@ const relatedCalcs = [
       lockBtn.dataset.locked = 'false';
       lockBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const btn = e.target;
+        const btn = e.target as HTMLButtonElement;
         const locked = btn.dataset.locked === 'true';
         btn.dataset.locked = String(!locked);
         btn.style.background = locked ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.5)';
-        btn.style.color = locked ? var(--color-body) : var(--color-on-ink);
+        btn.style.color = locked ? 'var(--color-body)' : 'var(--color-on-ink)';
       });
       swatch.appendChild(lockBtn);
 

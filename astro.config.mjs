@@ -8,6 +8,13 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
   site: 'https://calcquick.online',
   output: 'static',
+  redirects: {
+    '/password-manager': '/password-generator',
+    '/json-formater': '/json-formatter',
+    '/pdf-tool-suit': '/pdf-tools',
+    '/pdf-manager': '/pdf-splitter',
+    '/unit-conveter': '/unit-converter',
+  },
   integrations: [
     mdx(),
   ],

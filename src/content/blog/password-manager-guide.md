@@ -33,7 +33,7 @@ Unlike cloud‑based vaults that store your data on remote servers, an **offline
 
 # Getting Started
 
-1. Visit the [Password Manager](/password-manager) page.
+1. Visit the [Password Generator](/password-generator) page.
 2. (Optional) Set a master password to lock your vault.
 3. Use the generator to create a new password or manually add existing ones.
 4. Your vault is saved locally; you can access it again by reopening the page and entering your master password.
