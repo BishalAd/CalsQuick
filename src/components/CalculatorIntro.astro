@@ -1,0 +1,33 @@
+---
+interface Props {
+  title: string;
+  shortIntro: string;
+  formula: string;
+  variables: string;
+  benefits: Array<string>;
+  faq: Array<{ question: string; answer: string }>;
+}
+const { title, shortIntro, formula, variables, benefits, faq } = Astro.props;
+---
+<section class="prose prose-lg max-w-2xl mx-auto mb-8">
+  <h1 class="mb-4">{title} – How It Works</h1>
+
+  <p>{shortIntro}</p>
+
+  <h2 class="mt-6">The formula</h2>
+  <p class="bg-muted p-4 rounded my-4">{formula}</p>
+  <p class="mt-2">{variables}</p>
+
+  <h2 class="mt-6">Why use this tool?</h2>
+  <ul class="list-disc ml-6 mt-2 space-y-1">
+    {benefits.map(b => <li>{b}</li>)}
+  </ul>
+
+  <h2 class="mt-6">Frequently Asked Questions</h2>
+  {faq.map((q, i) => (
+    <details key={i} class="mb-4">
+      <summary class="font-semibold cursor-pointer">{q.question}</summary>
+      <p class="mt-2">{q.answer}</p>
+    </details>
+  ))}
+</section>

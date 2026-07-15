@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'What is a 401(k) and how does it work?', a: 'A 401(k) is an employer-sponsored retirement savings plan that allows you to contribute pre-tax or after-tax (Roth) dollars from your paycheck. Contributions grow tax-deferred until withdrawal. Many employers match a portion of your contributions — this is essentially free money. For 2024, the contribution limit is $23,000 ($30,500 if age 50+).' },
   { q: 'How much should I contribute to my 401(k)?', a: 'Contribute at least enough to get the full employer match — otherwise you are leaving free money on the table. After that, aim for 10-15% of your gross income. If that is not feasible, start with what you can and increase by 1% each year. Max out at $23,000/year ($30,500 if 50+) if possible.' },
@@ -40,13 +39,7 @@ const limits2025 = { under50: 23500, over50: 31000, catchUp: 7500 };
   breadcrumbs={[{ name: 'Home', url: '/' }, { name: '401(k) Calculator', url: '/401k-calculator' }]}
   relatedCalcs={relatedCalcs}
 >
-  <div style="margin-bottom:32px;" class="fade-up">
-    <div class="eyebrow" style="margin-bottom:8px;">Retirement Planning</div>
-    <h1 class="text-display-lg" style="color:var(--color-ink);margin-bottom:12px;">401(k) Calculator</h1>
-    <p class="text-body-lg" style="color:var(--color-body);max-width:640px;">
-      Project your 401(k) balance at retirement. Factor in employer match, annual contribution limits, catch-up contributions, and decades of compound growth. Plan your retirement with confidence.
-    </p>
-  </div>
+\n  </div>
 
   <div class="calc-panel fade-up stagger-1">
     <div class="calc-form">

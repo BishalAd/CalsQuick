@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { 
     q: 'How do I convert a PDF to JPG or PNG images?', 
@@ -751,8 +750,6 @@ const toolTabs = [
     document.getElementById('pti-editor')!.style.display = 'none';
     ptiSelected.clear();
   });
-
-
 
   async function downloadPTI(selectedOnly: boolean) {
     if (!ptiDoc || !ptiRawBytes) return;

@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'How accurate is this online ruler?', a: 'Our ruler auto-detects your screen\'s DPI (dots per inch) for accurate measurements. You can also manually calibrate it using a physical object like a credit card (exactly 85.6mm × 54mm) for maximum precision. Results are typically accurate within ±1mm on correctly calibrated displays.' },
   { q: 'How do I calibrate the online ruler?', a: 'Click "Calibrate" and place a credit card (or any object with a known size) against your screen. Drag the calibration slider until the ruler matches the known measurement. Your calibration is saved for future visits.' },
@@ -775,7 +774,6 @@ const calibrationObjects = [
   });
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-
   // ─── STAGE 4: COORDINATE TRACKING & CROSSHAIRS ─────────────────────────────
   
   function getPixelsPerUnit(): number {
@@ -842,7 +840,6 @@ const calibrationObjects = [
     crosshairH.hidden = true;
     crosshairV.hidden = true;
   });
-
 
   // ─── STAGE 5: RULER CANVAS RENDERER ────────────────────────────────────────
   function drawRuler() {

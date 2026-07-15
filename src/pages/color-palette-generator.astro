@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'What is a color palette generator?', a: 'A tool that creates harmonious sets of colors based on a starting hue, using color theory rules such as complementary, analogous, triadic, and tetradic schemes.' },
   { q: 'Can I lock colors I like and generate new ones for the rest?', a: 'Yes, you can lock individual swatches so they stay unchanged when you regenerate the palette.' },
@@ -22,6 +21,7 @@ const relatedCalcs = [
 ];
 
 ---
+
 <CalculatorLayout
   title="Color Palette Generator — Free Online Color Scheme Tool"
   description="Generate beautiful color palettes using color theory rules. Lock colors, view HEX/RGB/HSL values, and export your scheme."

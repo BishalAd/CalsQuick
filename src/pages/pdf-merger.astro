@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'What does this PDF merger do?', a: 'This tool combines multiple PDF files into a single document entirely in your browser. Upload two or more PDFs, reorder them if needed using the Move Up / Move Down buttons, then click Merge to download a combined PDF. Nothing is uploaded to any server.' },
   { q: 'Is there a file size limit?', a: 'There is no hard limit set by our tool. Processing happens in your browser, so practical limits depend on your device\'s RAM. Most modern computers handle files up to 200 MB each without any issues.' },
@@ -28,6 +27,7 @@ const relatedCalcs = [
   { name: 'JSON Formatter', href: '/json-formatter', icon: '{}', desc: 'Validate and beautify JSON' },
 ];
 ---
+
 <CalculatorLayout
   title="PDF Merger — Free Offline PDF Combiner (No Upload)"
   description="Merge multiple PDF files into one document entirely in your browser. Reorder files, remove individual PDFs, and download the combined result. 100% private — no uploads ever."

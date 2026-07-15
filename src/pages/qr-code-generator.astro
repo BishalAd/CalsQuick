@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'What is a QR code?', a: 'A QR code (Quick Response code) is a two‑dimensional barcode that can store URLs, text, or other data. It can be scanned by smartphones and many other devices.' },
   { q: 'Is there a limit on the amount of data I can encode?', a: 'Yes. Depending on the QR code version and error correction level, the maximum capacity ranges from a few dozen to several thousand characters. For typical URLs, you’re well within limits.' },
@@ -22,6 +21,7 @@ const relatedCalcs = [
 ];
 
 ---
+
 <CalculatorLayout
   title="QR Code Generator — Free Online QR Code Creator"
   description="Generate QR codes instantly for URLs, text, or any data. Customize size, download as PNG, and scan with any device."

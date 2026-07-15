@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'How are currency exchange rates determined?', a: 'Exchange rates are determined by the foreign exchange market (Forex), where currencies are traded 24/5. Rates fluctuate based on supply and demand, interest rates, inflation, political stability, and economic performance. Central banks like the Federal Reserve and European Central Bank influence rates through monetary policy.' },
   { q: 'How often do exchange rates update?', a: 'Exchange rates change continuously during market hours (Sunday 5 PM EST to Friday 5 PM EST). Our calculator fetches live rates from the European Central Bank via the Frankfurter API, updated daily on business days and reflecting the latest available market rates.' },

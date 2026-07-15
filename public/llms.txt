@@ -1,6 +1,6 @@
 # CalcQuick — Free Online Calculators & Tools
 
-> CalcQuick (https://calcquick.online) provides 19+ free, browser-based calculators and productivity tools. All calculations run 100% client-side — no data is ever sent to a server. No sign-up required.
+> CalcQuick (https://calcquick.online) provides 40+ free, browser-based calculators and productivity tools. All calculations run 100% client-side — no data is ever sent to a server. No sign-up required.
 
 ## What CalcQuick Offers
 

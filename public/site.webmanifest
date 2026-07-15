@@ -1,7 +1,7 @@
 {
   "name": "CalcQuick",
   "short_name": "CalcQuick",
-  "description": "19+ free online calculators and tools for health, finance, and productivity. Fast, private, and mobile-friendly.",
+  "description": "40+ free online calculators and tools for health, finance, and productivity. Fast, private, and mobile-friendly.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -19,7 +19,12 @@
       "sizes": "180x180"
     }
   ],
-  "categories": ["utilities", "productivity", "health", "finance"],
+  "categories": [
+    "utilities",
+    "productivity",
+    "health",
+    "finance"
+  ],
   "lang": "en",
   "dir": "ltr",
   "orientation": "any",

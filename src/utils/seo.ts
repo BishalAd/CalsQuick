@@ -19,7 +19,7 @@ export function generateOrganization() {
     sameAs: [
       'https://calcquick.online',
     ],
-    description: 'CalcQuick provides 19+ free, private, browser-based calculators and productivity tools for health, finance, and everyday use. No sign-up, no data collection, no ads that block content.',
+    description: 'CalcQuick provides 40+ free, private, browser-based calculators and productivity tools for health, finance, and everyday use. No sign-up, no data collection, no ads that block content.',
     knowsAbout: [
       'BMI Calculator', 'Calorie Calculator', 'Age Calculator', 'BMR Calculator',
       'TDEE Calculator', 'Water Intake Calculator', 'Pregnancy Due Date Calculator',
@@ -135,8 +135,8 @@ export interface PageMeta {
 
 export const pageMeta: Record<string, PageMeta> = {
   home: {
-    title: 'CalcQuick — 19 Free Online Calculators & Tools',
-    description: 'CalcQuick offers 19 free online calculators and tools: BMI, age, calorie, mortgage, word counter, pomodoro timer, image compressor, and more. Fast, private & mobile-friendly.',
+    title: 'CalcQuick — 40+ Free Online Calculators & Tools',
+    description: 'CalcQuick offers 40+ free online calculators and tools: BMI, age, calorie, mortgage, word counter, pomodoro timer, image compressor, and more. Fast, private & mobile-friendly.',
     canonical: '/',
   },
   age: {

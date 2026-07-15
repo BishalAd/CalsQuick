@@ -1,7 +1,6 @@
 ---
 import CalculatorLayout from '../layouts/CalculatorLayout.astro';
 import { generateFAQ, generateSoftwareApplication } from '../utils/seo';
-
 const faqs = [
   { q: 'What is an EMI?', a: 'EMI stands for Equated Monthly Installment. It is the fixed amount you pay to your lender every month to repay a loan. Each EMI consists of two parts: the principal (the actual loan amount being repaid) and the interest (the cost charged by the lender). In early months, more of the EMI goes toward interest. Over time, the principal portion increases.' },
   { q: 'How is EMI calculated?', a: 'EMI is calculated using the formula: EMI = P × r × (1+r)^n / ((1+r)^n - 1), where P is the principal loan amount, r is the monthly interest rate (annual rate ÷ 12 ÷ 100), and n is the total number of monthly installments. Our calculator applies this formula instantly for any loan amount, rate, and tenure.' },
